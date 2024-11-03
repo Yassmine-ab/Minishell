@@ -1,4 +1,27 @@
 ################################################################################
+#                                     HEADER                                   #
+################################################################################
+
+define HEADER
+
+
+$(YELLOW)╔════ by yaabdall & besch ══════════════════════╗$(DEFAULT)
+$(YELLOW)║                                               ║$(DEFAULT)
+$(YELLOW)║           _       _      _           _ _      ║$(DEFAULT)
+$(YELLOW)║          (_)     (_)    | |         | | |     ║$(DEFAULT)
+$(LIGHT_YELLOW)║     ____  _ ____  _  ___| | _   ____| | |     ║$(DEFAULT)
+$(LIGHT_YELLOW)║    |    \| |  _ \| |/___| || \ / _  | | |     ║$(DEFAULT)
+$(LIGHT_YELLOW)║    | | | | | | | | |___ | | | ( (/ /| | |     ║$(DEFAULT)
+$(LIGHT_YELLOW)║    |_|_|_|_|_| |_|_(___/|_| |_|\____|_|_|     ║$(DEFAULT)
+$(WHITE)║                                               ║$(DEFAULT)
+$(WHITE)║                                               ║$(DEFAULT)
+$(WHITE)╚══════════════════════ by besch & yaabdall ════╝$(DEFAULT)
+
+
+endef
+export HEADER
+
+################################################################################
 #                                     COLORS                                   #
 ################################################################################
 
@@ -6,6 +29,7 @@ DEFAULT			= \033[0m
 RED				= \033[1;31m
 GREEN			= \033[1;32m
 YELLOW			= \033[1;33m
+LIGHT_YELLOW = \033[38;5;230m
 MAGENTA			= \033[1;35m
 CYAN			= \033[1;36m
 WHITE			= \033[1;37m
@@ -62,6 +86,7 @@ $(NAME):		$(OBJS)
 				@echo "🔗 $(WHITE)Linking $(YELLOW)$(NAME) $(CYAN)executable $(DEFAULT)..."
 				@$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
 				@echo "$(GREEN)Done $(DEFAULT)✔️"
+				@echo "$$HEADER"
 
 # Default rule
 all:			$(NAME)
