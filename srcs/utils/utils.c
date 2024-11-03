@@ -2,9 +2,8 @@
 
 void	error(const char *error_msg, int status, t_shell *data)
 {
-	(void)data;
 	perror(error_msg);
-	// if (data)
-	// 	clean_up(data);
+	if (data)
+		clean_up(data);
 	exit(status);
 }
