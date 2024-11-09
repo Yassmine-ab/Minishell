@@ -5,17 +5,17 @@
 define HEADER
 
 
-$(YELLOW)╔════ by yaabdall & besch ══════════════════════╗$(DEFAULT)
-$(YELLOW)║                                               ║$(DEFAULT)
-$(YELLOW)║           _       _      _           _ _      ║$(DEFAULT)
-$(YELLOW)║          (_)     (_)    | |         | | |     ║$(DEFAULT)
-$(LIGHT_YELLOW)║     ____  _ ____  _  ___| | _   ____| | |     ║$(DEFAULT)
-$(LIGHT_YELLOW)║    |    \| |  _ \| |/___| || \ / _  | | |     ║$(DEFAULT)
-$(LIGHT_YELLOW)║    | | | | | | | | |___ | | | ( (/ /| | |     ║$(DEFAULT)
-$(LIGHT_YELLOW)║    |_|_|_|_|_| |_|_(___/|_| |_|\____|_|_|     ║$(DEFAULT)
+$(GREEN)╔════ $(WHITE)by yaabdall & besch$(GREEN) ══════════════════════╗$(DEFAULT)
+$(GREEN)║                                               ║$(DEFAULT)
+$(GREEN)║                          _           _ _      ║$(DEFAULT)
+$(GREEN)║          🌺      🌺     | |         | | |     ║$(DEFAULT)
+$(LIGHT_GREEN)║     ____  _ ____  _  ___| | _   ____| | |     ║$(DEFAULT)
+$(LIGHT_GREEN)║    |    \| |  _ \| |/___| || \ / _  | | |     ║$(DEFAULT)
+$(LIGHT_GREEN)║    | | | | | | | | |___ | | | ( (/ /| | |     ║$(DEFAULT)
+$(LIGHT_GREEN)║    |_|_|_|_|_| |_|_(___/|_| |_|\____|_|_|     ║$(DEFAULT)
 $(WHITE)║                                               ║$(DEFAULT)
 $(WHITE)║                                               ║$(DEFAULT)
-$(WHITE)╚══════════════════════ by besch & yaabdall ════╝$(DEFAULT)
+$(WHITE)╚══════════════════════ $(GREEN)by besch & yaabdall$(WHITE) ════╝$(DEFAULT)
 
 
 endef
@@ -28,8 +28,9 @@ export HEADER
 DEFAULT			= \033[0m
 RED				= \033[1;31m
 GREEN			= \033[1;32m
+LIGHT_GREEN     = \033[0;92m
 YELLOW			= \033[1;33m
-LIGHT_YELLOW = \033[38;5;230m
+BLUE			= \033[1;34m
 MAGENTA			= \033[1;35m
 CYAN			= \033[1;36m
 WHITE			= \033[1;37m
@@ -60,9 +61,11 @@ INCLUDES =		./includes/ $(MYLIB_DIR)includes/
 
 # Libraries
 MYLIB =			-L $(MYLIB_DIR) -l:my_lib.a
+READLINE =		-lreadline
 
 # Source files
-SRCS =			$(UTILS)utils.c \
+SRCS =			$(SRC)prompt.c \
+				$(UTILS)utils.c \
 				$(SRC)main.c
 
 SRCS_BONUS =	$(SRC)main_bonus.c
@@ -84,7 +87,7 @@ $(OBJ)%.o:		$(SRC)%.c
 $(NAME):		$(OBJS)
 				@make all --no-print-directory -C $(MYLIB_DIR)
 				@echo "🔗 $(WHITE)Linking $(YELLOW)$(NAME) $(CYAN)executable $(DEFAULT)..."
-				@$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
+				@$(CC) $(CFLAGS) $(OBJS) $(MYLIB) $(READLINE) -o $(NAME)
 				@echo "$(GREEN)Done $(DEFAULT)✔️"
 				@echo "$$HEADER"
 
@@ -95,7 +98,7 @@ all:			$(NAME)
 bonus:			$(OBJS_BONUS)
 				@make all --no-print-directory -C $(MYLIB_DIR)
 				@echo "🔗 $(WHITE)Linking $(YELLOW)$(NAME_BONUS) $(CYAN)executable $(DEFAULT)..."
-				@$(CC) $(CFLAGS) $(OBJS_BONUS) -o $(NAME_BONUS)
+				@$(CC) $(CFLAGS) $(OBJS_BONUS) $(MYLIB) $(READLINE) -o $(NAME_BONUS)
 				@echo "$(GREEN)Done $(DEFAULT)✔️"
 
 # Rule for cleaning up object files
