@@ -44,9 +44,10 @@ typedef enum e_token_type
 	PIPE,
 	STDIN,
 	STDOUT,
+	STDOUT_APPEND,
 	FILENAME,
 	HEREDOC,
-	STDOUT_APPEND,
+	LIMITER,
 	ENV_VARIABLE,
 	QUOTE,
 	AND,
@@ -92,9 +93,14 @@ char	*create_prompt(void);
 /* --------------------------------- Lexing --------------------------------- */
 t_token	*tokenize_input(char *input, t_minishell *data);
 t_token	create_token(t_token_type type, char *value);
+void	free_tokens(t_token *tokens);
+void	skip_whitespace(char **input, int *index);
 int		process_quotes(char *input, int *i, int *count, t_minishell *data);
 int		process_parentheses(char *input, int *i, int *count, t_minishell *data);
-int		process_operators(char *input, int *i, int *count, t_minishell *data);
+int		process_operator(char *input, int *i, int *count, t_minishell *data);
+int		process_file(char *input, int *i, int *count, t_minishell *data);
+int		process_wildcard(char *input, int *i, int *count, t_minishell *data);
+int		process_limiter(char *input, int *i, int *count, t_minishell *data);
 
 /* -------------------------------- Parsing --------------------------------- */
 void	parse_input(char *input, t_minishell *data);

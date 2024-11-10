@@ -72,6 +72,7 @@ SRCS =			$(INIT)initialization.c \
 				$(LEXING)quotes.c \
 				$(LEXING)parentheses.c \
 				$(LEXING)operators.c \
+				$(LEXING)files.c \
 				$(LEXING)lexing_utils.c \
 				$(UTILS)utils.c \
 				$(SRC)main.c

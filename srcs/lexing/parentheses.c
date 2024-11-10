@@ -6,29 +6,29 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/10 02:55:32 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/10 03:25:09 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/11/10 20:57:40 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static int	find_matching_parenthesis(char *input, int index)
+static int	find_matching_parenthesis(char *input, int start_index)
 {
-	int	open_paren_count;
+	int	open_parentheses;
 
-	open_paren_count = 1;
-	index++;
-	while (input[index])
+	open_parentheses = 1;
+	start_index++;
+	while (input[start_index])
 	{
-		if (input[index] == '(')
-			open_paren_count++;
-		else if (input[index] == ')')
+		if (input[start_index] == '(')
+			open_parentheses++;
+		else if (input[start_index] == ')')
 		{
-			open_paren_count--;
-			if (open_paren_count == 0)
-				return (index);
+			open_parentheses--;
+			if (open_parentheses == 0)
+				return (start_index);
 		}
-		index++;
+		start_index++;
 	}
 	return (-1);
 }
@@ -37,7 +37,7 @@ int	process_parentheses(char *input, int *i, int *count, t_minishell *data)
 {
 	if (find_matching_parenthesis(input, *i) == -1)
 	{
-		error("Syntax error: unmatched parentheses", 1, data);
+		perror("Syntax error: unmatched parentheses");
 		return (-1);
 	}
 	if (input[*i] == '(')

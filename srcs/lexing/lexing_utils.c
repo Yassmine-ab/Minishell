@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/10 02:57:26 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/10 03:19:33 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/11/10 23:21:26 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,12 +21,12 @@ t_token	create_token(t_token_type type, char *value)
 	return (new_token);
 }
 
-// static void	free_tokens(t_token *tokens)
-// {
-// 	int	i;
+void	free_tokens(t_token *tokens)
+{
+	int	i;
 
-// 	i = -1;
-// 	while (tokens[++i].type != END)
-// 		ft_free(tokens[i].value);
-// 	free(tokens);
-// }
+	i = -1;
+	while (tokens[++i].type != END)
+		ft_free(tokens[i].value);
+	free(tokens);
+}

@@ -6,15 +6,15 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 21:42:36 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/10 03:24:38 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/11/10 22:55:08 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static void	skip_whitespace(char **input, int *index)
+void	skip_whitespace(char **input, int *index)
 {
-	while ((*input)[*index] == ' ')
+	while ((*input)[*index] && isspace((*input)[*index]))
 		(*index)++;
 }
 
@@ -22,12 +22,23 @@ static int	process_env_var(char *input, int *i, int *count, t_minishell *data)
 {
 	int	start;
 
-	start = *i;
-	while (input[*i] && !ft_isspace(input[*i])
-		&& (ft_isalnum(input[*i]) || input[*i] == '_'))
+	start = ++(*i);
+	if (input[*i] == '?' || input[*i] == '@' || input[*i] == '#')
+	{
+		data->tokens[*count] = create_token(ENV_VARIABLE, ft_substr(input, start, 1));
 		(*i)++;
-	data->tokens[*count] = create_token(ENV_VARIABLE, \
-	ft_substr(input, start, *i - start));
+	}
+	else if (!ft_isalnum(input[*i]) && input[*i] != '_')
+	{
+		perror("Syntax error: invalid or missing environment variable name\n");
+		return (-1);
+	}
+	else
+	{
+		while (input[*i] && (ft_isalnum(input[*i]) || input[*i] == '_'))
+			(*i)++;
+		data->tokens[*count] = create_token(ENV_VARIABLE, ft_substr(input, start, *i - start));
+	}
 	(*count)++;
 	return (0);
 }
@@ -39,8 +50,7 @@ static int	process_commands(char *input, int *i, int *count, t_minishell *data)
 
 	start = *i;
 	(*i)++;
-	while (input[*i] && !ft_isspace(input[*i])
-		&& !ft_strrchr("|<>&()\"'", input[*i]))
+	while (input[*i] && !ft_isspace(input[*i]) && !ft_strchr("|<>&()\"'", input[*i]))
 		(*i)++;
 	value = ft_substr(input, start, *i - start);
 	if (data->is_command)
@@ -71,7 +81,9 @@ t_token	*tokenize_input(char *input, t_minishell *data)
 		else if (input[i] == '$')
 			process_env_var(input, &i, &count, data);
 		else if (ft_strchr("|<>&", input[i]))
-			process_operators(input, &i, &count, data);
+			process_operator(input, &i, &count, data);
+		else if (input[i] == '*')
+			process_wildcard(input, &i, &count, data);
 		else
 			process_commands(input, &i, &count, data);
 	}
