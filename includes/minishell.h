@@ -108,6 +108,6 @@ void	parse_input(char *input, t_minishell *data);
 /* ------------------------------- Utilities -------------------------------- */
 void	ft_free(void *ptr);
 void	clean_up(t_minishell *data);
-void	error(const char *error_msg, int status, t_minishell *data);
+void	error(const char *error_msg, int status, t_gc *gc);
 
 #endif

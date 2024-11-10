@@ -28,14 +28,13 @@ RM =			rm -f
 LIBFT =			./srcs/libft/
 FT_PRINTF =		./srcs/ft_printf/
 GNL =			./srcs/get_next_line/
+GC =			./srcs/garbage_collector/
 SRC =			./srcs/
 OBJ =			./objs/
 INCLUDES =		./includes/
 
 # Source files
-SRCS =	       	$(LIBFT)ft_ftoa.c \
-				$(LIBFT)ft_atof.c \
-				$(LIBFT)ft_strchr.c \
+SRCS =	       	$(LIBFT)ft_strchr.c \
         	    $(LIBFT)ft_split.c \
         	    $(LIBFT)ft_strtrim.c \
         	    $(LIBFT)ft_bzero.c \
@@ -102,7 +101,11 @@ SRCS =	       	$(LIBFT)ft_ftoa.c \
 				$(GNL)get_next_line.c \
 				$(GNL)get_next_line_utils.c \
     	        $(GNL)get_next_line_bonus.c \
-    	        $(GNL)get_next_line_utils_bonus.c
+    	        $(GNL)get_next_line_utils_bonus.c \
+				$(GC)gc_init.c \
+				$(GC)gc_add.c \
+				$(GC)gc_clear.c \
+				$(GC)ft_substr_gc.c
 
 # Converts source file paths to object file paths
 OBJS = $(patsubst $(SRC)%, $(OBJ)%, $(SRCS:.c=.o))

@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/23 19:33:01 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/09 22:44:02 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/11/10 23:46:56 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,6 @@ typedef struct s_list
 	struct s_list	*next;
 }	t_list;
 
-char	*ft_ftoa(double n, int precision);
-double	ft_atof(const char *str);
 int		ft_isalpha(int c);
 int		ft_isdigit(int c);
 int		ft_isalnum(int c);

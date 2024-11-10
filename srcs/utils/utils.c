@@ -6,11 +6,9 @@ void	ft_free(void *ptr)
 		free(ptr);
 }
 
-void	error(const char *error_msg, int status, t_minishell *data)
+void	error(const char *error_msg, int status, t_gc *gc)
 {
-	(void)data;
 	perror(error_msg);
-	// if (data)
-	// 	clean_up(data);
+	gc_clear(gc);
 	exit(status);
 }
