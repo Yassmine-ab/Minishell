@@ -1,24 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   gc_init.c                                          :+:      :+:    :+:   */
+/*   initialization.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/03 22:18:54 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/10 03:26:44 by yaabdall         ###   ########.fr       */
+/*   Created: 2024/11/10 03:27:24 by yaabdall          #+#    #+#             */
+/*   Updated: 2024/11/10 03:27:25 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gc.h"
+#include "minishell.h"
 
-t_gc	*gc_init(void)
+void	data_init(char **argv, char **envp, t_minishell *data)
 {
-	t_gc	*gc;
-
-	gc = (t_gc *)malloc(sizeof(t_gc));
-	if (!gc)
-		return (NULL);
-	gc->head = NULL;
-	return (gc);
+	(void)argv;
+	data->envp = envp;
+	data->line = NULL;
+	data->tokens = (t_token *)malloc(sizeof(t_token) * (MAX_TOKENS + 1));
+	if (!data->tokens)
+		return ;
+	data->is_command = true;
 }

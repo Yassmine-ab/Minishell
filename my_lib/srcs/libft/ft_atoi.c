@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/24 18:58:51 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/10/07 22:10:26 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/11/09 22:43:42 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ is used to convert a string (*str) into an integer (sign * nbr).
 */
 #include "../../includes/libft.h"
 
-static int	ft_isspace(char c)
+int	ft_isspace(char c)
 {
 	return ((c >= '\t' && c <= '\r') || c == ' ');
 }

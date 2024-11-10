@@ -52,8 +52,10 @@ RM =			rm -f
 
 # Directory paths
 SRC =			./srcs/
+INIT =			$(SRC)initialization/
+LEXING =		$(SRC)lexing/
+PARSING =		$(SRC)parsing/
 BUILTIN =		$(SRC)builtin/
-PARSER =		$(SRC)parser/
 UTILS =			$(SRC)utils/
 OBJ =			./objs/
 MYLIB_DIR =		./my_lib/
@@ -64,7 +66,13 @@ MYLIB =			-L $(MYLIB_DIR) -l:my_lib.a
 READLINE =		-lreadline
 
 # Source files
-SRCS =			$(SRC)prompt.c \
+SRCS =			$(INIT)initialization.c \
+				$(INIT)prompt.c \
+				$(LEXING)tokenize.c \
+				$(LEXING)quotes.c \
+				$(LEXING)parentheses.c \
+				$(LEXING)operators.c \
+				$(LEXING)lexing_utils.c \
 				$(UTILS)utils.c \
 				$(SRC)main.c
 

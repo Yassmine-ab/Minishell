@@ -9,6 +9,7 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <stdbool.h>
+# include <errno.h>
 # include "ft_printf.h"
 # include "gc.h"
 
@@ -27,6 +28,10 @@
 # define CYAN "\033[1;36m"
 # define WHITE "\033[1;37m"
 
+// MAX VALUES
+# define MAX_PATHLENGTH 4096
+# define MAX_TOKENS 4096
+
 /* -------------------------------------------------------------------------- */
 /*                                   ENUMS                                    */
 /* -------------------------------------------------------------------------- */
@@ -39,16 +44,18 @@ typedef enum e_token_type
 	PIPE,
 	STDIN,
 	STDOUT,
+	FILENAME,
 	HEREDOC,
 	STDOUT_APPEND,
 	ENV_VARIABLE,
-	QUOTED_STRING,
+	QUOTE,
 	AND,
 	OR,
 	WILDCARD,
 	SIGNAL,
 	PARENTHESIS_OPEN,
-	PARENTHESIS_CLOSE
+	PARENTHESIS_CLOSE,
+	END
 }	t_token_type;
 
 /* -------------------------------------------------------------------------- */
@@ -65,8 +72,10 @@ typedef struct s_token
 // DATA STRUCTURE
 typedef struct s_minishell
 {
-	char				*line;
 	char				**envp;
+	char				*line;
+	t_token				*tokens;
+	bool				is_command;
 
 }	t_minishell;
 
@@ -75,16 +84,22 @@ typedef struct s_minishell
 /* -------------------------------------------------------------------------- */
 
 /* ----------------------------- Initialization ----------------------------- */
-void	data_init(char **argv, t_minishell *data);
+void	data_init(char **argv, char **envp, t_minishell *data);
 
 /* --------------------------------- Prompt --------------------------------- */
 char	*create_prompt(void);
+
+/* --------------------------------- Lexing --------------------------------- */
+t_token	*tokenize_input(char *input, t_minishell *data);
+t_token	create_token(t_token_type type, char *value);
+int		process_quotes(char *input, int *i, int *count, t_minishell *data);
+int		process_parentheses(char *input, int *i, int *count, t_minishell *data);
+int		process_operators(char *input, int *i, int *count, t_minishell *data);
 
 /* -------------------------------- Parsing --------------------------------- */
 void	parse_input(char *input, t_minishell *data);
 
 /* ------------------------------- Utilities -------------------------------- */
-// BLABLA
 void	ft_free(void *ptr);
 void	clean_up(t_minishell *data);
 void	error(const char *error_msg, int status, t_minishell *data);

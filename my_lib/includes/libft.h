@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/23 19:33:01 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/06 21:44:04 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/11/09 22:44:02 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ int		ft_strncmp(const char *s1, const char *s2, size_t len);
 void	*ft_memchr(const void *s, int c, size_t size);
 int		ft_memcmp(const void *s1, const void *s2, size_t size);
 char	*ft_strnstr(const char *big, const char *little, size_t len);
+int		ft_isspace(char c);
 int		ft_atoi(const char *str);
 void	*ft_calloc(size_t count, size_t size);
 char	*ft_strdup(const char *s1);

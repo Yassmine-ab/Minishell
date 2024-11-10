@@ -1,13 +1,21 @@
 #include "minishell.h"
 
-int	main(int argc, char **argv)
+static void	print_tokens(t_token *tokens)
+{
+	int	i;
+
+	i = -1;
+	while (tokens[++i].type != END)
+		ft_printf("type: %d, value: %s\n", tokens[i].type, tokens[i].value);
+}
+
+int	main(int argc, char **argv, char **envp)
 {
 	t_minishell	data;
 	const char	*prompt;
 
 	(void)argc;
-	(void)argv;
-
+	data_init(argv, envp, &data);
 	prompt = create_prompt();
 	while (1)
 	{
@@ -20,6 +28,7 @@ int	main(int argc, char **argv)
 			break ;
 		}
 		add_history(data.line);
+		print_tokens(tokenize_input(data.line, &data));
 	}
 	free((void *)prompt);
 	rl_clear_history();
