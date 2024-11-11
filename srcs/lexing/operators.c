@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/10 03:01:45 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/10 21:49:01 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/11/11 01:09:46 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,11 +77,6 @@ static int	process_and(char *input, int *i, int *count, t_minishell *data)
 	{
 		data->tokens[*count] = create_token(AND, "&&");
 		(*i) += 2;
-	}
-	else
-	{
-		data->tokens[*count] = create_token(SIGNAL, "&");
-		(*i)++;
 	}
 	(*count)++;
 	data->is_command = true;

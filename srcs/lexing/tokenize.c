@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 21:42:36 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/10 22:55:08 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/11/11 01:08:43 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ static int	process_env_var(char *input, int *i, int *count, t_minishell *data)
 	int	start;
 
 	start = ++(*i);
-	if (input[*i] == '?' || input[*i] == '@' || input[*i] == '#')
+	if (input[*i] == '?')
 	{
 		data->tokens[*count] = create_token(ENV_VARIABLE, ft_substr(input, start, 1));
 		(*i)++;

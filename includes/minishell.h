@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minishell.h                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/11/11 02:04:44 by yaabdall          #+#    #+#             */
+/*   Updated: 2024/11/11 02:06:35 by yaabdall         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
@@ -53,11 +65,20 @@ typedef enum e_token_type
 	AND,
 	OR,
 	WILDCARD,
-	SIGNAL,
 	PARENTHESIS_OPEN,
 	PARENTHESIS_CLOSE,
 	END
 }	t_token_type;
+
+// AST NODE TYPES ENUM
+typedef enum e_node_type
+{
+	NODE_COMMAND,
+	NODE_ARGUMENT,
+	NODE_REDIRECTION,
+	NODE_OPERATOR,
+	NODE_GROUP,
+}	t_node_type;
 
 /* -------------------------------------------------------------------------- */
 /*                                 STRUCTURES                                 */
@@ -70,6 +91,16 @@ typedef struct s_token
 	char				*value;
 }	t_token;
 
+// AST NODE STRUCTURE
+typedef struct s_node
+{
+	t_node_type			type;
+	char				*value; // Valeur pour commande, argument ou fichier
+	struct s_node		*left; // Fils gauche, pour &&, ||, ou redirection
+	struct s_node		*right; // Fils droit pour && et ||
+	struct s_node		*next; // Pour lier les arguments d’une commande
+}	t_node;
+
 // DATA STRUCTURE
 typedef struct s_minishell
 {
@@ -77,7 +108,7 @@ typedef struct s_minishell
 	char				*line;
 	t_token				*tokens;
 	bool				is_command;
-
+	t_node				*node;
 }	t_minishell;
 
 /* -------------------------------------------------------------------------- */
@@ -103,7 +134,8 @@ int		process_wildcard(char *input, int *i, int *count, t_minishell *data);
 int		process_limiter(char *input, int *i, int *count, t_minishell *data);
 
 /* -------------------------------- Parsing --------------------------------- */
-void	parse_input(char *input, t_minishell *data);
+t_node	*parse_tokens(t_token *tokens);
+t_node	*create_ast_node(t_node_type type, char *value);
 
 /* ------------------------------- Utilities -------------------------------- */
 void	ft_free(void *ptr);

@@ -74,6 +74,8 @@ SRCS =			$(INIT)initialization.c \
 				$(LEXING)operators.c \
 				$(LEXING)files.c \
 				$(LEXING)lexing_utils.c \
+				$(PARSING)parse_tokens.c \
+				$(PARSING)parsing_utils.c \
 				$(UTILS)utils.c \
 				$(SRC)main.c
 
