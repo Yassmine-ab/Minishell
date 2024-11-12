@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/10 02:54:14 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/10 20:59:26 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/11/11 20:39:32 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,8 @@ int	process_quotes(char *input, int *i, int *count, t_minishell *data)
 			(*i)++;
 		(*i)++;
 	}
-	data->tokens[*count] = create_token(QUOTE, ft_substr(input, start, *i - start));
+	data->tokens[*count] = \
+	create_token(QUOTE, ft_substr_gc(input, start, *i - start, &data->gc));
 	(*count)++;
 	(*i)++;
 	return (0);

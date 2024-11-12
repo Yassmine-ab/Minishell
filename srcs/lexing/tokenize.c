@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 21:42:36 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/11 01:08:43 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/11/11 20:38:10 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,8 @@ static int	process_env_var(char *input, int *i, int *count, t_minishell *data)
 	start = ++(*i);
 	if (input[*i] == '?')
 	{
-		data->tokens[*count] = create_token(ENV_VARIABLE, ft_substr(input, start, 1));
+		data->tokens[*count] = \
+		create_token(ENV_VARIABLE, ft_substr_gc(input, start, 1, &data->gc));
 		(*i)++;
 	}
 	else if (!ft_isalnum(input[*i]) && input[*i] != '_')
@@ -37,7 +38,8 @@ static int	process_env_var(char *input, int *i, int *count, t_minishell *data)
 	{
 		while (input[*i] && (ft_isalnum(input[*i]) || input[*i] == '_'))
 			(*i)++;
-		data->tokens[*count] = create_token(ENV_VARIABLE, ft_substr(input, start, *i - start));
+		data->tokens[*count] = create_token(ENV_VARIABLE, \
+		ft_substr_gc(input, start, *i - start, &data->gc));
 	}
 	(*count)++;
 	return (0);
@@ -50,7 +52,8 @@ static int	process_commands(char *input, int *i, int *count, t_minishell *data)
 
 	start = *i;
 	(*i)++;
-	while (input[*i] && !ft_isspace(input[*i]) && !ft_strchr("|<>&()\"'", input[*i]))
+	while (input[*i] && !ft_isspace(input[*i])
+		&& !ft_strchr("|<>&()\"'", input[*i]))
 		(*i)++;
 	value = ft_substr(input, start, *i - start);
 	if (data->is_command)

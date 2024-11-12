@@ -1,24 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   initialization.c                                   :+:      :+:    :+:   */
+/*   gc_malloc.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/10 03:27:24 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/11 20:42:02 by yaabdall         ###   ########.fr       */
+/*   Created: 2024/11/11 20:30:49 by yaabdall          #+#    #+#             */
+/*   Updated: 2024/11/12 17:14:26 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "gc.h"
 
-void	data_init(char **argv, char **envp, t_minishell *data)
+void	*gc_malloc(size_t size, t_gc *gc)
 {
-	(void)argv;
-	data->envp = envp;
-	data->line = NULL;
-	data->tokens = (t_token *)gc_malloc(sizeof(t_token) * (MAX_TOKENS + 1), &data->gc);
-	if (!data->tokens)
-		return ;
-	data->is_command = true;
+	void		*ptr;
+	t_gc_node	*new_node;
+
+	ptr = malloc(size);
+	if (!ptr)
+		return (NULL);
+	new_node = malloc(sizeof(t_gc_node));
+	if (!new_node)
+	{
+		free(ptr);
+		return (NULL);
+	}
+	new_node->ptr = ptr;
+	new_node->next = gc->head;
+	gc->head = new_node;
+	return (ptr);
 }

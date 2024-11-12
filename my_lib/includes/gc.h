@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/25 18:24:53 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/10 23:44:27 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/11/11 20:41:12 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ typedef struct s_gc
 void	gc_init(t_gc *gc);
 void	gc_add(t_gc *gc, void *ptr);
 void	gc_clear(t_gc *gc);
+void	*gc_malloc(size_t size, t_gc *gc);
 char	*ft_substr_gc(char *s, unsigned int start, size_t len, t_gc *gc);
 
 #endif

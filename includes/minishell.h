@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 02:04:44 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/11 02:06:35 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/11/12 17:17:40 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,6 +109,7 @@ typedef struct s_minishell
 	t_token				*tokens;
 	bool				is_command;
 	t_node				*node;
+	t_gc				gc;
 }	t_minishell;
 
 /* -------------------------------------------------------------------------- */
@@ -134,8 +135,8 @@ int		process_wildcard(char *input, int *i, int *count, t_minishell *data);
 int		process_limiter(char *input, int *i, int *count, t_minishell *data);
 
 /* -------------------------------- Parsing --------------------------------- */
-t_node	*parse_tokens(t_token *tokens);
-t_node	*create_ast_node(t_node_type type, char *value);
+t_node	*parse_tokens(t_token *tokens, t_gc *gc);
+t_node	*create_ast_node(t_node_type type, char *value, t_gc *gc);
 
 /* ------------------------------- Utilities -------------------------------- */
 void	ft_free(void *ptr);

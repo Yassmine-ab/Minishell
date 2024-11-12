@@ -105,6 +105,7 @@ SRCS =	       	$(LIBFT)ft_strchr.c \
 				$(GC)gc_init.c \
 				$(GC)gc_add.c \
 				$(GC)gc_clear.c \
+				$(GC)gc_malloc.c \
 				$(GC)ft_substr_gc.c
 
 # Converts source file paths to object file paths
@@ -122,7 +123,7 @@ $(OBJ)%.o:		$(SRC)%.c
 
 # Rule for creating the library
 $(NAME):		$(OBJS)
-				@echo "🛠️ $(WHITE)Building $(YELLOW)$(NAME) $(CYAN)library $(DEFAULT)..."
+				@echo "🛠️  $(WHITE)Building $(YELLOW)$(NAME) $(CYAN)library $(DEFAULT)..."
 				@$(AR) $(NAME) $(OBJS)
 				@echo "$(GREEN)Done $(DEFAULT)✔️"
 
@@ -140,7 +141,7 @@ clean:
 
 # Full clean rule (objects files and library)
 fclean:			clean
-				@echo "🗑️ $(RED)Deleting $(YELLOW)$(NAME) $(CYAN)library $(DEFAULT)..."
+				@echo "🗑️  $(RED)Deleting $(YELLOW)$(NAME) $(CYAN)library $(DEFAULT)..."
 				@$(RM) $(NAME)
 				@echo "$(GREEN)Done $(DEFAULT)✔️"
 

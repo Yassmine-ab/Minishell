@@ -50,11 +50,9 @@ int	main(int argc, char **argv, char **envp)
 		add_history(data.line);
 		tokens = tokenize_input(data.line, &data);
 		print_tokens(tokens);
-		ast_root = parse_tokens(tokens);
+		ast_root = parse_tokens(tokens, &data.gc);
 		print_ast(ast_root, 0);
-		free_tokens(tokens);
 	}
-	free((void *)prompt);
 	rl_clear_history();
 	return (0);
 }
