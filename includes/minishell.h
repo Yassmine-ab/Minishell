@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
+/*   By: besch <besch@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 02:04:44 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/12 17:17:40 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/11/12 21:47:06 by besch            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,22 +51,22 @@
 // TOKEN TYPES ENUM
 typedef enum e_token_type
 {
-	COMMAND,
-	ARGUMENT,
-	PIPE,
-	STDIN,
-	STDOUT,
-	STDOUT_APPEND,
-	FILENAME,
-	HEREDOC,
-	LIMITER,
-	ENV_VARIABLE,
-	QUOTE,
-	AND,
-	OR,
-	WILDCARD,
-	PARENTHESIS_OPEN,
-	PARENTHESIS_CLOSE,
+	COMMAND,			// 0
+	ARGUMENT,			// 1
+	PIPE,				// 2
+	STDIN,				// 3
+	STDOUT,				// 4
+	STDOUT_APPEND,		// 5
+	FILENAME,			// 6
+	HEREDOC,			// 7
+	LIMITER,			// 8
+	ENV_VARIABLE,		// 9
+	QUOTE,				// 10
+	AND,				// 11
+	OR,					// 12
+	WILDCARD,			// 13
+	PARENTHESIS_OPEN,	// 14
+	PARENTHESIS_CLOSE,	// 15
 	END
 }	t_token_type;
 
@@ -89,16 +89,18 @@ typedef struct s_token
 {
 	t_token_type		type;
 	char				*value;
+	bool				single_quote;
+	bool				double_quote;
 }	t_token;
 
 // AST NODE STRUCTURE
 typedef struct s_node
 {
 	t_node_type			type;
-	char				*value; // Valeur pour commande, argument ou fichier
-	struct s_node		*left; // Fils gauche, pour &&, ||, ou redirection
-	struct s_node		*right; // Fils droit pour && et ||
-	struct s_node		*next; // Pour lier les arguments d’une commande
+	char				*value;
+	struct s_node		*left;
+	struct s_node		*right;
+	struct s_node		*next;
 }	t_node;
 
 // DATA STRUCTURE
@@ -107,6 +109,7 @@ typedef struct s_minishell
 	char				**envp;
 	char				*line;
 	t_token				*tokens;
+	t_token_type		current_type;
 	bool				is_command;
 	t_node				*node;
 	t_gc				gc;

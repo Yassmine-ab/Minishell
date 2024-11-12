@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   operators.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
+/*   By: besch <besch@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/10 03:01:45 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/11 01:09:46 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/11/12 22:02:14 by besch            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,13 @@ static int	process_pipe(char *input, int *i, int *count, t_minishell *data)
 {
 	if (input[*i + 1] == '|')
 	{
+		data->current_type = COMMAND;
 		data->tokens[*count] = create_token(OR, "||");
 		(*i) += 2;
 	}
 	else
 	{
+		data->current_type = COMMAND;
 		data->tokens[*count] = create_token(PIPE, "|");
 		(*i)++;
 	}
@@ -56,11 +58,13 @@ static int	process_stdout(char *input, int *i, int *count, t_minishell *data)
 {
 	if (input[*i + 1] == '>')
 	{
+		data->current_type = FILENAME;
 		data->tokens[*count] = create_token(STDOUT_APPEND, ">>");
 		(*i) += 2;
 	}
 	else
 	{
+		data->current_type = FILENAME;
 		data->tokens[*count] = create_token(STDOUT, ">");
 		(*i)++;
 	}
@@ -75,6 +79,7 @@ static int	process_and(char *input, int *i, int *count, t_minishell *data)
 {
 	if (input[*i + 1] == '&')
 	{
+		data->current_type = COMMAND;
 		data->tokens[*count] = create_token(AND, "&&");
 		(*i) += 2;
 	}
