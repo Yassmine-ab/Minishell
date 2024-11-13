@@ -3,20 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
+/*   By: besch <besch@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 05:22:40 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/13 05:22:41 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/11/13 18:36:35 by besch            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	ft_free(void *ptr)
-{
-	if (ptr)
-		free(ptr);
-}
 
 void	error(const char *error_msg, int status, t_gc *gc)
 {

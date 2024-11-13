@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenize.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
+/*   By: besch <besch@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 21:42:36 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/13 05:18:01 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/11/13 22:50:09 by besch            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	skip_whitespace(char **input, int *index)
 		(*index)++;
 }
 
-static int	process_env_var(char *input, int *i, int *count, t_minishell *data)
+int	process_env_var(char *input, int *i, int *count, t_minishell *data)
 {
 	int	start;
 
@@ -75,6 +75,8 @@ t_token	*tokenize_input(char *input, t_minishell *data)
 	int		count;
 	int		i;
 
+	data->is_command = true;
+	data->current_type = COMMAND;
 	count = 0;
 	i = 0;
 	while (input[i])

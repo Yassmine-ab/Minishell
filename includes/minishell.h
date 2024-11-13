@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
+/*   By: besch <besch@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 02:04:44 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/13 01:53:30 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/11/13 22:50:21 by besch            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 # include <stdbool.h>
 # include <errno.h>
 # include "ft_printf.h"
+# include "get_next_line.h"
 # include "gc.h"
 
 /* -------------------------------------------------------------------------- */
@@ -135,13 +136,13 @@ int		process_operator(char *input, int *i, int *count, t_minishell *data);
 int		process_file(char *input, int *i, int *count, t_minishell *data);
 int		process_wildcard(char *input, int *i, int *count, t_minishell *data);
 int		process_limiter(char *input, int *i, int *count, t_minishell *data);
+int		process_env_var(char *input, int *i, int *count, t_minishell *data);
 
 /* -------------------------------- Parsing --------------------------------- */
 t_node	*parse_tokens(t_token *tokens, t_gc *gc);
 t_node	*create_ast_node(t_node_type type, char *value, t_gc *gc);
 
 /* ------------------------------- Utilities -------------------------------- */
-void	ft_free(void *ptr);
 void	clean_up(t_minishell *data);
 void	error(const char *error_msg, int status, t_gc *gc);
 

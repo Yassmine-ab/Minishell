@@ -6,7 +6,7 @@
 /*   By: besch <besch@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/10 03:27:27 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/12 21:12:49 by besch            ###   ########.fr       */
+/*   Updated: 2024/11/13 18:37:35 by besch            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,12 +27,12 @@ char	*create_prompt(void)
 		user = "user";
 	tmp = ft_strjoin(YELLOW "\n", user);
 	tmp2 = ft_strjoin(tmp, DEFAULT " in ");
-	ft_free(tmp);
+	ft_free(&tmp);
 	tmp = ft_strjoin(tmp2, GREEN);
-	ft_free(tmp2);
+	ft_free(&tmp2);
 	tmp2 = ft_strjoin(tmp, cwd);
-	ft_free(tmp);
+	ft_free(&tmp);
 	prompt = ft_strjoin(tmp2, DEFAULT " 🥥 ⋙  ");
-	ft_free(tmp2);
+	ft_free(&tmp2);
 	return (prompt);
 }

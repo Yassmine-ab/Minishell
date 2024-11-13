@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   initialization.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
+/*   By: besch <besch@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/10 03:27:24 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/13 01:24:19 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/11/13 20:32:12 by besch            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,5 +20,4 @@ void	data_init(char **argv, char **envp, t_minishell *data)
 	data->tokens = (t_token *)gc_malloc(sizeof(t_token) * (MAX_TOKENS + 1), &data->gc);
 	if (!data->tokens)
 		return ;
-	data->is_command = true;
 }

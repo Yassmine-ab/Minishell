@@ -16,30 +16,30 @@ static void	print_tokens(t_token *tokens)
 }
 
 
-static void	print_ast(t_node *node, int depth)
-{
-	int	i;
+// static void	print_ast(t_node *node, int depth)
+// {
+// 	int	i;
 
-	i = -1;
-	if (!node)
-		return ;
-	while (++i < depth)
-		printf("  ");
-	if (node->value)
-		printf("%s\n", node->value);
-	else
-		printf("(group)\n");
-	print_ast(node->left, depth + 1);
-	print_ast(node->right, depth + 1);
-	print_ast(node->next, depth);
-}
+// 	i = -1;
+// 	if (!node)
+// 		return ;
+// 	while (++i < depth)
+// 		printf("  ");
+// 	if (node->value)
+// 		printf("%s\n", node->value);
+// 	else
+// 		printf("(group)\n");
+// 	print_ast(node->left, depth + 1);
+// 	print_ast(node->right, depth + 1);
+// 	print_ast(node->next, depth);
+// }
 
 int	main(int argc, char **argv, char **envp)
 {
 	t_minishell	data;
 	const char	*prompt;
 	t_token		*tokens;
-	t_node		*ast_root;
+	// t_node		*ast_root;
 
 	(void)argc;
 	data_init(argv, envp, &data);
@@ -57,8 +57,8 @@ int	main(int argc, char **argv, char **envp)
 		add_history(data.line);
 		tokens = tokenize_input(data.line, &data);
 		print_tokens(tokens);
-		ast_root = parse_tokens(tokens, &data.gc);
-		print_ast(ast_root, 0);
+		// ast_root = parse_tokens(tokens, &data.gc);
+		// print_ast(ast_root, 0);
 	}
 	rl_clear_history();
 	return (0);

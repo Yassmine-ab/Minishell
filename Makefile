@@ -42,7 +42,7 @@ define PROGRESS_BAR
     while [ $$CURRENT_STEP -lt $$TOTAL_STEPS ]; do \
         CURRENT_STEP=$$(($$CURRENT_STEP + 1)); \
         echo -n "$(GREEN)▰$(DEFAULT)"; \
-        sleep 0.05; \
+        sleep 0.01; \
     done; \
     echo " ✔️";
 endef
@@ -142,7 +142,7 @@ fclean:
 				@echo -n "\n🗑️  $(RED)Deleting $(YELLOW)$(NAME) $(CYAN)executable $(DEFAULT)\t\t"
 				@$(RM) $(NAME)
 				$(PROGRESS_BAR)
-				@echo -n "\n🗑️  $(RED)Deleting $(YELLOW)$(NAME_BONUS) $(CYAN)executable $(DEFAULT)\t"
+				@echo -n "\n🗑️  $(RED)Deleting $(YELLOW)$(NAME_BONUS) $(CYAN)executable $(DEFAULT)\t\t"
 				@$(RM) $(NAME_BONUS)
 				$(PROGRESS_BAR)
 				@echo ""
