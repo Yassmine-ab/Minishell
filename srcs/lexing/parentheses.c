@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/10 02:55:32 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/10 20:57:40 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/11/13 03:03:20 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,14 +43,14 @@ int	process_parentheses(char *input, int *i, int *count, t_minishell *data)
 	if (input[*i] == '(')
 	{
 		data->tokens[*count] = create_token(PARENTHESIS_OPEN, "(");
-		(*count)++;
 		(*i)++;
+		(*count)++;
 	}
 	else if (input[*i] == ')')
 	{
 		data->tokens[*count] = create_token(PARENTHESIS_CLOSE, ")");
-		(*count)++;
 		(*i)++;
+		(*count)++;
 	}
 	return (0);
 }

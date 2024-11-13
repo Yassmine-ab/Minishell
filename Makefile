@@ -1,9 +1,22 @@
 ################################################################################
+#                                     COLORS                                   #
+################################################################################
+
+DEFAULT			= \033[0m
+RED				= \033[1;31m
+GREEN			= \033[1;32m
+LIGHT_GREEN		= \033[0;92m
+YELLOW			= \033[1;33m
+BLUE			= \033[1;34m
+MAGENTA			= \033[1;35m
+CYAN			= \033[1;36m
+WHITE			= \033[1;37m
+
+################################################################################
 #                                     HEADER                                   #
 ################################################################################
 
 define HEADER
-
 
 $(GREEN)╔════ $(WHITE)by yaabdall & besch$(GREEN) ══════════════════════╗$(DEFAULT)
 $(GREEN)║                                               ║$(DEFAULT)
@@ -17,23 +30,22 @@ $(WHITE)║                                               ║$(DEFAULT)
 $(WHITE)║                                               ║$(DEFAULT)
 $(WHITE)╚══════════════════════ $(GREEN)by besch & yaabdall$(WHITE) ════╝$(DEFAULT)
 
-
 endef
 export HEADER
 
 ################################################################################
-#                                     COLORS                                   #
+#                                 PROGRESS BAR                                 #
 ################################################################################
 
-DEFAULT			= \033[0m
-RED				= \033[1;31m
-GREEN			= \033[1;32m
-LIGHT_GREEN		= \033[0;92m
-YELLOW			= \033[1;33m
-BLUE			= \033[1;34m
-MAGENTA			= \033[1;35m
-CYAN			= \033[1;36m
-WHITE			= \033[1;37m
+define PROGRESS_BAR
+    @TOTAL_STEPS=20; CURRENT_STEP=0; \
+    while [ $$CURRENT_STEP -lt $$TOTAL_STEPS ]; do \
+        CURRENT_STEP=$$(($$CURRENT_STEP + 1)); \
+        echo -n "$(GREEN)▰$(DEFAULT)"; \
+        sleep 0.05; \
+    done; \
+    echo " ✔️";
+endef
 
 ################################################################################
 #                                     CONFIG                                   #
@@ -97,9 +109,9 @@ $(OBJ)%.o:		$(SRC)%.c
 # Rule for creating the executable
 $(NAME):		$(OBJS)
 				@make all --no-print-directory -C $(MYLIB_DIR)
-				@echo "🔗 $(WHITE)Linking $(YELLOW)$(NAME) $(CYAN)executable $(DEFAULT)..."
+				@echo -n "\n🔗 $(WHITE)Linking $(YELLOW)$(NAME) $(CYAN)executable $(DEFAULT)\t\t"
 				@$(CC) $(CFLAGS) $(OBJS) $(MYLIB) $(READLINE) -o $(NAME)
-				@echo "$(GREEN)Done $(DEFAULT)✔️"
+				$(PROGRESS_BAR)
 				@echo "$$HEADER"
 
 # Default rule
@@ -108,46 +120,50 @@ all:			$(NAME)
 # Bonus rule
 bonus:			$(OBJS_BONUS)
 				@make all --no-print-directory -C $(MYLIB_DIR)
-				@echo "🔗 $(WHITE)Linking $(YELLOW)$(NAME_BONUS) $(CYAN)executable $(DEFAULT)..."
+				@echo -n "\n🔗 $(WHITE)Linking $(YELLOW)$(NAME_BONUS) $(CYAN)executable $(DEFAULT)\t\t"
 				@$(CC) $(CFLAGS) $(OBJS_BONUS) $(MYLIB) $(READLINE) -o $(NAME_BONUS)
-				@echo "$(GREEN)Done $(DEFAULT)✔️"
+				$(PROGRESS_BAR)
+				@echo "$$HEADER"
 
 # Rule for cleaning up object files
 clean:
 				@make clean --no-print-directory -C $(MYLIB_DIR)
-				@echo "🧹 $(RED)Cleaning up $(CYAN)project object files $(DEFAULT)..."
+				@echo -n "\n🧹 $(RED)Cleaning up $(CYAN)project object files $(DEFAULT)\t\t"
 				@$(RM) -r $(OBJ)
-				@echo "$(GREEN)Done $(DEFAULT)✔️"
+				$(PROGRESS_BAR)
+				@echo ""
 
 # Full clean rule (objects files, executable and libraries)
 fclean:
 				@make fclean --no-print-directory -C $(MYLIB_DIR)
-				@echo "🧹 $(RED)Cleaning up $(CYAN)project object files $(DEFAULT)..."
+				@echo -n "\n🧹 $(RED)Cleaning up $(CYAN)project object files $(DEFAULT)\t\t"
 				@$(RM) -r $(OBJ)
-				@echo "$(GREEN)Done $(DEFAULT)✔️"
-				@echo "🗑️  $(RED)Deleting $(YELLOW)$(NAME) $(CYAN)executable $(DEFAULT)..."
+				$(PROGRESS_BAR)
+				@echo -n "\n🗑️  $(RED)Deleting $(YELLOW)$(NAME) $(CYAN)executable $(DEFAULT)\t\t"
 				@$(RM) $(NAME)
-				@echo "$(GREEN)Done $(DEFAULT)✔️"
-				@echo "🗑️  $(RED)Deleting $(YELLOW)$(NAME_BONUS) $(CYAN)executable $(DEFAULT)..."
+				$(PROGRESS_BAR)
+				@echo -n "\n🗑️  $(RED)Deleting $(YELLOW)$(NAME_BONUS) $(CYAN)executable $(DEFAULT)\t"
 				@$(RM) $(NAME_BONUS)
-				@echo "$(GREEN)Done $(DEFAULT)✔️"
+				$(PROGRESS_BAR)
+				@echo ""
 
 # Rebuild rule
 re:				fclean all
 
-debug:			fclean
-				$(OBJS)
-				@echo "🔗 $(WHITE)Linking $(YELLOW)$(NAME) $(CYAN)executable $(DEFAULT)..."
-				@$(CC) $(CFLAGS) $(OBJS) -o $(NAME) -g3 -fsanitize=address
-				@echo "$(GREEN)Done $(DEFAULT)✔️"
+debug:			$(OBJS)
+				@make all --no-print-directory -C $(MYLIB_DIR)
+				@echo -n "\n🔗 $(CYAN)Compiling in debug mode $(DEFAULT)\t\t\t"
+				@$(CC) $(CFLAGS) $(OBJS) $(MYLIB) $(READLINE) -o $(NAME) -g3 -fsanitize=address
+				$(PROGRESS_BAR)
+				@echo "$$HEADER"
 
 help:
-				@echo "$(CYAN)all$(DEFAULT)		- Build the executable $(NAME)"
+				@echo "\n$(CYAN)all$(DEFAULT)		- Build the executable $(NAME)"
 				@echo "$(CYAN)bonus$(DEFAULT)		- Build the executable $(NAME_BONUS)"
 				@echo "$(CYAN)clean$(DEFAULT)		- Clean up object files"
 				@echo "$(CYAN)fclean$(DEFAULT)		- Clean up all object files and executables"
 				@echo "$(CYAN)re$(DEFAULT)		- Rebuild the entire project"
-				@echo "$(CYAN)debug$(DEFAULT)		- Run the program with debugging flags -g3 -fsanitize=address"
+				@echo "$(CYAN)debug$(DEFAULT)		- Run the program with debugging flags -g3 -fsanitize=address\n"
 
 # Rule to ensure that these targets are always executed as intended, even if there are files with the same name
 .PHONY:			all bonus clean fclean re debug help

@@ -3,11 +3,18 @@
 static void	print_tokens(t_token *tokens)
 {
 	int	i;
+	const char *token_names[] =
+	{
+		"COMMAND", "ARGUMENT", "PIPE", "STDIN", "STDOUT", "STDOUT_APPEND",
+		"FILENAME", "HEREDOC", "LIMITER", "ENV_VARIABLE", "AND", "OR",
+		"WILDCARD", "PARENTHESIS_OPEN", "PARENTHESIS_CLOSE", "END"
+	};
 
 	i = -1;
 	while (tokens[++i].type != END)
-		ft_printf("type: %d, value: %s\n", tokens[i].type, tokens[i].value);
+		dprintf(2, "%s [%s]\n", token_names[tokens[i].type], tokens[i].value);
 }
+
 
 static void	print_ast(t_node *node, int depth)
 {

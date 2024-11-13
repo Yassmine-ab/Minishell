@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: besch <besch@student.42.fr>                +#+  +:+       +#+        */
+/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 02:04:44 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/12 21:47:06 by besch            ###   ########.fr       */
+/*   Updated: 2024/11/13 01:53:30 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,12 +61,11 @@ typedef enum e_token_type
 	HEREDOC,			// 7
 	LIMITER,			// 8
 	ENV_VARIABLE,		// 9
-	QUOTE,				// 10
-	AND,				// 11
-	OR,					// 12
-	WILDCARD,			// 13
-	PARENTHESIS_OPEN,	// 14
-	PARENTHESIS_CLOSE,	// 15
+	AND,				// 10
+	OR,					// 11
+	WILDCARD,			// 12
+	PARENTHESIS_OPEN,	// 13
+	PARENTHESIS_CLOSE,	// 14
 	END
 }	t_token_type;
 
@@ -89,8 +88,6 @@ typedef struct s_token
 {
 	t_token_type		type;
 	char				*value;
-	bool				single_quote;
-	bool				double_quote;
 }	t_token;
 
 // AST NODE STRUCTURE
@@ -111,6 +108,8 @@ typedef struct s_minishell
 	t_token				*tokens;
 	t_token_type		current_type;
 	bool				is_command;
+	bool				single_quote;
+	bool				double_quote;
 	t_node				*node;
 	t_gc				gc;
 }	t_minishell;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   files.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: besch <besch@student.42.fr>                +#+  +:+       +#+        */
+/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/10 19:30:54 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/12 22:15:11 by besch            ###   ########.fr       */
+/*   Updated: 2024/11/13 03:02:53 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,11 +24,10 @@ int	process_file(char *input, int *i, int *count, t_minishell *data)
 	}
 	while (input[*i] && !ft_isspace(input[*i]) && !ft_strchr("|<>&", input[*i]))
 		(*i)++;
-	data->current_type = FILENAME;
 	data->tokens[*count] = \
 	create_token(FILENAME, ft_substr_gc(input, start, *i - start, &data->gc));
-	data->is_command = true;
 	(*count)++;
+	data->is_command = true;
 	return (0);
 }
 
@@ -57,10 +56,9 @@ int	process_limiter(char *input, int *i, int *count, t_minishell *data)
 	}
 	while (input[*i] && !ft_isspace(input[*i]) && !ft_strchr("|<>&", input[*i]))
 		(*i)++;
-	data->current_type = LIMITER;
 	data->tokens[*count] = \
 	create_token(LIMITER, ft_substr_gc(input, start, *i - start, &data->gc));
-	data->is_command = true;
 	(*count)++;
+	data->is_command = true;
 	return (0);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenize.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: besch <besch@student.42.fr>                +#+  +:+       +#+        */
+/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 21:42:36 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/12 23:08:00 by besch            ###   ########.fr       */
+/*   Updated: 2024/11/13 05:18:01 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,6 @@ static int	process_env_var(char *input, int *i, int *count, t_minishell *data)
 		data->current_type = ENV_VARIABLE;
 		data->tokens[*count] = create_token(ENV_VARIABLE, \
 		ft_substr_gc(input, start, *i - start, &data->gc));
-
 	}
 	(*count)++;
 	return (0);
@@ -53,7 +52,6 @@ static int	process_commands(char *input, int *i, int *count, t_minishell *data)
 	int		start;
 	char	*value;
 
-	dprintf(2, "process_commands\n");
 	start = *i;
 	(*i)++;
 	while (input[*i] && !ft_isspace(input[*i])
@@ -62,18 +60,12 @@ static int	process_commands(char *input, int *i, int *count, t_minishell *data)
 	value = ft_substr(input, start, *i - start);
 	if (data->is_command == true)
 	{
-		data->current_type = COMMAND;
 		data->tokens[*count] = create_token(COMMAND, value);
-		dprintf(2, "process_commands/is_command = %d\n", data->is_command);
 		data->is_command = false;
+		data->current_type = ARGUMENT;
 	}
 	else
-	{
-		data->current_type = ARGUMENT;
 		data->tokens[*count] = create_token(ARGUMENT, value);
-		dprintf(2, "process_commands/current_type = %d\n", data->current_type);
-		dprintf(2, "process_commands/is_command = %d\n", data->is_command);
-	}
 	(*count)++;
 	return (0);
 }

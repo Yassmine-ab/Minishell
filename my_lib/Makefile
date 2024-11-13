@@ -11,6 +11,20 @@ CYAN			= \033[1;36m
 WHITE			= \033[1;37m
 
 ################################################################################
+#                                 PROGRESS BAR                                 #
+################################################################################
+
+define PROGRESS_BAR
+    @TOTAL_STEPS=20; CURRENT_STEP=0; \
+    while [ $$CURRENT_STEP -lt $$TOTAL_STEPS ]; do \
+        CURRENT_STEP=$$(($$CURRENT_STEP + 1)); \
+        echo -n "$(GREEN)▰$(DEFAULT)"; \
+        sleep 0.05; \
+    done; \
+    echo " ✔️";
+endef
+
+################################################################################
 #                                     CONFIG                                   #
 ################################################################################
 
@@ -123,9 +137,9 @@ $(OBJ)%.o:		$(SRC)%.c
 
 # Rule for creating the library
 $(NAME):		$(OBJS)
-				@echo "🛠️  $(WHITE)Building $(YELLOW)$(NAME) $(CYAN)library $(DEFAULT)..."
+				@echo -n "\n🛠️  $(WHITE)Building $(YELLOW)$(NAME) $(CYAN)library $(DEFAULT)\t\t\t"
 				@$(AR) $(NAME) $(OBJS)
-				@echo "$(GREEN)Done $(DEFAULT)✔️"
+				$(PROGRESS_BAR)
 
 # Default rule
 all:			$(NAME)
@@ -135,15 +149,15 @@ bonus:			all
 
 # Rule for cleaning up object files
 clean:
-				@echo "🧹 $(RED)Cleaning up $(YELLOW)$(NAME) $(CYAN)object files $(DEFAULT)..."
+				@echo -n "\n🧹 $(RED)Cleaning up $(YELLOW)$(NAME) $(CYAN)object files $(DEFAULT)\t\t"
 				@$(RM) -r $(OBJ)
-				@echo "$(GREEN)Done $(DEFAULT)✔️"
+				$(PROGRESS_BAR)
 
 # Full clean rule (objects files and library)
 fclean:			clean
-				@echo "🗑️  $(RED)Deleting $(YELLOW)$(NAME) $(CYAN)library $(DEFAULT)..."
+				@echo -n "\n🗑️  $(RED)Deleting $(YELLOW)$(NAME) $(CYAN)library $(DEFAULT)\t\t\t"
 				@$(RM) $(NAME)
-				@echo "$(GREEN)Done $(DEFAULT)✔️"
+				$(PROGRESS_BAR)
 
 # Rebuild rule
 re:				fclean all
