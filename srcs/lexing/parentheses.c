@@ -6,29 +6,29 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/10 02:55:32 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/13 03:03:20 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/11/14 01:35:24 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static int	find_matching_parenthesis(char *input, int start_index)
+static int	find_matching_parenthesis(char *input, int index)
 {
 	int	open_parentheses;
 
 	open_parentheses = 1;
-	start_index++;
-	while (input[start_index])
+	index++;
+	while (input[index])
 	{
-		if (input[start_index] == '(')
+		if (input[index] == '(')
 			open_parentheses++;
-		else if (input[start_index] == ')')
+		else if (input[index] == ')')
 		{
 			open_parentheses--;
 			if (open_parentheses == 0)
-				return (start_index);
+				return (index);
 		}
-		start_index++;
+		index++;
 	}
 	return (-1);
 }

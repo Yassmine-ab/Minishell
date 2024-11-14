@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: besch <besch@student.42.fr>                +#+  +:+       +#+        */
+/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 02:04:44 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/13 22:50:21 by besch            ###   ########.fr       */
+/*   Updated: 2024/11/14 03:27:44 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,7 +136,7 @@ int		process_operator(char *input, int *i, int *count, t_minishell *data);
 int		process_file(char *input, int *i, int *count, t_minishell *data);
 int		process_wildcard(char *input, int *i, int *count, t_minishell *data);
 int		process_limiter(char *input, int *i, int *count, t_minishell *data);
-int		process_env_var(char *input, int *i, int *count, t_minishell *data);
+int		process_env_variable(char *input, int *i, int *count, t_minishell *data);
 
 /* -------------------------------- Parsing --------------------------------- */
 t_node	*parse_tokens(t_token *tokens, t_gc *gc);

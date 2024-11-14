@@ -120,7 +120,8 @@ SRCS =	       	$(LIBFT)ft_strchr.c \
 				$(GC)gc_add.c \
 				$(GC)gc_clear.c \
 				$(GC)gc_malloc.c \
-				$(GC)ft_substr_gc.c
+				$(GC)ft_substr_gc.c \
+				$(GC)ft_strjoin_gc.c
 
 # Converts source file paths to object file paths
 OBJS = $(patsubst $(SRC)%, $(OBJ)%, $(SRCS:.c=.o))
