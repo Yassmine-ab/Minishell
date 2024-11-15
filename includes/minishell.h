@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 02:04:44 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/15 11:06:28 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/11/15 20:44:59 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@
 # include <readline/history.h>
 # include <stdbool.h>
 # include <errno.h>
+# include <sys/types.h>
+# include <dirent.h>
 # include "ft_printf.h"
 # include "get_next_line.h"
 # include "gc.h"

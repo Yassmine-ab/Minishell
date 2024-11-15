@@ -65,8 +65,8 @@ RM =			rm -f
 # Directory paths
 SRC =			./srcs/
 INIT =			$(SRC)initialization/
-LEXING =		$(SRC)lexing/
-PARSING =		$(SRC)parsing/
+LEXER =			$(SRC)lexer/
+PARSER =		$(SRC)parser/
 BUILTIN =		$(SRC)builtin/
 UTILS =			$(SRC)utils/
 OBJ =			./objs/
@@ -80,15 +80,15 @@ READLINE =		-lreadline
 # Source files
 SRCS =			$(INIT)initialization.c \
 				$(INIT)prompt.c \
-				$(LEXING)lexer.c \
-				$(LEXING)quotes.c \
-				$(LEXING)parentheses.c \
-				$(LEXING)operators.c \
-				$(LEXING)files.c \
-				$(LEXING)env_variables.c \
-				$(LEXING)lexer_utils.c \
-				$(PARSING)parse_tokens.c \
-				$(PARSING)parsing_utils.c \
+				$(LEXER)lexer.c \
+				$(LEXER)quotes.c \
+				$(LEXER)parentheses.c \
+				$(LEXER)operators.c \
+				$(LEXER)files.c \
+				$(LEXER)env_variables.c \
+				$(LEXER)lexer_utils.c \
+				$(PARSER)parse_tokens.c \
+				$(PARSER)parser_utils.c \
 				$(UTILS)utils.c \
 				$(SRC)main.c 
 

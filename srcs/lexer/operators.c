@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/10 03:01:45 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/15 09:18:49 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/11/15 19:17:43 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,7 @@ static void	process_and(char *input, int *i, int *count, t_minishell *data)
 	*i += 2;
 	(*count)++;
 	skip_whitespace(&input, i);
+	data->current_type = COMMAND;
 }
 
 void	process_operator(char *input, int *i, int *count, t_minishell *data)
