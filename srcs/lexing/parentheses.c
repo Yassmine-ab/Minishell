@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/10 02:55:32 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/14 01:35:24 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/11/15 09:21:02 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,15 +33,12 @@ static int	find_matching_parenthesis(char *input, int index)
 	return (-1);
 }
 
-int	process_parentheses(char *input, int *i, int *count, t_minishell *data)
+void	process_parentheses(char *input, int *i, int *count, t_minishell *data)
 {
-	if (find_matching_parenthesis(input, *i) == -1)
-	{
-		perror("Syntax error: unmatched parentheses");
-		return (-1);
-	}
 	if (input[*i] == '(')
 	{
+		if (find_matching_parenthesis(input, *i) == -1)
+			error("Syntax error: unmatched opening parenthesis", 1, &data->gc);
 		data->tokens[*count] = create_token(PARENTHESIS_OPEN, "(");
 		(*i)++;
 		(*count)++;
@@ -52,5 +49,4 @@ int	process_parentheses(char *input, int *i, int *count, t_minishell *data)
 		(*i)++;
 		(*count)++;
 	}
-	return (0);
 }

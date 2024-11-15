@@ -1,22 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strjoin_gc.c                                    :+:      :+:    :+:   */
+/*   ft_itoa_gc.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/14 03:20:52 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/15 10:10:30 by yaabdall         ###   ########.fr       */
+/*   Created: 2024/11/15 10:04:34 by yaabdall          #+#    #+#             */
+/*   Updated: 2024/11/15 10:09:38 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "gc.h"
 
-char	*ft_strjoin_gc(char const *s1, char const *s2, t_gc *gc)
+char	*ft_itoa_gc(int n, t_gc *gc)
 {
 	char	*str;
 
-	str = ft_strjoin(s1, s2);
+	str = ft_itoa(n);
 	if (str)
 		gc_add(gc, str);
 	return (str);

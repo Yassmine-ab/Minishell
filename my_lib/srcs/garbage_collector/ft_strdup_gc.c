@@ -1,32 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   lexing_utils.c                                     :+:      :+:    :+:   */
+/*   ft_strdup_gc.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/10 02:57:26 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/11 18:12:28 by yaabdall         ###   ########.fr       */
+/*   Created: 2024/11/15 10:01:11 by yaabdall          #+#    #+#             */
+/*   Updated: 2024/11/15 10:12:27 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "gc.h"
 
-t_token	create_token(t_token_type type, char *value)
+char	*ft_strdup_gc(const char *s1, t_gc *gc)
 {
-	t_token	new_token;
+	char	*str;
 
-	new_token.type = type;
-	new_token.value = value;
-	return (new_token);
+	str = ft_strdup(s1);
+	if (str)
+		gc_add(gc, str);
+	return (str);
 }
-
-// void	free_tokens(t_token *tokens)
-// {
-// 	int	i;
-
-// 	i = -1;
-// 	while (tokens[++i].type != END)
-// 		ft_free(tokens[i].value);
-// 	free(tokens);
-// }

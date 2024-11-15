@@ -80,16 +80,17 @@ READLINE =		-lreadline
 # Source files
 SRCS =			$(INIT)initialization.c \
 				$(INIT)prompt.c \
-				$(LEXING)tokenize.c \
+				$(LEXING)lexer.c \
 				$(LEXING)quotes.c \
 				$(LEXING)parentheses.c \
 				$(LEXING)operators.c \
 				$(LEXING)files.c \
-				$(LEXING)lexing_utils.c \
+				$(LEXING)env_variables.c \
+				$(LEXING)lexer_utils.c \
 				$(PARSING)parse_tokens.c \
 				$(PARSING)parsing_utils.c \
 				$(UTILS)utils.c \
-				$(SRC)main.c
+				$(SRC)main.c 
 
 SRCS_BONUS =	$(SRC)main_bonus.c
 

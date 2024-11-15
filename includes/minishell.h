@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 02:04:44 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/14 03:27:44 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/11/15 11:06:28 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@
 
 // MAX VALUES
 # define MAX_PATHLENGTH 4096
-# define MAX_TOKENS 4096
+# define MAX_TOKENS 1024
 
 /* -------------------------------------------------------------------------- */
 /*                                   ENUMS                                    */
@@ -52,21 +52,20 @@
 // TOKEN TYPES ENUM
 typedef enum e_token_type
 {
-	COMMAND,			// 0
-	ARGUMENT,			// 1
-	PIPE,				// 2
-	STDIN,				// 3
-	STDOUT,				// 4
-	STDOUT_APPEND,		// 5
-	FILENAME,			// 6
-	HEREDOC,			// 7
-	LIMITER,			// 8
-	ENV_VARIABLE,		// 9
-	AND,				// 10
-	OR,					// 11
-	WILDCARD,			// 12
-	PARENTHESIS_OPEN,	// 13
-	PARENTHESIS_CLOSE,	// 14
+	COMMAND,
+	ARGUMENT,
+	PIPE,
+	STDIN,
+	STDOUT,
+	STDOUT_APPEND,
+	FILENAME,
+	HEREDOC,
+	LIMITER,
+	AND,
+	OR,
+	WILDCARD,
+	PARENTHESIS_OPEN,
+	PARENTHESIS_CLOSE,
 	END
 }	t_token_type;
 
@@ -77,8 +76,18 @@ typedef enum e_node_type
 	NODE_ARGUMENT,
 	NODE_REDIRECTION,
 	NODE_OPERATOR,
-	NODE_GROUP,
+	NODE_GROUP
 }	t_node_type;
+
+// LEXER STATES ENUM
+typedef enum e_lexer_state
+{
+	GENERAL,
+	IN_WORD,
+	IN_SINGLE_QUOTE,
+	IN_DOUBLE_QUOTE,
+	AFTER_OPERATOR
+}	t_lexer_state;
 
 /* -------------------------------------------------------------------------- */
 /*                                 STRUCTURES                                 */
@@ -108,11 +117,10 @@ typedef struct s_minishell
 	char				*line;
 	t_token				*tokens;
 	t_token_type		current_type;
-	bool				is_command;
-	bool				single_quote;
-	bool				double_quote;
 	t_node				*node;
 	t_gc				gc;
+	t_lexer_state		state;
+	int					last_exit_status;
 }	t_minishell;
 
 /* -------------------------------------------------------------------------- */
@@ -130,13 +138,15 @@ t_token	*tokenize_input(char *input, t_minishell *data);
 t_token	create_token(t_token_type type, char *value);
 void	free_tokens(t_token *tokens);
 void	skip_whitespace(char **input, int *index);
-int		process_quotes(char *input, int *i, int *count, t_minishell *data);
-int		process_parentheses(char *input, int *i, int *count, t_minishell *data);
-int		process_operator(char *input, int *i, int *count, t_minishell *data);
-int		process_file(char *input, int *i, int *count, t_minishell *data);
-int		process_wildcard(char *input, int *i, int *count, t_minishell *data);
-int		process_limiter(char *input, int *i, int *count, t_minishell *data);
-int		process_env_variable(char *input, int *i, int *count, t_minishell *data);
+void	process_single_quotes(char *input, int *i, int *count, t_minishell *data);
+void	process_double_quotes(char *input, int *i, int *count, t_minishell *data);
+void	process_parentheses(char *input, int *i, int *count, t_minishell *data);
+void	process_operator(char *input, int *i, int *count, t_minishell *data);
+void	process_command(char *input, int *i, int *count, t_minishell *data);
+void	process_file(char *input, int *i, int *count, t_minishell *data);
+void	process_wildcard(char *input, int *i, int *count, t_minishell *data);
+void	process_limiter(char *input, int *i, int *count, t_minishell *data);
+void	process_env_variable(char *input, int *i, int *count, t_minishell *data);
 
 /* -------------------------------- Parsing --------------------------------- */
 t_node	*parse_tokens(t_token *tokens, t_gc *gc);

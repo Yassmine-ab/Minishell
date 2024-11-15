@@ -1,23 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strjoin_gc.c                                    :+:      :+:    :+:   */
+/*   lexer_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/14 03:20:52 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/15 10:10:30 by yaabdall         ###   ########.fr       */
+/*   Created: 2024/11/10 02:57:26 by yaabdall          #+#    #+#             */
+/*   Updated: 2024/11/15 11:05:46 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "gc.h"
+#include "minishell.h"
 
-char	*ft_strjoin_gc(char const *s1, char const *s2, t_gc *gc)
+t_token	create_token(t_token_type type, char *value)
 {
-	char	*str;
+	t_token	new_token;
 
-	str = ft_strjoin(s1, s2);
-	if (str)
-		gc_add(gc, str);
-	return (str);
+	new_token.type = type;
+	new_token.value = value;
+	return (new_token);
 }
+
+// void	free_tokens(t_token *tokens)
+// {
+// 	int	i;
+
+// 	i = -1;
+// 	while (tokens[++i].type != END)
+// 		ft_free(tokens[i].value);
+// 	free(tokens);
+// }

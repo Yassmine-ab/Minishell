@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/11/15 11:06:43 by yaabdall          #+#    #+#             */
+/*   Updated: 2024/11/15 11:06:44 by yaabdall         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 static void	print_tokens(t_token *tokens)
@@ -6,7 +18,7 @@ static void	print_tokens(t_token *tokens)
 	const char *token_names[] =
 	{
 		"COMMAND", "ARGUMENT", "PIPE", "STDIN", "STDOUT", "STDOUT_APPEND",
-		"FILENAME", "HEREDOC", "LIMITER", "ENV_VARIABLE", "AND", "OR",
+		"FILENAME", "HEREDOC", "LIMITER", "AND", "OR",
 		"WILDCARD", "PARENTHESIS_OPEN", "PARENTHESIS_CLOSE", "END"
 	};
 
@@ -14,7 +26,6 @@ static void	print_tokens(t_token *tokens)
 	while (tokens[++i].type != END)
 		dprintf(2, "%s [%s]\n", token_names[tokens[i].type], tokens[i].value);
 }
-
 
 // static void	print_ast(t_node *node, int depth)
 // {
@@ -55,6 +66,7 @@ int	main(int argc, char **argv, char **envp)
 			break ;
 		}
 		add_history(data.line);
+		data.current_type = COMMAND;
 		tokens = tokenize_input(data.line, &data);
 		print_tokens(tokens);
 		// ast_root = parse_tokens(tokens, &data.gc);
@@ -63,3 +75,32 @@ int	main(int argc, char **argv, char **envp)
 	rl_clear_history();
 	return (0);
 }
+
+// int	main(int argc, char **argv, char **envp)
+// {
+// 	t_minishell	data;
+// 	t_token		*tokens;
+// 	int			i;
+
+// 	(void)argc;
+// 	data_init(argv, envp, &data);
+// 	char *test_inputs[] =
+// 	{
+// 		"ls -la /home/user",
+// 		"cat file.txt | grep \"hello\" | sort",
+// 		"echo \"Hello, world\" > output.txt",
+// 		"echo $HOME",
+// 		"echo \"Outer 'inner single quotes' outer\"",
+// 		// "(echo \"start\" && ls) || echo \"failed\"",
+// 		"ls *.txt",
+// 		NULL
+// 	};
+// 	i = -1;
+// 	while (test_inputs[++i])
+// 	{
+// 		printf("Input: %s\n", test_inputs[i]);
+// 		tokens = tokenize_input(test_inputs[i], &data);
+// 		print_tokens(tokens);
+// 	}
+// 	return (0);
+// }

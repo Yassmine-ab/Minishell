@@ -6,59 +6,64 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/10 19:30:54 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/13 03:02:53 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/11/15 09:16:42 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	process_file(char *input, int *i, int *count, t_minishell *data)
+void	process_file(char *input, int *i, int *count, t_minishell *data)
 {
-	int	start;
+	char	*value;
+	int		start;
 
 	start = *i;
-	if (input[*i] == '\0' || ft_strchr("|<>&()", input[*i]))
-	{
-		perror("Syntax error: expected filename after redirection");
-		return (-1);
-	}
-	while (input[*i] && !ft_isspace(input[*i]) && !ft_strchr("|<>&", input[*i]))
+	while (input[*i] && !ft_isspace(input[*i])
+		&& !ft_strchr("()|<>&", input[*i]))
 		(*i)++;
+	value = ft_substr_gc(input, start, *i - start, &data->gc);
+	if (!value || !*value)
+		return ;
 	data->tokens[*count] = \
-	create_token(FILENAME, ft_substr_gc(input, start, *i - start, &data->gc));
+	create_token(FILENAME, value);
 	(*count)++;
-	data->is_command = true;
-	return (0);
+	skip_whitespace(&input, i);
+	data->current_type = COMMAND;
 }
 
-int	process_wildcard(char *input, int *i, int *count, t_minishell *data)
+void	process_wildcard(char *input, int *i, int *count, t_minishell *data)
 {
-	int	start;
+	char	*value;
+	int		start;
 
 	start = *i;
-	while (input[*i] && !ft_isspace(input[*i]) && !ft_strchr("|<>&", input[*i]))
+	while (input[*i] && !ft_isspace(input[*i])
+		&& !ft_strchr("()|<>&", input[*i]))
 		(*i)++;
-	data->tokens[*count] = \
-	create_token(WILDCARD, ft_substr_gc(input, start, *i - start, &data->gc));
+	value = ft_substr_gc(input, start, *i - start, &data->gc);
+	if (!value || !*value)
+		return ;
+	data->tokens[*count] = create_token(WILDCARD, value);
 	(*count)++;
-	return (0);
+	skip_whitespace(&input, i);
+	data->current_type = COMMAND;
 }
 
-int	process_limiter(char *input, int *i, int *count, t_minishell *data)
+void	process_limiter(char *input, int *i, int *count, t_minishell *data)
 {
-	int	start;
+	char	*value;
+	int		start;
 
 	start = *i;
-	if (input[*i] == '\0' || ft_strchr("|<>&()", input[*i]))
-	{
-		perror("Syntax error: missing heredoc limiter\n");
-		return (-1);
-	}
-	while (input[*i] && !ft_isspace(input[*i]) && !ft_strchr("|<>&", input[*i]))
+	while (input[*i] && !ft_isspace(input[*i])
+		&& !ft_strchr("()|<>&", input[*i]))
 		(*i)++;
+	value = ft_substr_gc(input, start, *i - start, &data->gc);
+	if (!value || !*value)
+		return ;
 	data->tokens[*count] = \
-	create_token(LIMITER, ft_substr_gc(input, start, *i - start, &data->gc));
+	create_token(LIMITER, value);
 	(*count)++;
-	data->is_command = true;
-	return (0);
+	skip_whitespace(&input, i);
+	data->current_type = COMMAND;
 }

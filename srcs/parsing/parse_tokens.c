@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_tokens.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 01:49:39 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/12 17:18:06 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/11/15 04:10:15 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,11 @@ t_node	*parse_tokens(t_token *tokens, t_gc *gc)
 {
 	t_node	*root;
 	t_node	*current_command;
-	t_node	*current_arg;
 	int		i;
 
 	i = 0;
 	root = NULL;
 	current_command = NULL;
-	current_arg = NULL;
 	while (tokens[i].type != END)
 	{
 		if (tokens[i].type == COMMAND)
@@ -33,16 +31,6 @@ t_node	*parse_tokens(t_token *tokens, t_gc *gc)
 			else if (current_command)
 				current_command->next = command_node;
 			current_command = command_node;
-			current_arg = NULL;
-		}
-		else if (tokens[i].type == ARGUMENT)
-		{
-			t_node *arg_node = create_ast_node(NODE_ARGUMENT, tokens[i].value, gc);
-			if (current_arg)
-				current_arg->next = arg_node;
-			else
-				current_command->next = arg_node;
-			current_arg = arg_node;
 		}
 		else if (tokens[i].type == PIPE)
 		{

@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/10 02:54:14 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/14 03:44:51 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/11/15 11:05:17 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,8 @@ static int	find_matching_char(char *input, int char_index)
 	char_index++;
 	while (input[char_index])
 	{
-		if (input[char_index] == '\\' && input[char_index + 1] == match_char)
+		if (match_char == '"' && input[char_index] == '\\'
+			&& input[char_index + 1] == match_char)
 			char_index++;
 		else if (input[char_index] == match_char)
 			return (char_index);
@@ -40,9 +41,7 @@ static int	handle_unclosed_char(char **input, int start, t_minishell *data)
 		write(1, "> ", 2);
 		additional_input = get_next_line(0);
 		if (!additional_input)
-			return (-1);
-		if (additional_input[ft_strlen(additional_input) - 1] == '\n')
-			additional_input[ft_strlen(additional_input) - 1] = '\0';
+			break ;
 		temp = *input;
 		*input = ft_strjoin_gc(temp, additional_input, &data->gc);
 		ft_free(&temp);
@@ -54,65 +53,63 @@ static int	handle_unclosed_char(char **input, int start, t_minishell *data)
 	return (-1);
 }
 
-static int	process_backquotes(char *input, int *i, int *count, t_minishell *data)
+void	process_single_quotes(char *input, int *i, int *count, t_minishell *data)
 {
-	int		start;
-	int		end;
+	const int	start = *i;
+	int			end;
 
-	start = *i;
 	end = find_matching_char(input, start);
 	(*i)++;
 	if (end == -1)
-	{
 		end = handle_unclosed_char(&input, start, data);
-		if (end == -1)
-			return (-1);
-	}
+	while (*i < end)
+		(*i)++;
+	data->tokens[*count] = create_token(data->current_type, \
+	ft_substr_gc(input, start + 1, end - start - 1, &data->gc));
+	(*i)++;
+	(*count)++;
+}
+
+void	process_backquotes(char *input, int *i, int *count, t_minishell *data)
+{
+	const int	start = *i;
+	int			end;
+
+	end = find_matching_char(input, start);
+	if (end == -1)
+		return ;
+	(*i)++;
+	while (*i < end)
+		(*i)++;
 	data->tokens[*count] = create_token(COMMAND, \
 	ft_substr_gc(input, start + 1, end - start - 1, &data->gc));
 	(*i)++;
 	(*count)++;
-	return (0);
 }
 
-int	process_quotes(char *input, int *i, int *count, t_minishell *data)
+void	process_double_quotes(char *input, int *i, int *count, t_minishell *data)
 {
-	char	quote_char;
-	int		start;
-	int		end;
+	const int	start = *i;
+	int			end;
 
-	quote_char = input[*i];
-	start = *i;
 	end = find_matching_char(input, start);
-	(*i)++;
 	if (end == -1)
-	{
 		end = handle_unclosed_char(&input, start, data);
-		if (end == -1)
-			return (-1);
-	}
+	(*i)++;
 	while (*i < end)
 	{
-		if (quote_char == '"')
-		{
-			if (input[*i] == '$')
-			{
-				process_env_variable(input, i, count, data);
-				continue ;
-			}
-			else if (input[*i] == '\\' && (*i + 1 < end) && (input[*i + 1]
-					== '$' || input[*i + 1] == '\\' || input[*i + 1] == '`'))
-				(*i)++;
-			else if (input[*i] == '`')
-				process_backquotes(input, i, count, data);
-		}
-		if (input[*i] == '\\' && input[*i + 1] == quote_char)
+		if (input[*i] == '$')
+			process_env_variable(input, i, count, data);
+		else if (input[*i] == '\\' && (*i + 1 < end) && (input[*i + 1] == '$'
+				|| input[*i + 1] == '\\' || input[*i + 1] == '`'
+				|| input[*i + 1] == '"'))
 			(*i)++;
+		else if (input[*i] == '`')
+			process_backquotes(input, i, count, data);
 		(*i)++;
 	}
 	data->tokens[*count] = create_token(data->current_type, \
 	ft_substr_gc(input, start + 1, end - start - 1, &data->gc));
 	(*i)++;
 	(*count)++;
-	return (0);
 }

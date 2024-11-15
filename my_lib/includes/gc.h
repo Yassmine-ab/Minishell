@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/25 18:24:53 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/14 03:22:42 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/11/15 10:14:33 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,5 +32,7 @@ void	gc_clear(t_gc *gc);
 void	*gc_malloc(size_t size, t_gc *gc);
 char	*ft_substr_gc(char *s, unsigned int start, size_t len, t_gc *gc);
 char	*ft_strjoin_gc(char const *s1, char const *s2, t_gc *gc);
+char	*ft_strdup_gc(const char *s1, t_gc *gc);
+char	*ft_itoa_gc(int n, t_gc *gc);
 
 #endif
