@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 20:30:49 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/12 17:14:26 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/11/17 03:20:32 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,19 +15,14 @@
 void	*gc_malloc(size_t size, t_gc *gc)
 {
 	void		*ptr;
-	t_gc_node	*new_node;
 
 	ptr = malloc(size);
 	if (!ptr)
-		return (NULL);
-	new_node = malloc(sizeof(t_gc_node));
-	if (!new_node)
 	{
-		free(ptr);
-		return (NULL);
+		perror("Memory allocation failed");
+		gc_cleanup(gc);
+		exit(EXIT_FAILURE);
 	}
-	new_node->ptr = ptr;
-	new_node->next = gc->head;
-	gc->head = new_node;
+	gc_add(gc, ptr, size);
 	return (ptr);
 }

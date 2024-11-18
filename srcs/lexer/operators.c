@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/10 03:01:45 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/15 19:17:43 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/11/16 03:59:34 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,13 +17,11 @@ static void	process_pipe(char *input, int *i, int *count, t_minishell *data)
 	if (input[*i + 1] == '|')
 	{
 		data->tokens[*count] = create_token(OR, "||");
-		(*i) += 2;
-	}
-	else
-	{
-		data->tokens[*count] = create_token(PIPE, "|");
 		(*i)++;
 	}
+	else
+		data->tokens[*count] = create_token(PIPE, "|");
+	(*i)++;
 	(*count)++;
 	skip_whitespace(&input, i);
 	data->current_type = COMMAND;
@@ -35,7 +33,6 @@ static void	process_stdin(char *input, int *i, int *count, t_minishell *data)
 	{
 		data->tokens[*count] = create_token(HEREDOC, "<<");
 		(*i) += 2;
-		(*count)++;
 		skip_whitespace(&input, i);
 		data->current_type = LIMITER;
 	}
@@ -43,10 +40,10 @@ static void	process_stdin(char *input, int *i, int *count, t_minishell *data)
 	{
 		data->tokens[*count] = create_token(STDIN, "<");
 		(*i)++;
-		(*count)++;
 		skip_whitespace(&input, i);
 		data->current_type = FILENAME;
 	}
+	(*count)++;
 }
 
 static void	process_stdout(char *input, int *i, int *count, t_minishell *data)

@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/10 02:54:14 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/15 19:51:56 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/11/18 05:03:36 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,21 +30,19 @@ static int	find_matching_char(char *input, int char_index)
 	return (-1);
 }
 
-static int	handle_unclosed_char(char **input, int start, t_minishell *data)
+static int	handle_unclosed_char(char **input, int start, t_gc *gc)
 {
 	char	*additional_input;
-	char	*temp;
 	int		end;
 
 	while (1)
 	{
-		write(1, "> ", 2);
+		write(1, "Unclosed quote detected. Continue input > ", 42);
 		additional_input = get_next_line(0);
 		if (!additional_input)
-			break ;
-		temp = *input;
-		*input = ft_strjoin_gc(temp, additional_input, &data->gc);
-		ft_free(&temp);
+			return (-1);
+		if (*additional_input)
+			*input = ft_strjoin_gc(*input, additional_input, gc);
 		ft_free(&additional_input);
 		end = find_matching_char(*input, start);
 		if (end != -1)
@@ -61,7 +59,7 @@ void	process_single_quotes(char *input, int *i, int *count, t_minishell *data)
 	end = find_matching_char(input, start);
 	(*i)++;
 	if (end == -1)
-		end = handle_unclosed_char(&input, start, data);
+		end = handle_unclosed_char(&input, start, &data->gc);
 	while (*i < end)
 		(*i)++;
 	data->tokens[*count] = create_token(data->current_type, \
@@ -94,13 +92,11 @@ void	process_double_quotes(char *input, int *i, int *count, t_minishell *data)
 
 	end = find_matching_char(input, start);
 	if (end == -1)
-		end = handle_unclosed_char(&input, start, data);
+		end = handle_unclosed_char(&input, start, &data->gc);
 	(*i)++;
 	while (*i < end)
 	{
-		if (input[*i] == '$')
-			process_env_variable(input, i, count, data);
-		else if (input[*i] == '\\' && (*i + 1 < end) && (input[*i + 1] == '$'
+		if (input[*i] == '\\' && (*i + 1 < end) && (input[*i + 1] == '$'
 				|| input[*i + 1] == '\\' || input[*i + 1] == '`'
 				|| input[*i + 1] == '"'))
 			(*i)++;

@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 11:06:43 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/15 11:06:44 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/11/18 03:52:18 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,8 @@ static void	print_tokens(t_token *tokens)
 	const char *token_names[] =
 	{
 		"COMMAND", "ARGUMENT", "PIPE", "STDIN", "STDOUT", "STDOUT_APPEND",
-		"FILENAME", "HEREDOC", "LIMITER", "AND", "OR",
-		"WILDCARD", "PARENTHESIS_OPEN", "PARENTHESIS_CLOSE", "END"
+		"FILENAME", "HEREDOC", "LIMITER", "AND", "OR", "PARENTHESIS_OPEN",
+		"PARENTHESIS_CLOSE", "END"
 	};
 
 	i = -1;
@@ -52,9 +52,11 @@ int	main(int argc, char **argv, char **envp)
 	t_token		*tokens;
 	// t_node		*ast_root;
 
-	(void)argc;
-	data_init(argv, envp, &data);
-	prompt = create_prompt();
+	if (argc > 1)
+		return (printf("Minishell does" RED " not " DEFAULT "accept arguments. "
+				"Running in interactive mode only.\n"), 1);
+	data_init(argc, argv, envp, &data);
+	prompt = create_prompt(&data.gc);
 	while (1)
 	{
 		data.line = readline(prompt);
@@ -67,6 +69,7 @@ int	main(int argc, char **argv, char **envp)
 		}
 		add_history(data.line);
 		data.current_type = COMMAND;
+		expand_variables(&data);
 		tokens = tokenize_input(data.line, &data);
 		print_tokens(tokens);
 		// ast_root = parse_tokens(tokens, &data.gc);

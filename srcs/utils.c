@@ -1,36 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_nbrlen.c                                        :+:      :+:    :+:   */
+/*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/06/09 21:56:05 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/03 21:35:08 by yaabdall         ###   ########.fr       */
+/*   Created: 2024/11/13 05:22:40 by yaabdall          #+#    #+#             */
+/*   Updated: 2024/11/18 05:04:34 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_printf.h"
+#include "minishell.h"
 
-size_t	ft_nbrlen(long nbr)
+void	error(const char *error_msg, int status, t_gc *gc)
 {
-	size_t	len;
-
-	len = 0;
-	if (!nbr)
-		return (1);
-	if (nbr < 0)
-	{
-		nbr *= -1;
-		len++;
-	}
-	while (nbr > 0)
-	{
-		nbr /= 10;
-		len++;
-	}
-	return (len);
+	perror(error_msg);
+	gc_cleanup(gc);
+	exit(status);
 }
-/*
-This function calculates the length of a given number. 
-*/
+
+void	strncat_realloc(char **result, char *append, size_t *size, t_gc *gc)
+{
+	size_t	new_len;
+
+	new_len = ft_strlen(*result) + ft_strlen(append) + 1;
+	if (new_len > *size)
+	{
+		*size = new_len + 16;
+		*result = gc_realloc(*result, *size, gc);
+	}
+	ft_strlcat(*result, append, *size);
+}

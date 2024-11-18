@@ -40,7 +40,6 @@ RM =			rm -f
 
 # Directory paths
 LIBFT =			./srcs/libft/
-FT_PRINTF =		./srcs/ft_printf/
 GNL =			./srcs/get_next_line/
 GC =			./srcs/garbage_collector/
 SRC =			./srcs/
@@ -91,35 +90,15 @@ SRCS =	       	$(LIBFT)ft_strchr.c \
 				$(LIBFT)ft_lstadd_front_bonus.c \
         	    $(LIBFT)ft_lstdelone_bonus.c \
 				$(LIBFT)ft_lstclear_bonus.c \
-        	    $(FT_PRINTF)ft_printf.c \
-				$(FT_PRINTF)ft_nbrlen.c \
-        	    $(FT_PRINTF)ft_printhex.c \
-        	    $(FT_PRINTF)ft_check_format.c \
-        	    $(FT_PRINTF)ft_printchar.c \
-        	    $(FT_PRINTF)ft_itoa_m.c \
-        	    $(FT_PRINTF)ft_printptr.c \
-        	    $(FT_PRINTF)ft_xtoa.c \
-        	    $(FT_PRINTF)ft_printint.c \
-        	    $(FT_PRINTF)ft_putstr_fd_m.c \
-        	    $(FT_PRINTF)ft_isflag.c \
-        	    $(FT_PRINTF)ft_pad.c \
-        	    $(FT_PRINTF)ft_flag_start.c \
-        	    $(FT_PRINTF)ft_printstr.c \
-        	    $(FT_PRINTF)ft_printuns.c \
-        	    $(FT_PRINTF)ft_hexlen.c \
-        	    $(FT_PRINTF)ft_istype.c \
-        	    $(FT_PRINTF)ft_putchar_fd_m.c \
-        	    $(FT_PRINTF)ft_utoa.c \
-        	    $(FT_PRINTF)ft_isspec.c \
-        	    $(FT_PRINTF)ft_isconv.c \
-				$(GNL)get_next_line.c \
-				$(GNL)get_next_line_utils.c \
     	        $(GNL)get_next_line_bonus.c \
     	        $(GNL)get_next_line_utils_bonus.c \
 				$(GC)gc_init.c \
 				$(GC)gc_add.c \
-				$(GC)gc_clear.c \
+				$(GC)gc_remove.c \
+				$(GC)gc_cleanup.c \
 				$(GC)gc_malloc.c \
+				$(GC)gc_malloc_size.c \
+				$(GC)gc_realloc.c \
 				$(GC)ft_substr_gc.c \
 				$(GC)ft_strjoin_gc.c \
 				$(GC)ft_strdup_gc.c \
@@ -140,7 +119,7 @@ $(OBJ)%.o:		$(SRC)%.c
 
 # Rule for creating the library
 $(NAME):		$(OBJS)
-				@echo -n "\n🛠️  $(WHITE)Building $(YELLOW)$(NAME) $(CYAN)library $(DEFAULT)\t\t\t"
+				@echo -n "\n🛠️  $(WHITE)Building $(YELLOW)$(NAME)$(DEFAULT) library\t\t\t"
 				@$(AR) $(NAME) $(OBJS)
 				$(PROGRESS_BAR)
 
@@ -152,13 +131,13 @@ bonus:			all
 
 # Rule for cleaning up object files
 clean:
-				@echo -n "\n🧹 $(RED)Cleaning up $(YELLOW)$(NAME) $(CYAN)object files $(DEFAULT)\t\t"
+				@echo -n "\n🧹 $(RED)Cleaning up $(YELLOW)$(NAME)$(DEFAULT) object files\t\t"
 				@$(RM) -r $(OBJ)
 				$(PROGRESS_BAR)
 
 # Full clean rule (objects files and library)
 fclean:			clean
-				@echo -n "\n🗑️  $(RED)Deleting $(YELLOW)$(NAME) $(CYAN)library $(DEFAULT)\t\t\t"
+				@echo -n "\n🗑️  $(RED)Deleting $(YELLOW)$(NAME)$(DEFAULT) library\t\t\t"
 				@$(RM) $(NAME)
 				$(PROGRESS_BAR)
 

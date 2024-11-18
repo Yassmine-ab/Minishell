@@ -3,36 +3,36 @@
 /*                                                        :::      ::::::::   */
 /*   prompt.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: besch <besch@student.42.fr>                +#+  +:+       +#+        */
+/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/10 03:27:27 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/13 18:37:35 by besch            ###   ########.fr       */
+/*   Updated: 2024/11/17 19:21:45 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char	*create_prompt(void)
+char	*create_prompt(t_gc *gc)
 {
 	char	*prompt;
 	char	*user;
-	char	*tmp;
-	char	*tmp2;
 	char	cwd[MAX_PATHLENGTH];
 
 	if (!getcwd(cwd, sizeof(cwd)))
-		return (NULL);
+	{
+		perror("Failed to get current working directory (getcwd)");
+		cwd[0] = '\0';
+	}
 	user = getenv("USER");
 	if (!user)
+	{
+		perror("Failed to retrieve USER environment variable");
 		user = "user";
-	tmp = ft_strjoin(YELLOW "\n", user);
-	tmp2 = ft_strjoin(tmp, DEFAULT " in ");
-	ft_free(&tmp);
-	tmp = ft_strjoin(tmp2, GREEN);
-	ft_free(&tmp2);
-	tmp2 = ft_strjoin(tmp, cwd);
-	ft_free(&tmp);
-	prompt = ft_strjoin(tmp2, DEFAULT " 🥥 ⋙  ");
-	ft_free(&tmp2);
+	}
+	prompt = ft_strjoin_gc(YELLOW "\n", user, gc);
+	prompt = ft_strjoin_gc(prompt, DEFAULT " in ", gc);
+	prompt = ft_strjoin_gc(prompt, GREEN, gc);
+	prompt = ft_strjoin_gc(prompt, cwd, gc);
+	prompt = ft_strjoin_gc(prompt, DEFAULT " 🥥 ⋙  ", gc);
 	return (prompt);
 }

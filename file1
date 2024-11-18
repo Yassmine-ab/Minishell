@@ -6,10 +6,7 @@ isdjfijd
 dlkjg
 cfh
 
-COMMAND [echo]
-ARGUMENT [User: <valeur_de_USER>]	
-
 Issues :
 1. Manque un \n au début de l'input utilisateur additionnel dans le cas des guillemets ouverts
 2. Gestion des backticks ouverts
-3. 
+3. Le pattern replique les caractères qui précèdent le * lors de l'expansion des wildcards

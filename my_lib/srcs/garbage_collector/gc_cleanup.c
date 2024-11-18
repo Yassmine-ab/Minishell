@@ -1,33 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_pad.c                                           :+:      :+:    :+:   */
+/*   gc_clear.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/06/09 21:22:54 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/03 21:35:08 by yaabdall         ###   ########.fr       */
+/*   Created: 2024/11/03 22:13:54 by yaabdall          #+#    #+#             */
+/*   Updated: 2024/11/16 23:04:26 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_printf.h"
+#include "gc.h"
 
-size_t	ft_pad(int set_width, int size, int zero)
+void	gc_cleanup(t_gc *gc)
 {
-	size_t	i;
+	t_gc_node	*current;
+	t_gc_node	*next;
 
-	i = 0;
-	while (set_width - size > 0)
+	current = gc->head;
+	while (current)
 	{
-		if (zero)
-			i += ft_putchar_fd_m('0', 1);
-		else
-			i += ft_putchar_fd_m(' ', 1);
-		set_width--;
+		next = current->next;
+		free(current->ptr);
+		free(current);
+		current = next;
 	}
-	return (i);
+	gc->head = NULL;
 }
-/*
-This function pads a given width with either spaces or zeros, depending
-on the flag zero.
-*/

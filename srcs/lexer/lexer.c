@@ -6,11 +6,20 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 21:42:36 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/15 10:26:48 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/11/18 05:03:58 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+t_token	create_token(t_token_type type, char *value)
+{
+	t_token	new_token;
+
+	new_token.type = type;
+	new_token.value = value;
+	return (new_token);
+}
 
 void	skip_whitespace(char **input, int *index)
 {
@@ -18,43 +27,13 @@ void	skip_whitespace(char **input, int *index)
 		(*index)++;
 }
 
-void	process_command(char *input, int *i, int *count, t_minishell *data)
-{
-	char	*value;
-	int		start;
-
-	start = *i;
-	while (input[*i] && !ft_isspace(input[*i])
-		&& !ft_strchr("'\"()|<>&", input[*i]))
-		(*i)++;
-	value = ft_substr_gc(input, start, *i - start, &data->gc);
-	if (!value || !*value)
-		return ;
-	if (data->current_type == COMMAND)
-	{
-		data->tokens[*count] = create_token(COMMAND, value);
-		skip_whitespace(&input, i);
-		data->current_type = ARGUMENT;
-	}
-	else if (data->current_type == ARGUMENT)
-		data->tokens[*count] = create_token(ARGUMENT, value);
-	(*count)++;
-}
-
-static void	process_word(char *input, int *i, int *count, t_minishell *data)
-{
-	if (data->current_type == FILENAME)
-		process_file(input, i, count, data);
-	else if (data->current_type == LIMITER)
-		process_limiter(input, i, count, data);
-	else
-		process_command(input, i, count, data);
-}
-
 t_token	*tokenize_input(char *input, t_minishell *data)
 {
-	int (i) = 0;
-	int (count) = 0;
+	int	count;
+	int	i;
+
+	count = 0;
+	i = 0;
 	while (input[i])
 	{
 		if (ft_isspace(input[i]))
@@ -69,10 +48,6 @@ t_token	*tokenize_input(char *input, t_minishell *data)
 			process_parentheses(input, &i, &count, data);
 		else if (ft_strchr("|<>&", input[i]))
 			process_operator(input, &i, &count, data);
-		else if (input[i] == '$')
-			process_env_variable(input, &i, &count, data);
-		else if (input[i] == '*')
-			process_wildcard(input, &i, &count, data);
 		else
 			process_word(input, &i, &count, data);
 	}

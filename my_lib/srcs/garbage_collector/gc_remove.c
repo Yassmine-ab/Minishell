@@ -1,31 +1,36 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_hexlen.c                                        :+:      :+:    :+:   */
+/*   gc_remove.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/06/09 21:22:40 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/03 21:34:23 by yaabdall         ###   ########.fr       */
+/*   Created: 2024/11/17 03:11:21 by yaabdall          #+#    #+#             */
+/*   Updated: 2024/11/17 03:13:43 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_printf.h"
+#include "gc.h"
 
-size_t	ft_hexlen(size_t nbr)
+void	gc_remove(t_gc *gc, void *ptr)
 {
-	size_t	len;
+	t_gc_node	*current;
+	t_gc_node	*prev;
 
-	len = 0;
-	if (!nbr)
-		return (1);
-	while (nbr > 0)
+	current = gc->head;
+	prev = NULL;
+	while (current)
 	{
-		len++;
-		nbr /= 16;
+		if (current->ptr == ptr)
+		{
+			if (prev)
+				prev->next = current->next;
+			else
+				gc->head = current->next;
+			free(current);
+			return ;
+		}
+		prev = current;
+		current = current->next;
 	}
-	return (len);
 }
-/*
-This function calculates the length of a given number in hexadecimal.
-*/

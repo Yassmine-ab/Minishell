@@ -68,7 +68,6 @@ INIT =			$(SRC)initialization/
 LEXER =			$(SRC)lexer/
 PARSER =		$(SRC)parser/
 BUILTIN =		$(SRC)builtin/
-UTILS =			$(SRC)utils/
 OBJ =			./objs/
 MYLIB_DIR =		./my_lib/
 INCLUDES =		./includes/ $(MYLIB_DIR)includes/
@@ -84,12 +83,11 @@ SRCS =			$(INIT)initialization.c \
 				$(LEXER)quotes.c \
 				$(LEXER)parentheses.c \
 				$(LEXER)operators.c \
-				$(LEXER)files.c \
-				$(LEXER)env_variables.c \
-				$(LEXER)lexer_utils.c \
+				$(LEXER)words.c \
+				$(PARSER)expander.c \
 				$(PARSER)parse_tokens.c \
 				$(PARSER)parser_utils.c \
-				$(UTILS)utils.c \
+				$(SRC)utils.c \
 				$(SRC)main.c 
 
 SRCS_BONUS =	$(SRC)main_bonus.c
@@ -110,7 +108,7 @@ $(OBJ)%.o:		$(SRC)%.c
 # Rule for creating the executable
 $(NAME):		$(OBJS)
 				@make all --no-print-directory -C $(MYLIB_DIR)
-				@echo -n "\n🔗 $(WHITE)Linking $(YELLOW)$(NAME) $(CYAN)executable $(DEFAULT)\t\t"
+				@echo -n "\n🔗 $(WHITE)Linking $(YELLOW)$(NAME)$(DEFAULT) executable\t\t"
 				@$(CC) $(CFLAGS) $(OBJS) $(MYLIB) $(READLINE) -o $(NAME)
 				$(PROGRESS_BAR)
 				@echo "$$HEADER"
@@ -121,7 +119,7 @@ all:			$(NAME)
 # Bonus rule
 bonus:			$(OBJS_BONUS)
 				@make all --no-print-directory -C $(MYLIB_DIR)
-				@echo -n "\n🔗 $(WHITE)Linking $(YELLOW)$(NAME_BONUS) $(CYAN)executable $(DEFAULT)\t\t"
+				@echo -n "\n🔗 $(WHITE)Linking $(YELLOW)$(NAME_BONUS)$(DEFAULT) executable\t\t"
 				@$(CC) $(CFLAGS) $(OBJS_BONUS) $(MYLIB) $(READLINE) -o $(NAME_BONUS)
 				$(PROGRESS_BAR)
 				@echo "$$HEADER"
@@ -129,7 +127,7 @@ bonus:			$(OBJS_BONUS)
 # Rule for cleaning up object files
 clean:
 				@make clean --no-print-directory -C $(MYLIB_DIR)
-				@echo -n "\n🧹 $(RED)Cleaning up $(CYAN)project object files $(DEFAULT)\t\t"
+				@echo -n "\n🧹 $(RED)Cleaning up$(DEFAULT) project object files\t\t"
 				@$(RM) -r $(OBJ)
 				$(PROGRESS_BAR)
 				@echo ""
@@ -137,13 +135,13 @@ clean:
 # Full clean rule (objects files, executable and libraries)
 fclean:
 				@make fclean --no-print-directory -C $(MYLIB_DIR)
-				@echo -n "\n🧹 $(RED)Cleaning up $(CYAN)project object files $(DEFAULT)\t\t"
+				@echo -n "\n🧹 $(RED)Cleaning up$(DEFAULT) project object files\t\t"
 				@$(RM) -r $(OBJ)
 				$(PROGRESS_BAR)
-				@echo -n "\n🗑️  $(RED)Deleting $(YELLOW)$(NAME) $(CYAN)executable $(DEFAULT)\t\t"
+				@echo -n "\n🗑️  $(RED)Deleting $(YELLOW)$(NAME)$(DEFAULT) executable\t\t"
 				@$(RM) $(NAME)
 				$(PROGRESS_BAR)
-				@echo -n "\n🗑️  $(RED)Deleting $(YELLOW)$(NAME_BONUS) $(CYAN)executable $(DEFAULT)\t\t"
+				@echo -n "\n🗑️  $(RED)Deleting $(YELLOW)$(NAME_BONUS)$(DEFAULT) executable\t\t"
 				@$(RM) $(NAME_BONUS)
 				$(PROGRESS_BAR)
 				@echo ""
