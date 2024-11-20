@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/10 19:30:54 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/17 21:36:09 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/11/19 14:43:47 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,10 +25,7 @@ static void	process_limiter(char *value, int *count, t_minishell *data)
 static void	process_command(char *value, int *count, t_minishell *data)
 {
 	if (data->current_type == COMMAND)
-	{
 		data->tokens[*count] = create_token(COMMAND, value);
-		data->current_type = ARGUMENT;
-	}
 	else if (data->current_type == ARGUMENT)
 		data->tokens[*count] = create_token(ARGUMENT, value);
 }
@@ -39,7 +36,7 @@ void	process_word(char *input, int *i, int *count, t_minishell *data)
 	const int	start = *i;
 
 	while (input[*i] && !ft_isspace(input[*i])
-		&& !ft_strchr("()|<>&", input[*i]))
+		&& !ft_strchr("\"'()|<>&", input[*i])) //&& !(ft_strnstr(input + *i, "&&", 2)))
 		(*i)++;
 	value = ft_substr_gc(input, start, *i - start, &data->gc);
 	if (!*value)
@@ -52,6 +49,8 @@ void	process_word(char *input, int *i, int *count, t_minishell *data)
 		process_command(value, count, data);
 	(*count)++;
 	skip_whitespace(&input, i);
-	if (data->current_type == FILENAME || data->current_type == LIMITER)
+	if (data->current_type == COMMAND)
+		data->current_type = ARGUMENT;
+	else if (data->current_type == FILENAME || data->current_type == LIMITER)
 		data->current_type = COMMAND;
 }

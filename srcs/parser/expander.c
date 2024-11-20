@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 21:54:13 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/18 04:56:14 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/11/19 13:01:27 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,8 +88,9 @@ static char	**find_wildcard_matches(char *pattern, t_minishell *data)
 	}
 	closedir(dir);
 	if (count == 0)
-		matches[count++] = ft_strdup_gc(pattern, &data->gc);
+		matches[count++] = ft_strdup_gc(ft_strchr(pattern, '*'), &data->gc);
 	matches[count] = NULL;
+
 	return (matches);
 }
 
@@ -101,14 +102,13 @@ int	expand_wildcard(char **result, size_t *size, int i, t_minishell *data)
 	int		start;
 
 	while (i > 0 && !ft_isspace(data->line[i - 1])
-		&& !ft_strchr("()|<>&", data->line[i - 1]))
+		&& !ft_strchr("\"'()|<>&", data->line[i - 1]))
 		i--;
 	start = i;
 	while (data->line[i]
-		&& !ft_isspace(data->line[i]) && !ft_strchr("()|<>&", data->line[i]))
+		&& !ft_isspace(data->line[i]) && !ft_strchr("\"'()|<>&", data->line[i]))
 		i++;
 	pattern = ft_substr_gc(data->line, start, i - start, &data->gc);
-	fprintf(stderr, "Extracted pattern: %s\n", pattern);
 	matches = find_wildcard_matches(pattern, data);
 	if (matches)
 	{
@@ -155,9 +155,6 @@ int (*expander)(char **, size_t *, int, t_minishell *), char expansion_char)
 
 void	expand_variables(t_minishell *data)
 {
-	fprintf(stderr, "Avant expansion des variables : %s\n", data->line);
 	process_expansion(data, expand_env_variable, '$');
-	fprintf(stderr, "Après expansion des variables : %s\n", data->line);
 	process_expansion(data, expand_wildcard, '*');
-	fprintf(stderr, "Après expansion des wildcards : %s\n", data->line);
 }

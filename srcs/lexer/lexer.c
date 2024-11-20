@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 21:42:36 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/18 05:03:58 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/11/19 14:41:22 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ t_token	*tokenize_input(char *input, t_minishell *data)
 			process_double_quotes(input, &i, &count, data);
 		else if (ft_strchr("()", input[i]))
 			process_parentheses(input, &i, &count, data);
-		else if (ft_strchr("|<>&", input[i]))
+		else if (ft_strchr("|<>", input[i]) || ft_strnstr("&&", input + i, 2))
 			process_operator(input, &i, &count, data);
 		else
 			process_word(input, &i, &count, data);

@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 02:04:44 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/18 05:05:27 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/11/20 14:49:18 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,8 +90,15 @@ typedef enum e_node_type
 {
 	NODE_COMMAND,
 	NODE_ARGUMENT,
-	NODE_REDIRECTION,
-	NODE_OPERATOR,
+	NODE_PIPE,
+	NODE_STDIN,
+	NODE_STDOUT,
+	NODE_STDOUT_APPEND,
+	NODE_FILENAME,
+	NODE_HEREDOC,
+	NODE_LIMITER,
+	NODE_AND,
+	NODE_OR,
 	NODE_GROUP
 }	t_node_type;
 
@@ -126,6 +133,7 @@ typedef struct s_minishell
 	t_token				*tokens;
 	t_token_type		current_type;
 	t_node				*node;
+	t_node_type			node_type;
 	t_gc				gc;
 	int					last_exit_status;
 	pid_t				pid;
@@ -157,8 +165,8 @@ void	expand_variables(t_minishell *data);
 int		expand_env_variable(char **result, size_t *size, int i, t_minishell *data);
 int		expand_wildcard(char **result, size_t *size, int i, t_minishell *data);
 t_node	*parse_tokens(t_token *tokens, t_gc *gc);
-t_node	*create_ast_node(t_node_type type, char *value, t_gc *gc);
-
+t_node	*create_ast_node(t_node_type *type, char *value, t_gc *gc);
+t_node	*create_operator_node(char *value, t_node *left, t_node *right, t_minishell *data, t_gc *gc);
 /* ------------------------------- Utilities -------------------------------- */
 void	strncat_realloc(char **result, char *append, size_t *size, t_gc *gc);
 void	error(const char *error_msg, int status, t_gc *gc);

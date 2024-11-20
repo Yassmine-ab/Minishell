@@ -85,10 +85,10 @@ SRCS =			$(INIT)initialization.c \
 				$(LEXER)operators.c \
 				$(LEXER)words.c \
 				$(PARSER)expander.c \
-				$(PARSER)parse_tokens.c \
+				$(PARSER)ast.c \
 				$(PARSER)parser_utils.c \
 				$(SRC)utils.c \
-				$(SRC)main.c 
+				$(SRC)main.c
 
 SRCS_BONUS =	$(SRC)main_bonus.c
 
@@ -108,7 +108,7 @@ $(OBJ)%.o:		$(SRC)%.c
 # Rule for creating the executable
 $(NAME):		$(OBJS)
 				@make all --no-print-directory -C $(MYLIB_DIR)
-				@echo -n "\n🔗 $(WHITE)Linking $(YELLOW)$(NAME)$(DEFAULT) executable\t\t"
+				@echo -n "\n🔗 $(WHITE)Linking $(YELLOW)$(NAME)$(DEFAULT) executable\t\t\t"
 				@$(CC) $(CFLAGS) $(OBJS) $(MYLIB) $(READLINE) -o $(NAME)
 				$(PROGRESS_BAR)
 				@echo "$$HEADER"

@@ -6,13 +6,13 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 01:46:03 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/17 00:28:14 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/11/20 16:41:23 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_node	*create_ast_node(t_node_type type, char *value, t_gc *gc)
+t_node	*create_ast_node(t_node_type *type, char *value, t_gc *gc)
 {
 	t_node	*node;
 
@@ -21,6 +21,19 @@ t_node	*create_ast_node(t_node_type type, char *value, t_gc *gc)
 	node->value = value;
 	node->left = NULL;
 	node->right = NULL;
+	node->next = NULL;
+	return (node);
+}
+
+t_node	*create_operator_node(t_node_type *type, char *value, t_node *left, t_node *right, t_gc *gc)
+{
+	t_node	*node;
+
+	node = gc_malloc(sizeof(t_node), gc);
+	node->type = type;
+	node->value = value;
+	node->left = left;
+	node->right = right;
 	node->next = NULL;
 	return (node);
 }
