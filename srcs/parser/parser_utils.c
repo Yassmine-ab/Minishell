@@ -6,13 +6,13 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 01:46:03 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/20 16:41:23 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/11/21 11:43:56 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_node	*create_ast_node(t_node_type *type, char *value, t_gc *gc)
+t_node	*create_node(t_node_type *type, char *value, t_gc *gc)
 {
 	t_node	*node;
 

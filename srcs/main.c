@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 11:06:43 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/19 15:41:51 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/11/20 19:58:59 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ int	main(int argc, char **argv, char **envp)
 	t_minishell	data;
 	const char	*prompt;
 	t_token		*tokens;
-	t_node		*ast_root;
+	// t_node		*ast_root;
 
 	if (argc > 1)
 		return (printf("Minishell does" RED " not " DEFAULT "accept arguments. "
@@ -72,10 +72,11 @@ int	main(int argc, char **argv, char **envp)
 		expand_variables(&data);
 		tokens = tokenize_input(data.line, &data);
 		print_tokens(tokens);
-		ast_root = parse_tokens(tokens, &data.gc);
-		print_ast(ast_root, 0);
+		// ast_root = parse_tokens(tokens, &data.gc);
+		// print_ast(ast_root, 0);
 	}
 	rl_clear_history();
+	gc_cleanup(&data.gc);
 	return (0);
 }
 
