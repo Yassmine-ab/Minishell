@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 11:06:43 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/20 19:58:59 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/11/24 15:10:11 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,31 +26,47 @@ static void	print_tokens(t_token *tokens)
 	while (tokens[++i].type != END)
 		dprintf(2, "%s [%s]\n", token_names[tokens[i].type], tokens[i].value);
 }
+static void	print_ast(t_node *node, int depth)
+{
+	const char	*colors[] = {
+		RED,
+		GREEN,
+		YELLOW,
+		BLUE,
+		MAGENTA,
+		CYAN,
+		WHITE
+	};
+	const char	*color;
+	int			num_colors;
+	int			i;
 
-// static void	print_ast(t_node *node, int depth)
-// {
-// 	int	i;
-
-// 	i = -1;
-// 	if (!node)
-// 		return ;
-// 	while (++i < depth)
-// 		printf("  ");
-// 	if (node->value)
-// 		printf("%s\n", node->value);
-// 	else
-// 		printf("(group)\n");
-// 	print_ast(node->left, depth + 1);
-// 	print_ast(node->right, depth + 1);
-// 	print_ast(node->next, depth);
-// }
+	num_colors = sizeof(colors) / sizeof(colors[0]);
+	color = colors[depth % num_colors];
+	if (!node)
+		return ;
+	i = -1;
+	while (++i < depth)
+		printf("  ");
+	printf("%s", color);
+	if (node->value)
+		printf("%s\n", node->value);
+	else
+		printf("(group)\n");
+	printf(DEFAULT);
+	print_ast(node->left, depth + 1);
+	print_ast(node->right, depth + 1);
+	if (node->next)
+		print_ast(node->next, depth);
+}
 
 int	main(int argc, char **argv, char **envp)
 {
 	t_minishell	data;
 	const char	*prompt;
 	t_token		*tokens;
-	// t_node		*ast_root;
+	t_node		*ast_root;
+	int			i;
 
 	if (argc > 1)
 		return (printf("Minishell does" RED " not " DEFAULT "accept arguments. "
@@ -64,7 +80,7 @@ int	main(int argc, char **argv, char **envp)
 			break ;
 		else if (data.line[0] == EOF || data.line[0] == '\0')
 		{
-			free(data.line);
+			ft_free(&data.line);
 			break ;
 		}
 		add_history(data.line);
@@ -72,8 +88,9 @@ int	main(int argc, char **argv, char **envp)
 		expand_variables(&data);
 		tokens = tokenize_input(data.line, &data);
 		print_tokens(tokens);
-		// ast_root = parse_tokens(tokens, &data.gc);
-		// print_ast(ast_root, 0);
+		i = 0;
+		ast_root = parse_expression(&i, &data);
+		print_ast(ast_root, 0);
 	}
 	rl_clear_history();
 	gc_cleanup(&data.gc);

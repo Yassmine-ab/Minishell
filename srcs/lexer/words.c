@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/10 19:30:54 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/19 14:43:47 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/11/24 13:07:17 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,11 +36,17 @@ void	process_word(char *input, int *i, int *count, t_minishell *data)
 	const int	start = *i;
 
 	while (input[*i] && !ft_isspace(input[*i])
-		&& !ft_strchr("\"'()|<>&", input[*i])) //&& !(ft_strnstr(input + *i, "&&", 2)))
-		(*i)++;
+		&& !ft_strchr("\"'()|<>", input[*i]))
+	{
+		if (input[*i] == '\\' && input[*i + 1]
+			&& ft_strchr("'\"()|<>&", input[*i + 1]))
+			(*i) += 2;
+		else if (input[*i] == '&' && input[*i + 1] && input[*i + 1] == '&')
+			break ;
+		else
+			(*i)++;
+	}
 	value = ft_substr_gc(input, start, *i - start, &data->gc);
-	if (!*value)
-		return ;
 	if (data->current_type == FILENAME)
 		process_file(value, count, data);
 	else if (data->current_type == LIMITER)

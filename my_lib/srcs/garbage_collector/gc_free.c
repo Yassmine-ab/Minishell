@@ -1,37 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   gc_cleanup.c                                       :+:      :+:    :+:   */
+/*   gc_free.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/03 22:13:54 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/24 11:01:46 by yaabdall         ###   ########.fr       */
+/*   Created: 2024/11/24 17:04:12 by yaabdall          #+#    #+#             */
+/*   Updated: 2024/11/24 17:04:13 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "gc.h"
 
-// static void	ft_free(t_gc_node **s)
-// {
-// 	if (!s || !*s)
-// 		return ;
-// 	free(*s);
-// 	*s = NULL;
-// }
-
-void	gc_cleanup(t_gc *gc)
+void	gc_free(void *ptr, t_gc *gc)
 {
 	t_gc_node	*current;
-	t_gc_node	*next;
+	t_gc_node	*prev;
 
+	if (!ptr || !gc || !gc->head)
+		return ;
 	current = gc->head;
+	prev = NULL;
 	while (current)
 	{
-		next = current->next;
-		free(current->ptr);
-		free(current);
-		current = next;
+		if (current->ptr == ptr)
+		{
+			if (prev)
+				prev->next = current->next;
+			else
+				gc->head = current->next;
+			free(current->ptr);
+			free(current);
+			return ;
+		}
+		prev = current;
+		current = current->next;
 	}
-	gc->head = NULL;
 }

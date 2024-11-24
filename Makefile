@@ -54,7 +54,7 @@ endef
 NAME =			minishell
 NAME_BONUS =	minishell_bonus
 CC =			gcc
-CFLAGS =		-Wall -Wextra -Werror
+CFLAGS =		-Wall -Wextra -Werror -g3
 AR =			ar rcs
 RM =			rm -f
 
@@ -85,7 +85,8 @@ SRCS =			$(INIT)initialization.c \
 				$(LEXER)operators.c \
 				$(LEXER)words.c \
 				$(PARSER)expander.c \
-				$(PARSER)parser_utils.c \
+				$(PARSER)parser.c \
+				$(PARSER)commands.c \
 				$(SRC)utils.c \
 				$(SRC)main.c
 

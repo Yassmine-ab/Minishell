@@ -95,6 +95,7 @@ SRCS =	       	$(LIBFT)ft_strchr.c \
 				$(GC)gc_init.c \
 				$(GC)gc_add.c \
 				$(GC)gc_remove.c \
+				$(GC)gc_free.c \
 				$(GC)gc_cleanup.c \
 				$(GC)gc_malloc.c \
 				$(GC)gc_malloc_size.c \

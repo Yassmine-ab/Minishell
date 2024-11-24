@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 02:04:44 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/21 11:43:15 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/11/24 16:56:11 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@
 # include <dirent.h>
 # include "get_next_line_bonus.h"
 # include "gc.h"
-#include <fnmatch.h>
+# include <fnmatch.h>
 
 /* -------------------------------------------------------------------------- */
 /*                                  DEFINES                                   */
@@ -89,10 +89,10 @@ typedef enum e_token_type
 typedef enum e_node_type
 {
 	NODE_COMMAND,
-	NODE_ARGUMENT,
+	NODE_ARG,
 	NODE_PIPE,
-	NODE_REDIRECTION,
-	NODE_FILENAME,
+	NODE_REDIR,
+	NODE_FILE,
 	NODE_HEREDOC,
 	NODE_LIMITER,
 	NODE_AND,
@@ -134,6 +134,7 @@ typedef struct s_minishell
 	t_gc				gc;
 	int					last_exit_status;
 	pid_t				pid;
+	bool				stop_parenthesis_close;
 }	t_minishell;
 
 /* -------------------------------------------------------------------------- */
@@ -161,9 +162,12 @@ void	process_word(char *input, int *i, int *count, t_minishell *data);
 void	expand_variables(t_minishell *data);
 int		expand_env_variable(char **result, size_t *size, int i, t_minishell *data);
 int		expand_wildcard(char **result, size_t *size, int i, t_minishell *data);
-t_node	*parse_tokens(t_token *tokens, t_gc *gc);
-t_node	*create_node(t_node_type *type, char *value, t_gc *gc);
-t_node	*create_operator_node(char *value, t_node *left, t_node *right, t_minishell *data, t_gc *gc);
+t_node	*parse_expression(int *i, t_minishell *data);
+t_node	*parse_command(int *i, t_minishell *data);
+int		parse_redirection(int *i, t_node **cmd_node, t_minishell *data);
+int		parse_heredoc(int *i, t_node **cmd_node, t_minishell *data);
+t_node	*create_node(t_node_type type, char *value, t_gc *gc);
+
 /* ------------------------------- Utilities -------------------------------- */
 void	strncat_realloc(char **result, char *append, size_t *size, t_gc *gc);
 void	error(const char *error_msg, int status, t_gc *gc);

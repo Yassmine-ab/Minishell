@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 21:54:13 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/19 13:01:27 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/11/24 16:54:08 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,8 @@ int	expand_env_variable(char **result, size_t *size, int i, t_minishell *data)
 
 	if (data->line[++i] == '?')
 		value = ft_itoa_gc(data->last_exit_status, &data->gc);
-	else if (data->line[i] == '$')
-		value = ft_itoa_gc(data->pid, &data->gc);
+	// else if (data->line[i] == '$')
+	// 	value = ft_itoa_gc(data->pid, &data->gc);
 	else if ((ft_isdigit(data->line[i]) && (data->line[i] - '0') < data->argc)
 		|| data->line[i] == '_')
 		value = data->argv[0];
@@ -90,7 +90,6 @@ static char	**find_wildcard_matches(char *pattern, t_minishell *data)
 	if (count == 0)
 		matches[count++] = ft_strdup_gc(ft_strchr(pattern, '*'), &data->gc);
 	matches[count] = NULL;
-
 	return (matches);
 }
 
@@ -149,7 +148,7 @@ int (*expander)(char **, size_t *, int, t_minishell *), char expansion_char)
 			}
 		}
 	}
-	free(data->line);
+	ft_free(&data->line);
 	data->line = result;
 }
 
