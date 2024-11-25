@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   prompt.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
+/*   By: petitcoeur <petitcoeur@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/10 03:27:27 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/17 19:21:45 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/11/25 03:24:48 by petitcoeur       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,6 @@ char	*create_prompt(t_gc *gc)
 	prompt = ft_strjoin_gc(prompt, DEFAULT " in ", gc);
 	prompt = ft_strjoin_gc(prompt, GREEN, gc);
 	prompt = ft_strjoin_gc(prompt, cwd, gc);
-	prompt = ft_strjoin_gc(prompt, DEFAULT " 🥥 ⋙  ", gc);
+	prompt = ft_strjoin_gc(prompt, DEFAULT " 🥚👶🕺 ⋙  ", gc);
 	return (prompt);
 }
