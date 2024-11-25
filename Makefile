@@ -67,7 +67,8 @@ SRC =			./srcs/
 INIT =			$(SRC)initialization/
 LEXER =			$(SRC)lexer/
 PARSER =		$(SRC)parser/
-BUILTIN =		$(SRC)builtin/
+EXEC =			$(SRC)exec/
+BUILTINS =		$(SRC)builtins/
 OBJ =			./objs/
 MYLIB_DIR =		./my_lib/
 INCLUDES =		./includes/ $(MYLIB_DIR)includes/
@@ -87,6 +88,10 @@ SRCS =			$(INIT)initialization.c \
 				$(PARSER)expander.c \
 				$(PARSER)parser.c \
 				$(PARSER)commands.c \
+				$(EXEC)exec.c \
+				$(BUILTINS)echo.c \
+				$(BUILTINS)cd.c \
+				$(BUILTINS)pwd.c \
 				$(SRC)utils.c \
 				$(SRC)main.c
 
