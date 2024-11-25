@@ -108,7 +108,7 @@ $(OBJ)%.o:		$(SRC)%.c
 # Rule for creating the executable
 $(NAME):		$(OBJS)
 				@make all --no-print-directory -C $(MYLIB_DIR)
-				@echo -n "\n🔗 $(WHITE)Linking $(YELLOW)$(NAME)$(DEFAULT) executable\t\t\t"
+				@echo -n "\n🔗 $(WHITE)Linking $(CYAN)$(NAME)$(DEFAULT) executable\t\t\t"
 				@$(CC) $(CFLAGS) $(OBJS) $(MYLIB) $(READLINE) -o $(NAME)
 				$(PROGRESS_BAR)
 				@echo "$$HEADER"
@@ -119,7 +119,7 @@ all:			$(NAME)
 # Bonus rule
 bonus:			$(OBJS_BONUS)
 				@make all --no-print-directory -C $(MYLIB_DIR)
-				@echo -n "\n🔗 $(WHITE)Linking $(YELLOW)$(NAME_BONUS)$(DEFAULT) executable\t\t"
+				@echo -n "\n🔗 $(WHITE)Linking $(CYAN)$(NAME_BONUS)$(DEFAULT) executable\t\t"
 				@$(CC) $(CFLAGS) $(OBJS_BONUS) $(MYLIB) $(READLINE) -o $(NAME_BONUS)
 				$(PROGRESS_BAR)
 				@echo "$$HEADER"
@@ -135,13 +135,13 @@ clean:
 # Full clean rule (objects files, executable and libraries)
 fclean:
 				@make fclean --no-print-directory -C $(MYLIB_DIR)
-				@echo -n "\n🧹 $(RED)Cleaning up$(DEFAULT) project object files\t\t"
+				@echo -n "\n🧹 $(RED)Cleaning up$(DEFAULT) $(CYAN)$(NAME)$(DEFAULT) object files\t\t"
 				@$(RM) -r $(OBJ)
 				$(PROGRESS_BAR)
-				@echo -n "\n🗑️  $(RED)Deleting $(YELLOW)$(NAME)$(DEFAULT) executable\t\t"
+				@echo -n "\n🗑️  $(RED)Deleting $(CYAN)$(NAME)$(DEFAULT) executable\t\t"
 				@$(RM) $(NAME)
 				$(PROGRESS_BAR)
-				@echo -n "\n🗑️  $(RED)Deleting $(YELLOW)$(NAME_BONUS)$(DEFAULT) executable\t\t"
+				@echo -n "\n🗑️  $(RED)Deleting $(CYAN)$(NAME_BONUS)$(DEFAULT) executable\t\t"
 				@$(RM) $(NAME_BONUS)
 				$(PROGRESS_BAR)
 				@echo ""

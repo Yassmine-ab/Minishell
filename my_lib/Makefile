@@ -120,7 +120,7 @@ $(OBJ)%.o:		$(SRC)%.c
 
 # Rule for creating the library
 $(NAME):		$(OBJS)
-				@echo -n "\n🛠️  $(WHITE)Building $(YELLOW)$(NAME)$(DEFAULT) library\t\t\t"
+				@echo -n "\n🛠️  $(WHITE)Building $(CYAN)$(NAME)$(DEFAULT) library\t\t\t"
 				@$(AR) $(NAME) $(OBJS)
 				$(PROGRESS_BAR)
 
@@ -132,13 +132,13 @@ bonus:			all
 
 # Rule for cleaning up object files
 clean:
-				@echo -n "\n🧹 $(RED)Cleaning up $(YELLOW)$(NAME)$(DEFAULT) object files\t\t"
+				@echo -n "\n🧹 $(RED)Cleaning up $(CYAN)$(NAME)$(DEFAULT) object files\t\t"
 				@$(RM) -r $(OBJ)
 				$(PROGRESS_BAR)
 
 # Full clean rule (objects files and library)
 fclean:			clean
-				@echo -n "\n🗑️  $(RED)Deleting $(YELLOW)$(NAME)$(DEFAULT) library\t\t\t"
+				@echo -n "\n🗑️  $(RED)Deleting $(CYAN)$(NAME)$(DEFAULT) library\t\t\t"
 				@$(RM) $(NAME)
 				$(PROGRESS_BAR)
 
