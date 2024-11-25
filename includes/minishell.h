@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
+/*   By: petitcoeur <petitcoeur@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 02:04:44 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/24 16:56:11 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/11/25 02:53:54 by petitcoeur       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -167,6 +167,14 @@ t_node	*parse_command(int *i, t_minishell *data);
 int		parse_redirection(int *i, t_node **cmd_node, t_minishell *data);
 int		parse_heredoc(int *i, t_node **cmd_node, t_minishell *data);
 t_node	*create_node(t_node_type type, char *value, t_gc *gc);
+
+/* --------------------------------- Exec ----------------------------------- */
+void	execute_ast(t_node *ast, t_minishell *data);
+
+/* ------------------------------- Builtins --------------------------------- */
+void	ft_echo(t_node *cmd_node);
+int		ft_cd(t_node *cmd_node);
+void	ft_pwd(t_node *cmd_node);
 
 /* ------------------------------- Utilities -------------------------------- */
 void	strncat_realloc(char **result, char *append, size_t *size, t_gc *gc);
