@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: petitcoeur <petitcoeur@student.42.fr>      +#+  +:+       +#+        */
+/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 02:04:44 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/25 02:53:54 by petitcoeur       ###   ########.fr       */
+/*   Updated: 2024/11/26 19:02:52 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,19 +69,19 @@
 // TOKEN TYPES ENUM
 typedef enum e_token_type
 {
-	COMMAND,
-	ARGUMENT,
-	PIPE,
-	STDIN,
-	STDOUT,
-	STDOUT_APPEND,
-	FILENAME,
-	HEREDOC,
-	LIMITER,
-	AND,
-	OR,
-	PARENTHESIS_OPEN,
-	PARENTHESIS_CLOSE,
+	COMMAND = (1 << 0),
+	ARGUMENT = (1 << 1),
+	PIPE = (1 << 2),
+	STDIN = (1 << 3),
+	STDOUT = (1 << 4),
+	STDOUT_APPEND = (1 << 5),
+	FILENAME = (1 << 6),
+	HEREDOC = (1 << 7),
+	LIMITER = (1 << 8),
+	AND = (1 << 9),
+	OR = (1 << 10),
+	PARENTHESIS_OPEN = (1 << 11),
+	PARENTHESIS_CLOSE = (1 << 12),
 	END
 }	t_token_type;
 
