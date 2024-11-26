@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: petitcoeur <petitcoeur@student.42.fr>      +#+  +:+       +#+        */
+/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 11:06:43 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/25 03:05:17 by petitcoeur       ###   ########.fr       */
+/*   Updated: 2024/11/25 17:00:05 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,34 +98,3 @@ int	main(int argc, char **argv, char **envp)
 	gc_cleanup(&data.gc);
 	return (0);
 }
-
-// int	main(int argc, char **argv, char **envp)
-// {
-// 	t_minishell	data;
-// 	t_token		*tokens;
-// 	int			i;
-
-// 	(void)argc;
-// 	data_init(argc, argv, envp, &data);
-// 	char *test_inputs[] =
-// 	{
-// 		"ls -la /home/user",
-// 		"cat file.txt | grep \"hello\" | sort",
-// 		"echo \"Hello, world\" > output.txt",
-// 		"echo $HOME",
-// 		"echo \"Outer 'inner single quotes' outer\"",
-// 		"(echo \"start\" && ls) || echo \"failed\"",
-// 		"ls *.txt",
-// 		NULL
-// 	};
-// 	i = -1;
-// 	while (test_inputs[++i])
-// 	{
-// 		printf("Input: %s\n", test_inputs[i]);
-// 		data.current_type = COMMAND;
-// 		// expand_variables(&data);
-// 		tokens = tokenize_input(test_inputs[i], &data);
-// 		print_tokens(tokens);
-// 	}
-// 	return (0);
-// }
