@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 11:06:43 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/25 17:00:05 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/11/27 22:35:02 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ static void	print_ast(t_node *node, int depth)
 		BLUE,
 		MAGENTA,
 		CYAN,
-		WHITE
+		DEFAULT
 	};
 	const char	*color;
 	int			num_colors;
@@ -92,7 +92,7 @@ int	main(int argc, char **argv, char **envp)
 		i = 0;
 		ast_root = parse_expression(&i, &data);
 		print_ast(ast_root, 0);
-		execute_ast(ast_root, &data);
+		// execute_ast(ast_root, &data);
 	}
 	rl_clear_history();
 	gc_cleanup(&data.gc);

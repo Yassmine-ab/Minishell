@@ -6,53 +6,35 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/10 19:30:54 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/24 13:07:17 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/11/27 20:57:07 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static void	process_file(char *value, int *count, t_minishell *data)
-{
-	data->tokens[*count] = create_token(FILENAME, value);
-}
-
-static void	process_limiter(char *value, int *count, t_minishell *data)
-{
-	data->tokens[*count] = create_token(LIMITER, value);
-}
-
-static void	process_command(char *value, int *count, t_minishell *data)
-{
-	if (data->current_type == COMMAND)
-		data->tokens[*count] = create_token(COMMAND, value);
-	else if (data->current_type == ARGUMENT)
-		data->tokens[*count] = create_token(ARGUMENT, value);
-}
-
 void	process_word(char *input, int *i, int *count, t_minishell *data)
 {
 	char		*value;
-	const int	start = *i;
+	char		*temp;
 
+	value = ft_strdup_gc("", &data->gc);
 	while (input[*i] && !ft_isspace(input[*i])
-		&& !ft_strchr("\"'()|<>", input[*i]))
+		&& !ft_strchr("()|<>", input[*i]))
 	{
-		if (input[*i] == '\\' && input[*i + 1]
-			&& ft_strchr("'\"()|<>&", input[*i + 1]))
-			(*i) += 2;
-		else if (input[*i] == '&' && input[*i + 1] && input[*i + 1] == '&')
+		if (input[*i] == '&' && input[*i + 1] && input[*i + 1] == '&')
 			break ;
+		else if (input[*i] == '\'')
+			process_single_quotes(input, i, &value, data);
+		else if (input[*i] == '"')
+			process_double_quotes(input, i, &value, count, data);
 		else
+		{
+			temp = ft_substr_gc(input, *i, 1, &data->gc);
+			value = ft_strjoin_gc(value, temp, &data->gc);
 			(*i)++;
+		}
 	}
-	value = ft_substr_gc(input, start, *i - start, &data->gc);
-	if (data->current_type == FILENAME)
-		process_file(value, count, data);
-	else if (data->current_type == LIMITER)
-		process_limiter(value, count, data);
-	else
-		process_command(value, count, data);
+	data->tokens[*count] = create_token(data->current_type, value);
 	(*count)++;
 	skip_whitespace(&input, i);
 	if (data->current_type == COMMAND)

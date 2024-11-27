@@ -5,11 +5,11 @@
 DEFAULT			= \033[0m
 RED				= \033[1;31m
 GREEN			= \033[1;32m
-LIGHT_GREEN		= \033[0;92m
 YELLOW			= \033[1;33m
 BLUE			= \033[1;34m
 MAGENTA			= \033[1;35m
 CYAN			= \033[1;36m
+LIGHT_CYAN		= \033[1;96m
 WHITE			= \033[1;37m
 
 ################################################################################
@@ -18,17 +18,17 @@ WHITE			= \033[1;37m
 
 define HEADER
 
-$(GREEN)╔════ $(WHITE)by yaabdall & besch$(GREEN) ══════════════════════╗$(DEFAULT)
-$(GREEN)║                                               ║$(DEFAULT)
-$(GREEN)║                          _           _ _      ║$(DEFAULT)
-$(GREEN)║          🌺      🌺     | |         | | |     ║$(DEFAULT)
-$(LIGHT_GREEN)║     ____  _ ____  _  ___| | _   ____| | |     ║$(DEFAULT)
-$(LIGHT_GREEN)║    |    \| |  _ \| |/___| || \ / _  | | |     ║$(DEFAULT)
-$(LIGHT_GREEN)║    | | | | | | | | |___ | | | ( (/ /| | |     ║$(DEFAULT)
-$(LIGHT_GREEN)║    |_|_|_|_|_| |_|_(___/|_| |_|\____|_|_|     ║$(DEFAULT)
-$(WHITE)║                                               ║$(DEFAULT)
-$(WHITE)║                                               ║$(DEFAULT)
-$(WHITE)╚══════════════════════ $(GREEN)by besch & yaabdall$(WHITE) ════╝$(DEFAULT)
+	$(CYAN)╔═══════ $(WHITE)by yaabdall & besch$(CYAN) ══════════════════════════╗$(DEFAULT)
+	$(CYAN)║                                                      ║$(DEFAULT)
+	$(CYAN)║                              _           _ _         ║$(DEFAULT)
+	$(CYAN)║              🌺      🌺     | |         | | |        ║$(DEFAULT)
+	$(LIGHT_CYAN)║         ____  _ ____  _  ___| | _   ____| | |        ║$(DEFAULT)
+	$(LIGHT_CYAN)║        |    \| |  _ \| |/___| || \ / _  | | |        ║$(DEFAULT)
+	$(LIGHT_CYAN)║        | | | | | | | | |___ | | | ( (/ /| | |        ║$(DEFAULT)
+	$(LIGHT_CYAN)║        |_|_|_|_|_| |_|_(___/|_| |_|\____|_|_|        ║$(DEFAULT)
+	$(WHITE)║                                                      ║$(DEFAULT)
+	$(WHITE)║                                                      ║$(DEFAULT)
+	$(WHITE)╚══════════════════════════ $(CYAN)by besch & yaabdall$(WHITE) ═══════╝$(DEFAULT)
 
 endef
 export HEADER
@@ -85,10 +85,10 @@ SRCS =			$(INIT)initialization.c \
 				$(LEXER)parentheses.c \
 				$(LEXER)operators.c \
 				$(LEXER)words.c \
-				$(PARSER)expander.c \
 				$(PARSER)parser.c \
-				$(PARSER)commands.c \
+				$(PARSER)ast.c \
 				$(EXEC)exec.c \
+				$(EXEC)expander.c \
 				$(BUILTINS)echo.c \
 				$(BUILTINS)cd.c \
 				$(BUILTINS)pwd.c \
@@ -116,7 +116,7 @@ $(NAME):		$(OBJS)
 				@echo -n "\n🔗 $(WHITE)Linking $(CYAN)$(NAME)$(DEFAULT) executable\t\t\t"
 				@$(CC) $(CFLAGS) $(OBJS) $(MYLIB) $(READLINE) -o $(NAME)
 				$(PROGRESS_BAR)
-				@echo "$$HEADER"
+				@echo "\n$$HEADER"
 
 # Default rule
 all:			$(NAME)
@@ -127,7 +127,7 @@ bonus:			$(OBJS_BONUS)
 				@echo -n "\n🔗 $(WHITE)Linking $(CYAN)$(NAME_BONUS)$(DEFAULT) executable\t\t"
 				@$(CC) $(CFLAGS) $(OBJS_BONUS) $(MYLIB) $(READLINE) -o $(NAME_BONUS)
 				$(PROGRESS_BAR)
-				@echo "$$HEADER"
+				@echo "\n$$HEADER"
 
 # Rule for cleaning up object files
 clean:

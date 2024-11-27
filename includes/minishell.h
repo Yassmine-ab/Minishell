@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 02:04:44 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/26 19:02:52 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/11/27 23:13:08 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,19 +69,19 @@
 // TOKEN TYPES ENUM
 typedef enum e_token_type
 {
-	COMMAND = (1 << 0),
-	ARGUMENT = (1 << 1),
-	PIPE = (1 << 2),
-	STDIN = (1 << 3),
-	STDOUT = (1 << 4),
-	STDOUT_APPEND = (1 << 5),
-	FILENAME = (1 << 6),
-	HEREDOC = (1 << 7),
-	LIMITER = (1 << 8),
-	AND = (1 << 9),
-	OR = (1 << 10),
-	PARENTHESIS_OPEN = (1 << 11),
-	PARENTHESIS_CLOSE = (1 << 12),
+	COMMAND,
+	ARGUMENT,
+	PIPE,
+	STDIN,
+	STDOUT,
+	STDOUT_APPEND,
+	FILENAME,
+	HEREDOC,
+	LIMITER,
+	AND,
+	OR,
+	PARENTHESIS_OPEN,
+	PARENTHESIS_CLOSE,
 	END
 }	t_token_type;
 
@@ -92,6 +92,7 @@ typedef enum e_node_type
 	NODE_ARG,
 	NODE_PIPE,
 	NODE_REDIR,
+	NODE_FD,
 	NODE_FILE,
 	NODE_HEREDOC,
 	NODE_LIMITER,
@@ -116,6 +117,7 @@ typedef struct s_node
 {
 	t_node_type			type;
 	char				*value;
+	int					fd;
 	struct s_node		*left;
 	struct s_node		*right;
 	struct s_node		*next;
@@ -135,6 +137,8 @@ typedef struct s_minishell
 	int					last_exit_status;
 	pid_t				pid;
 	bool				stop_parenthesis_close;
+	int					error_code;
+	char				*error_message;
 }	t_minishell;
 
 /* -------------------------------------------------------------------------- */
@@ -152,8 +156,8 @@ t_token	*tokenize_input(char *input, t_minishell *data);
 t_token	create_token(t_token_type type, char *value);
 void	free_tokens(t_token *tokens);
 void	skip_whitespace(char **input, int *index);
-void	process_single_quotes(char *input, int *i, int *count, t_minishell *data);
-void	process_double_quotes(char *input, int *i, int *count, t_minishell *data);
+void	process_single_quotes(char *input, int *i, char **value, t_minishell *data);
+void	process_double_quotes(char *input, int *i, char **value, int *count, t_minishell *data);
 void	process_parentheses(char *input, int *i, int *count, t_minishell *data);
 void	process_operator(char *input, int *i, int *count, t_minishell *data);
 void	process_word(char *input, int *i, int *count, t_minishell *data);
@@ -179,5 +183,7 @@ void	ft_pwd(t_node *cmd_node);
 /* ------------------------------- Utilities -------------------------------- */
 void	strncat_realloc(char **result, char *append, size_t *size, t_gc *gc);
 void	error(const char *error_msg, int status, t_gc *gc);
+int		is_number(const char *str);
+int		is_redir_following(int current_index, t_minishell *data);
 
 #endif

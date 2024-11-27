@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 21:42:36 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/24 12:54:25 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/11/27 20:47:48 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,10 +38,6 @@ t_token	*tokenize_input(char *input, t_minishell *data)
 	{
 		if (ft_isspace(input[i]))
 			skip_whitespace(&input, &i);
-		else if (input[i] == '\'')
-			process_single_quotes(input, &i, &count, data);
-		else if (input[i] == '"')
-			process_double_quotes(input, &i, &count, data);
 		else if (ft_strchr("()", input[i]))
 			process_parentheses(input, &i, &count, data);
 		else if (ft_strchr("|<>", input[i])
