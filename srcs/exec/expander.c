@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 21:54:13 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/24 16:54:08 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/02 17:07:39 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -156,4 +156,33 @@ void	expand_variables(t_minishell *data)
 {
 	process_expansion(data, expand_env_variable, '$');
 	process_expansion(data, expand_wildcard, '*');
+}
+char	*expand_variable(char *str, t_minishell *data)
+{
+	char	*result;
+	size_t	result_size;
+	int		i;
+	char	append[2];
+
+	ft_memset(append, 0, 2);
+	result_size = ft_strlen(str) + 1;
+	result = gc_malloc((sizeof(char) * result_size), &data->gc);
+	result[0] = '\0';
+	i = 0;
+	data->line = str;  // Affectez la chaîne actuelle à data->line temporairement
+	while (str[i])
+	{
+		if (str[i] == '$')
+			i = expand_env_variable(&result, &result_size, i, data);
+		else
+		{
+			while (str[i] && str[i] != '$')
+			{
+				append[0] = str[i++];
+				strncat_realloc(&result, append, &result_size, &data->gc);
+			}
+		}
+	}
+	// Vous pouvez ajouter le support des wildcards si nécessaire
+	return (result);
 }

@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 02:04:44 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/27 23:13:08 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/02 17:23:07 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 # include <stdbool.h>
 # include <errno.h>
 # include <sys/types.h>
+# include <sys/wait.h>
 # include <dirent.h>
 # include "get_next_line_bonus.h"
 # include "gc.h"
@@ -61,6 +62,10 @@
 # define MAX_PATHLENGTH 4096
 # define MAX_TOKENS 4096
 # define MAX_MATCHES 4096
+
+// PIPE FILE DESCRIPTORS
+# define READ_END 0
+# define WRITE_END 1
 
 /* -------------------------------------------------------------------------- */
 /*                                   ENUMS                                    */
@@ -110,6 +115,7 @@ typedef struct s_token
 {
 	t_token_type		type;
 	char				*value;
+	bool				flag;
 }	t_token;
 
 // AST NODE STRUCTURE
@@ -118,6 +124,7 @@ typedef struct s_node
 	t_node_type			type;
 	char				*value;
 	int					fd;
+	bool				is_quoted;
 	struct s_node		*left;
 	struct s_node		*right;
 	struct s_node		*next;
@@ -136,9 +143,7 @@ typedef struct s_minishell
 	t_gc				gc;
 	int					last_exit_status;
 	pid_t				pid;
-	bool				stop_parenthesis_close;
-	int					error_code;
-	char				*error_message;
+	int					here_doc[2];
 }	t_minishell;
 
 /* -------------------------------------------------------------------------- */
@@ -163,6 +168,7 @@ void	process_operator(char *input, int *i, int *count, t_minishell *data);
 void	process_word(char *input, int *i, int *count, t_minishell *data);
 
 /* -------------------------------- Parsing --------------------------------- */
+char	*expand_variable(char *str, t_minishell *data);
 void	expand_variables(t_minishell *data);
 int		expand_env_variable(char **result, size_t *size, int i, t_minishell *data);
 int		expand_wildcard(char **result, size_t *size, int i, t_minishell *data);
@@ -174,6 +180,7 @@ t_node	*create_node(t_node_type type, char *value, t_gc *gc);
 
 /* --------------------------------- Exec ----------------------------------- */
 void	execute_ast(t_node *ast, t_minishell *data);
+void	execute_command(t_node *cmd_node, t_minishell *data);
 
 /* ------------------------------- Builtins --------------------------------- */
 void	ft_echo(t_node *cmd_node);
@@ -185,5 +192,6 @@ void	strncat_realloc(char **result, char *append, size_t *size, t_gc *gc);
 void	error(const char *error_msg, int status, t_gc *gc);
 int		is_number(const char *str);
 int		is_redir_following(int current_index, t_minishell *data);
+void	close_fd(int *fd);
 
 #endif

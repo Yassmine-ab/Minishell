@@ -6,11 +6,35 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/10 02:54:14 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/27 20:45:33 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/02 20:18:53 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+static char	*handle_escaped_char(char *input, int *i, t_minishell *data)
+{
+	char	*temp;
+
+	temp = NULL;
+	if (input[*i] == '\\' && input[*i + 1] == '"')
+	{
+		*i += 2;
+		temp = ft_substr_gc(input, *i - 1, 1, &data->gc);
+	}
+	else if (input[*i] == '\\' && input[*i + 1] == '`')
+	{
+		*i += 2;
+		temp = ft_substr_gc(input, *i - 1, 1, &data->gc);
+	}
+	else if (input[*i] == '\\')
+	{
+		*i += 2;
+		temp = ft_substr_gc(input, *i - 1, 1, &data->gc);
+	}
+
+	return (temp);
+}
 
 static int	find_matching_char(char *input, int char_index)
 {
@@ -91,9 +115,8 @@ void	process_backquotes(char *input, int *i, int *count, t_minishell *data)
 
 void	process_double_quotes(char *input, int *i, char **value, int *count, t_minishell *data)
 {
-	int			start;
-	int			end;
-	char		*temp;
+	int		end;
+	char	*temp;
 
 	while (input[*i] == '"')
 	{
@@ -101,16 +124,23 @@ void	process_double_quotes(char *input, int *i, char **value, int *count, t_mini
 		if (end == -1)
 			end = handle_unclosed_char(&input, *i, &data->gc);
 		(*i)++;
-		start = *i;
-		while ((*i)++ < end)
+		while (*i < end)
 		{
-			if (input[*i] == '\\' && (*i + 1 < end) && input[*i + 1] == '`')
-				(*i)++;
+			if (input[*i] == '\\' && (*i + 1 < end))
+			{
+				temp = handle_escaped_char(input, i, data);
+				if (temp)
+					*value = ft_strjoin_gc(*value, temp, &data->gc);
+			}
 			else if (input[*i] == '`')
 				process_backquotes(input, i, count, data);
+			else
+			{
+				temp = ft_substr_gc(input, *i, 1, &data->gc);
+				*value = ft_strjoin_gc(*value, temp, &data->gc);
+				(*i)++;
+			}
 		}
-		temp = ft_substr_gc(input, start, end - start, &data->gc);
-		*value = ft_strjoin_gc(*value, temp, &data->gc);
-		(*i) = end + 1;
+		(*i)++;
 	}
 }

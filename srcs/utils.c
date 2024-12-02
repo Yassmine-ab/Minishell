@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 05:22:40 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/27 23:20:50 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/11/29 17:34:00 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,4 +56,15 @@ int	is_redir_following(int current_index, t_minishell *data)
 		|| data->tokens[next].type == STDOUT_APPEND)
 		return (1);
 	return (0);
+}
+
+void	close_fd(int *fd)
+{
+	if (fd && *fd != -1)
+	{
+		if (close(*fd) == -1)
+			perror("Error closing file descriptor");
+		else
+			*fd = -1;
+	}
 }

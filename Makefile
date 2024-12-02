@@ -21,7 +21,7 @@ define HEADER
 	$(CYAN)╔═══════ $(WHITE)by yaabdall & besch$(CYAN) ══════════════════════════╗$(DEFAULT)
 	$(CYAN)║                                                      ║$(DEFAULT)
 	$(CYAN)║                              _           _ _         ║$(DEFAULT)
-	$(CYAN)║              🌺      🌺     | |         | | |        ║$(DEFAULT)
+	$(CYAN)║              🎯      🎯     | |         | | |        ║$(DEFAULT)
 	$(LIGHT_CYAN)║         ____  _ ____  _  ___| | _   ____| | |        ║$(DEFAULT)
 	$(LIGHT_CYAN)║        |    \| |  _ \| |/___| || \ / _  | | |        ║$(DEFAULT)
 	$(LIGHT_CYAN)║        | | | | | | | | |___ | | | ( (/ /| | |        ║$(DEFAULT)
@@ -89,6 +89,7 @@ SRCS =			$(INIT)initialization.c \
 				$(PARSER)ast.c \
 				$(EXEC)exec.c \
 				$(EXEC)expander.c \
+				$(EXEC)heredoc.c \
 				$(BUILTINS)echo.c \
 				$(BUILTINS)cd.c \
 				$(BUILTINS)pwd.c \

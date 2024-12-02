@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/10 03:27:24 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/24 11:27:58 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/11/29 18:02:33 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,5 +20,7 @@ void	data_init(int argc, char **argv, char **envp, t_minishell *data)
 	data->envp = envp;
 	data->tokens = gc_malloc(sizeof(t_token) * (MAX_TOKENS + 1), &data->gc);
 	data->current_type = COMMAND;
-	data->stop_parenthesis_close = false;
+	data->here_doc[0] = -1;
+	data->here_doc[1] = -1;
+
 }

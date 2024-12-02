@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   prompt.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: petitcoeur <petitcoeur@student.42.fr>      +#+  +:+       +#+        */
+/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/10 03:27:27 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/25 03:24:48 by petitcoeur       ###   ########.fr       */
+/*   Updated: 2024/11/29 15:20:24 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ char	*create_prompt(t_gc *gc)
 		perror("Failed to retrieve USER environment variable");
 		user = "user";
 	}
-	prompt = ft_strjoin_gc(YELLOW "\n", user, gc);
+	prompt = ft_strjoin_gc(CYAN "\n", user, gc);
 	prompt = ft_strjoin_gc(prompt, DEFAULT " in ", gc);
 	prompt = ft_strjoin_gc(prompt, GREEN, gc);
 	prompt = ft_strjoin_gc(prompt, cwd, gc);
