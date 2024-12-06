@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 02:04:44 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/02 17:23:07 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/03 16:59:47 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,13 @@ typedef enum e_token_type
 	PARENTHESIS_CLOSE,
 	END
 }	t_token_type;
+
+typedef enum e_quote_type
+{
+	NO_QUOTE,
+	SINGLE_QUOTE,
+	DOUBLE_QUOTE
+}	t_quote_type;
 
 // AST NODE TYPES ENUM
 typedef enum e_node_type

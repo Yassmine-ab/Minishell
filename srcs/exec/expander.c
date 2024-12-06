@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 21:54:13 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/02 17:07:39 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/05 17:08:57 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,6 @@ int	expand_env_variable(char **result, size_t *size, int i, t_minishell *data)
 
 	if (data->line[++i] == '?')
 		value = ft_itoa_gc(data->last_exit_status, &data->gc);
-	// else if (data->line[i] == '$')
-	// 	value = ft_itoa_gc(data->pid, &data->gc);
 	else if ((ft_isdigit(data->line[i]) && (data->line[i] - '0') < data->argc)
 		|| data->line[i] == '_')
 		value = data->argv[0];
@@ -122,67 +120,44 @@ int	expand_wildcard(char **result, size_t *size, int i, t_minishell *data)
 	return (i);
 }
 
-static void	process_expansion(t_minishell *data, \
+static char	*process_expansion(char *value, t_minishell *data, \
 int (*expander)(char **, size_t *, int, t_minishell *), char expansion_char)
 {
 	char	*result;
-	size_t	result_size;
+	size_t	size;
 	int		i;
 	char	append[2];
 
 	ft_memset(append, 0, 2);
-	result_size = ft_strlen(data->line) + 1;
-	result = gc_malloc((sizeof(char) * result_size), &data->gc);
+	size = ft_strlen(value) + 1;
+	result = gc_malloc((sizeof(char) * size), &data->gc);
 	result[0] = '\0';
 	i = 0;
-	while (data->line[i])
+	while (value[i])
 	{
-		if (data->line[i] == expansion_char)
-			i = expander(&result, &result_size, i, data);
+		if (value[i] == expansion_char)
+			i = expander(&result, &size, i, data);
 		else
 		{
-			while (data->line[i] && data->line[i] != expansion_char)
+			while (value[i] && value[i] != expansion_char)
 			{
-				append[0] = data->line[i++];
-				strncat_realloc(&result, append, &result_size, &data->gc);
+				append[0] = value[i++];
+				strncat_realloc(&result, append, &size, &data->gc);
 			}
 		}
 	}
-	ft_free(&data->line);
-	data->line = result;
-}
-
-void	expand_variables(t_minishell *data)
-{
-	process_expansion(data, expand_env_variable, '$');
-	process_expansion(data, expand_wildcard, '*');
-}
-char	*expand_variable(char *str, t_minishell *data)
-{
-	char	*result;
-	size_t	result_size;
-	int		i;
-	char	append[2];
-
-	ft_memset(append, 0, 2);
-	result_size = ft_strlen(str) + 1;
-	result = gc_malloc((sizeof(char) * result_size), &data->gc);
-	result[0] = '\0';
-	i = 0;
-	data->line = str;  // Affectez la chaîne actuelle à data->line temporairement
-	while (str[i])
-	{
-		if (str[i] == '$')
-			i = expand_env_variable(&result, &result_size, i, data);
-		else
-		{
-			while (str[i] && str[i] != '$')
-			{
-				append[0] = str[i++];
-				strncat_realloc(&result, append, &result_size, &data->gc);
-			}
-		}
-	}
-	// Vous pouvez ajouter le support des wildcards si nécessaire
 	return (result);
 }
+
+void	expand_variables(t_node *node, t_minishell *data)
+{
+	char	*expanded;
+
+	if (!node || !node->value)
+		return ;
+	expanded = process_expansion(node->value, data, expand_env_variable, '$');
+	node->value = expanded;
+	expanded = process_expansion(node->value, data, expand_wildcard, '*');
+	node->value = expanded;
+}
+

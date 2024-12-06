@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/10 19:30:54 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/27 20:57:07 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/05 16:20:45 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,9 +24,13 @@ void	process_word(char *input, int *i, int *count, t_minishell *data)
 		if (input[*i] == '&' && input[*i + 1] && input[*i + 1] == '&')
 			break ;
 		else if (input[*i] == '\'')
+		{
 			process_single_quotes(input, i, &value, data);
+		}
 		else if (input[*i] == '"')
+		{
 			process_double_quotes(input, i, &value, count, data);
+		}
 		else
 		{
 			temp = ft_substr_gc(input, *i, 1, &data->gc);

@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 14:53:50 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/02 17:40:18 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/05 17:10:05 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ void	execute_command(t_node *cmd_node, t_minishell *data)
 	while (node)
 	{
 		if (node->type == NODE_ARG)
-			node->value = expand_variable(node->value, data);
+			expand_variables(node, data);
 		else if (node->type == NODE_HEREDOC)
 		{
 			process_here_doc(node, &hd_pid, data, &status);
