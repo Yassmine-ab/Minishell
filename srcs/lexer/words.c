@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/10 19:30:54 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/05 16:20:45 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/12 04:13:02 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,23 +26,32 @@ void	process_word(char *input, int *i, int *count, t_minishell *data)
 		else if (input[*i] == '\'')
 		{
 			process_single_quotes(input, i, &value, data);
+			break ;
 		}
 		else if (input[*i] == '"')
 		{
 			process_double_quotes(input, i, &value, count, data);
+			break ;
 		}
 		else
 		{
 			temp = ft_substr_gc(input, *i, 1, &data->gc);
 			value = ft_strjoin_gc(value, temp, &data->gc);
 			(*i)++;
+			if (input[*i] == '\'' || input[*i] == '"')
+				break ;
 		}
 	}
 	data->tokens[*count] = create_token(data->current_type, value);
+	if (ft_isspace(input[*i]))
+		data->tokens[*count].space_after = 1;
+	else
+		data->tokens[*count].space_after = 0;
+	if (data->current_type == COMMAND && data->tokens[*count].space_after == 1)
+		data->current_type = ARGUMENT;
+	else if ((data->current_type == FILENAME || data->current_type == LIMITER)
+		&& data->tokens[*count].space_after == 1)
+		data->current_type = COMMAND;
 	(*count)++;
 	skip_whitespace(&input, i);
-	if (data->current_type == COMMAND)
-		data->current_type = ARGUMENT;
-	else if (data->current_type == FILENAME || data->current_type == LIMITER)
-		data->current_type = COMMAND;
 }

@@ -3,40 +3,102 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: petitcoeur <petitcoeur@student.42.fr>      +#+  +:+       +#+        */
+/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 14:04:05 by petitcoeur        #+#    #+#             */
-/*   Updated: 2024/11/25 03:04:52 by petitcoeur       ###   ########.fr       */
+/*   Updated: 2024/12/12 00:52:46 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	execute_ast(t_node *ast, t_minishell *data)
+// Après l'expansion des variables, concaténer les nodes adjacents sans espaces
+static void concatenate_adjacent_nodes(t_node *cmd_node, t_minishell *data)
 {
-	(void)data;
-	if (!ast)
-		return ;
-	if (ast->type == NODE_COMMAND)
+	t_node *current = cmd_node->left;
+	while (current && current->next)
 	{
-		if (ft_strncmp(ast->value, "echo", 5) == 0)
+		if (!current->space_after)
 		{
-			printf("Executing ft_echo\n");
-			ft_echo(ast);
-		}
-		else if (ft_strncmp(ast->value, "cd", 3) == 0)
-		{
-			printf("Executing ft_cd\n");
-			int status = ft_cd(ast);
-			if (status != 0)
-				ft_putstr_fd("Erreur lors de l'exécution de cd\n", STDERR_FILENO);
-		}
-		else if (ft_strncmp(ast->value, "pwd", 4) == 0)
-		{
-			printf("Executing ft_pwd\n");
-			ft_pwd(ast);
+			// Concaténer les valeurs des nodes
+			char *combined = ft_strjoin_gc(current->value, current->next->value, &data->gc);
+			free(current->value);
+			current->value = combined;
+
+			// Supprimer le node suivant
+			t_node *temp = current->next;
+			current->next = temp->next;
+			free(temp->value);
+			free(temp);
 		}
 		else
-			ft_putstr_fd("Commande non reconnue\n", STDERR_FILENO);
+		{
+			current = current->next;
+		}
+	}
+}
+
+void execute_ast(t_node *cmd_node, t_minishell *data)
+{
+	t_node	*current;
+	t_node	*temp;
+	char	*combined;
+
+	if (!cmd_node)
+		return ;
+	while (cmd_node)
+	{
+		if (cmd_node->type == NODE_COMMAND)
+		{
+			expand_variables(cmd_node->left, data);
+			expand_variables(cmd_node, data);
+
+			// Concaténer les nodes adjacents après l'expansion des variables
+			concatenate_adjacent_nodes(cmd_node, data);
+
+			if (cmd_node->left && !cmd_node->space_after)
+			{
+				combined = ft_strjoin_gc(cmd_node->value, cmd_node->left->value, &data->gc);
+				free(cmd_node->value);
+				cmd_node->value = combined;
+				temp = cmd_node->left;
+				cmd_node->left = temp->next;
+				free(temp->value);
+				free(temp);
+			}
+			current = cmd_node->left;
+			while (current && current->next)
+			{
+				if (!current->space_after)
+				{
+					combined = ft_strjoin_gc(current->value, current->next->value, &data->gc);
+					free(current->value);
+					current->value = combined;
+					temp = current->next;
+					current->next = temp->next;
+					free(temp->value);
+					free(temp);
+				}
+				else
+					current = current->next;
+			}
+
+			// Exécuter la commande
+			if (!ft_strncmp(cmd_node->value, "echo", 5))
+				ft_echo(cmd_node);
+			else if (!ft_strncmp(cmd_node->value, "cd", 3))
+				ft_cd(cmd_node);
+			else if (!ft_strncmp(cmd_node->value, "pwd", 4))
+				ft_pwd(cmd_node);
+		}
+		// Gérer le here_doc
+		if (cmd_node->left && cmd_node->left->type == NODE_HEREDOC)
+		{
+			process_here_doc(cmd_node->left, data);
+			if (dup2(data->here_doc[READ_END], STDIN_FILENO) == -1)
+				error("Failed to redirect stdin for heredoc", 1, &data->gc);
+			close_fd(&data->here_doc[READ_END]);
+		}
+		cmd_node = cmd_node->next;
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 02:04:44 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/03 16:59:47 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/12 04:03:28 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@
 # include "get_next_line_bonus.h"
 # include "gc.h"
 # include <fnmatch.h>
+# include <signal.h>
 
 /* -------------------------------------------------------------------------- */
 /*                                  DEFINES                                   */
@@ -90,13 +91,6 @@ typedef enum e_token_type
 	END
 }	t_token_type;
 
-typedef enum e_quote_type
-{
-	NO_QUOTE,
-	SINGLE_QUOTE,
-	DOUBLE_QUOTE
-}	t_quote_type;
-
 // AST NODE TYPES ENUM
 typedef enum e_node_type
 {
@@ -122,7 +116,8 @@ typedef struct s_token
 {
 	t_token_type		type;
 	char				*value;
-	bool				flag;
+	bool				quoted;
+	bool				space_after;
 }	t_token;
 
 // AST NODE STRUCTURE
@@ -131,7 +126,8 @@ typedef struct s_node
 	t_node_type			type;
 	char				*value;
 	int					fd;
-	bool				is_quoted;
+	bool				quoted;
+	bool				space_after;
 	struct s_node		*left;
 	struct s_node		*right;
 	struct s_node		*next;
@@ -149,6 +145,7 @@ typedef struct s_minishell
 	t_node				*node;
 	t_gc				gc;
 	int					last_exit_status;
+	int					open_parentheses;
 	pid_t				pid;
 	int					here_doc[2];
 }	t_minishell;
@@ -176,18 +173,18 @@ void	process_word(char *input, int *i, int *count, t_minishell *data);
 
 /* -------------------------------- Parsing --------------------------------- */
 char	*expand_variable(char *str, t_minishell *data);
-void	expand_variables(t_minishell *data);
-int		expand_env_variable(char **result, size_t *size, int i, t_minishell *data);
-int		expand_wildcard(char **result, size_t *size, int i, t_minishell *data);
+void	expand_variables(t_node *node, t_minishell *data);
+int		expand_env_variable(char **result, size_t *size, int i, char *str, t_minishell *data);
+int		expand_wildcard(char **result, size_t *size, int i, char *str, t_minishell *data);
 t_node	*parse_expression(int *i, t_minishell *data);
 t_node	*parse_command(int *i, t_minishell *data);
 int		parse_redirection(int *i, t_node **cmd_node, t_minishell *data);
 int		parse_heredoc(int *i, t_node **cmd_node, t_minishell *data);
-t_node	*create_node(t_node_type type, char *value, t_gc *gc);
+t_node	*create_node(t_node_type type, t_token token, t_gc *gc);
 
 /* --------------------------------- Exec ----------------------------------- */
+void	process_here_doc(t_node *node, t_minishell *data);
 void	execute_ast(t_node *ast, t_minishell *data);
-void	execute_command(t_node *cmd_node, t_minishell *data);
 
 /* ------------------------------- Builtins --------------------------------- */
 void	ft_echo(t_node *cmd_node);

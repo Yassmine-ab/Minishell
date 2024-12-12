@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 11:06:43 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/02 16:47:45 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/09 23:23:01 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,6 @@ int	main(int argc, char **argv, char **envp)
 		ast_root = parse_expression(&i, &data);
 		print_ast(ast_root, 0);
 		execute_ast(ast_root, &data);
-		execute_command(ast_root, &data);
 	}
 	rl_clear_history();
 	gc_cleanup(&data.gc);

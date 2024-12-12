@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 21:42:36 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/27 20:47:48 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/12 01:16:23 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,13 @@
 
 t_token	create_token(t_token_type type, char *value)
 {
-	t_token	new_token;
+	t_token	token;
 
-	new_token.type = type;
-	new_token.value = value;
-	return (new_token);
+	token.type = type;
+	token.value = value;
+	token.quoted = 0;
+	token.space_after = 1;
+	return (token);
 }
 
 void	skip_whitespace(char **input, int *index)

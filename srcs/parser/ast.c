@@ -6,19 +6,21 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 01:49:39 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/27 23:25:08 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/11 22:11:19 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_node	*create_node(t_node_type type, char *value, t_gc *gc)
+t_node	*create_node(t_node_type type, t_token token, t_gc *gc)
 {
 	t_node	*node;
 
 	node = gc_malloc(sizeof(t_node), gc);
 	node->type = type;
-	node->value = value;
+	node->value = token.value;
+	node->quoted = token.quoted;
+	node->space_after = token.space_after;
 	node->fd = -1;
 	node->left = NULL;
 	node->right = NULL;
@@ -37,7 +39,7 @@ static t_node	*parse_pipeline(int *i, t_minishell *data)
 	{
 		if (left == NULL)
 			error("Missing command before pipe\n", 1, &data->gc);
-		pipe_node = create_node(NODE_PIPE, data->tokens[*i].value, &data->gc);
+		pipe_node = create_node(NODE_PIPE, data->tokens[*i], &data->gc);
 		(*i)++;
 		right = parse_command(i, data);
 		if (right == NULL)
@@ -53,9 +55,14 @@ int	parse_redirection(int *i, t_node **cmd_node, t_minishell *data)
 {
 	t_node	*redir_node;
 	t_node	*file_node;
+	t_node	*fd_node;
 	t_node	*last;
 	int		fd;
+	t_token	token;
 
+	token.value = "";
+	token.quoted = 0;
+	token.space_after = 1;
 	fd = -1;
 	if (data->tokens[*i].type == COMMAND && is_number(data->tokens[*i].value))
 	{
@@ -65,15 +72,18 @@ int	parse_redirection(int *i, t_node **cmd_node, t_minishell *data)
 	if (data->tokens[*i].type != STDOUT && data->tokens[*i].type != STDIN
 		&& data->tokens[*i].type != STDOUT_APPEND)
 		error("Invalid redirection operator\n", 1, &data->gc);
-	redir_node = create_node(NODE_REDIR, data->tokens[(*i)++].value, &data->gc);
+	redir_node = create_node(NODE_REDIR, data->tokens[*i], &data->gc);
+	(*i)++;
 	if (fd != -1)
 	{
-		create_node(NODE_FD, ft_itoa(fd), &data->gc);
+		fd_node = create_node(NODE_FD, token, &data->gc);
+		fd_node->value = ft_itoa(fd);
 		redir_node->fd = fd;
 	}
 	if (data->tokens[*i].type != FILENAME)
 		error ("Expected filename after redirection\n", 1, &data->gc);
-	file_node = create_node(NODE_FILE, data->tokens[(*i)++].value, &data->gc);
+	file_node = create_node(NODE_FILE, data->tokens[*i], &data->gc);
+	(*i)++;
 	redir_node->right = file_node;
 	last = (*cmd_node)->left;
 	if (!last)
@@ -93,10 +103,12 @@ int	parse_heredoc(int *i, t_node **cmd_node, t_minishell *data)
 	t_node	*lim_node;
 	t_node	*last;
 
-	hd_node = create_node(NODE_HEREDOC, data->tokens[(*i)++].value, &data->gc);
+	hd_node = create_node(NODE_HEREDOC, data->tokens[*i], &data->gc);
+	(*i)++;
 	if (data->tokens[*i].type != LIMITER)
 		error ("Expected Limiter after heredoc\n", 1, &data->gc);
-	lim_node = create_node(NODE_LIMITER, data->tokens[(*i)++].value, &data->gc);
+	lim_node = create_node(NODE_LIMITER, data->tokens[*i], &data->gc);
+	(*i)++;
 	hd_node->right = lim_node;
 	last = (*cmd_node)->left;
 	if (!last)
@@ -126,7 +138,8 @@ t_node	*parse_expression(int *i, t_minishell *data)
 			op_type = NODE_AND;
 		else
 			op_type = NODE_OR;
-		op_node = create_node(op_type, data->tokens[(*i)++].value, &data->gc);
+		op_node = create_node(op_type, data->tokens[*i], &data->gc);
+		(*i)++;
 		right = parse_pipeline(i, data);
 		if (right == NULL)
 			error ("Missing operand after operator\n", 1, &data->gc);

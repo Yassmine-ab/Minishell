@@ -6,30 +6,30 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 21:54:13 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/05 17:08:57 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/11 20:30:44 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	expand_env_variable(char **result, size_t *size, int i, t_minishell *data)
+int	expand_env_variable(char **result, size_t *size, int i, char *str, t_minishell *data)
 {
 	char	*var_name;
 	char	*value;
 	int		start;
 
-	if (data->line[++i] == '?')
+	if (str[++i] == '?')
 		value = ft_itoa_gc(data->last_exit_status, &data->gc);
-	else if ((ft_isdigit(data->line[i]) && (data->line[i] - '0') < data->argc)
-		|| data->line[i] == '_')
+	else if ((ft_isdigit(str[i]) && (str[i] - '0') < data->argc)
+		|| str[i] == '_')
 		value = data->argv[0];
-	else if (ft_isalnum(data->line[i]))
+	else if (ft_isalnum(str[i]))
 	{
 		start = i;
-		while (data->line[i] && (ft_isalnum(data->line[i])
-				|| data->line[i] == '_'))
+		while (str[i] && (ft_isalnum(str[i])
+				|| str[i] == '_'))
 			i++;
-		var_name = ft_substr_gc(data->line, start, i - start, &data->gc);
+		var_name = ft_substr_gc(str, start, i - start, &data->gc);
 		value = getenv(var_name);
 		if (!value)
 			value = "";
@@ -91,21 +91,21 @@ static char	**find_wildcard_matches(char *pattern, t_minishell *data)
 	return (matches);
 }
 
-int	expand_wildcard(char **result, size_t *size, int i, t_minishell *data)
+int	expand_wildcard(char **result, size_t *size, int i, char *str, t_minishell *data)
 {
 	char	**matches;
 	int		match_index;
 	char	*pattern;
 	int		start;
 
-	while (i > 0 && !ft_isspace(data->line[i - 1])
-		&& !ft_strchr("\"'()|<>&", data->line[i - 1]))
+	while (i > 0 && !ft_isspace(str[i - 1])
+		&& !ft_strchr("\"'()|<>&", str[i - 1]))
 		i--;
 	start = i;
-	while (data->line[i]
-		&& !ft_isspace(data->line[i]) && !ft_strchr("\"'()|<>&", data->line[i]))
+	while (str[i]
+		&& !ft_isspace(str[i]) && !ft_strchr("\"'()|<>&", str[i]))
 		i++;
-	pattern = ft_substr_gc(data->line, start, i - start, &data->gc);
+	pattern = ft_substr_gc(str, start, i - start, &data->gc);
 	matches = find_wildcard_matches(pattern, data);
 	if (matches)
 	{
@@ -121,12 +121,12 @@ int	expand_wildcard(char **result, size_t *size, int i, t_minishell *data)
 }
 
 static char	*process_expansion(char *value, t_minishell *data, \
-int (*expander)(char **, size_t *, int, t_minishell *), char expansion_char)
+int (*expander)(char **, size_t *, int, char *, t_minishell *), char expansion_char)
 {
 	char	*result;
 	size_t	size;
-	int		i;
 	char	append[2];
+	int		i;
 
 	ft_memset(append, 0, 2);
 	size = ft_strlen(value) + 1;
@@ -136,7 +136,7 @@ int (*expander)(char **, size_t *, int, t_minishell *), char expansion_char)
 	while (value[i])
 	{
 		if (value[i] == expansion_char)
-			i = expander(&result, &size, i, data);
+			i = expander(&result, &size, i, value, data);
 		else
 		{
 			while (value[i] && value[i] != expansion_char)
@@ -160,4 +160,3 @@ void	expand_variables(t_node *node, t_minishell *data)
 	expanded = process_expansion(node->value, data, expand_wildcard, '*');
 	node->value = expanded;
 }
-

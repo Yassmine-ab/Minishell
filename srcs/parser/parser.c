@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 16:44:17 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/27 23:20:09 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/12 00:18:08 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,13 @@
 static t_node	*parse_group(int *i, t_minishell *data)
 {
 	t_node	*group_node;
+	t_token	token;
 
+	token.value = NULL;
+	token.quoted = 0;
+	token.space_after = 1;
 	(*i)++;
-	group_node = create_node(NODE_GROUP, NULL, &data->gc);
+	group_node = create_node(NODE_GROUP, token, &data->gc);
 	group_node->left = parse_expression(i, data);
 	if (!group_node->left)
 		return (gc_free(group_node, &data->gc), NULL);
@@ -34,7 +38,7 @@ static void	parse_arguments(int *i, t_node *cmd_node, t_minishell *data)
 
 	while (data->tokens[*i].type == ARGUMENT)
 	{
-		arg_node = create_node(NODE_ARG, data->tokens[*i].value, &data->gc);
+		arg_node = create_node(NODE_ARG, data->tokens[*i], &data->gc);
 		if (!cmd_node->left)
 			cmd_node->left = arg_node;
 		else
@@ -51,50 +55,74 @@ static void	parse_arguments(int *i, t_node *cmd_node, t_minishell *data)
 static t_node	*parse_simple_command(int *i, t_minishell *data)
 {
 	t_node	*cmd_node;
+	t_token	token;
+	t_node	*new_cmd;
+	t_node	*last_cmd = NULL;
 
-	cmd_node = create_node(NODE_COMMAND, "", &data->gc);
-	while (data->tokens[*i].type == STDOUT || data->tokens[*i].type == STDIN
-		|| data->tokens[*i].type == STDOUT_APPEND
-		|| data->tokens[*i].type == HEREDOC || (data->tokens[*i].type == COMMAND
-		&& is_number(data->tokens[*i].value) && is_redir_following(*i, data)))
+	token.value = "";
+	token.quoted = 0;
+	token.space_after = 1;
+	cmd_node = create_node(NODE_COMMAND, token, &data->gc);
+	while (data->tokens[*i].type == COMMAND)
 	{
-		if (data->tokens[*i].type == STDOUT || data->tokens[*i].type == STDIN
-			|| data->tokens[*i].type == STDOUT_APPEND || (data->tokens[*i].type == COMMAND
-		&& is_number(data->tokens[*i].value) && is_redir_following(*i, data)))
-			parse_redirection(i, &cmd_node, data);
-		else if (data->tokens[*i].type == HEREDOC)
-			parse_heredoc(i, &cmd_node, data);
-	}
-	if (data->tokens[*i].type == COMMAND)
-	{
-		cmd_node->value = data->tokens[(*i)++].value;
+		while (data->tokens[*i].type == STDOUT || data->tokens[*i].type == STDIN
+			|| data->tokens[*i].type == STDOUT_APPEND
+			|| data->tokens[*i].type == HEREDOC
+			|| (data->tokens[*i].type == COMMAND
+				&& is_number(data->tokens[*i].value)
+				&& is_redir_following(*i, data)))
+		{
+			if (data->tokens[*i].type == STDOUT || data->tokens[*i].type == STDIN
+				|| data->tokens[*i].type == STDOUT_APPEND
+				|| (data->tokens[*i].type == COMMAND
+					&& is_number(data->tokens[*i].value)
+					&& is_redir_following(*i, data)))
+				parse_redirection(i, &cmd_node, data);
+			else if (data->tokens[*i].type == HEREDOC)
+				parse_heredoc(i, &cmd_node, data);
+		}
+		new_cmd = create_node(NODE_COMMAND, data->tokens[*i], &data->gc);
+		if (!*cmd_node->value)
+			cmd_node = new_cmd;
+		else
+			last_cmd->next = new_cmd;
+		last_cmd = new_cmd;
+		(*i)++;
 		parse_arguments(i, cmd_node, data);
+		while (data->tokens[*i].type == STDOUT || data->tokens[*i].type == STDIN
+			|| data->tokens[*i].type == STDOUT_APPEND
+			|| data->tokens[*i].type == HEREDOC
+			|| (data->tokens[*i].type == COMMAND
+				&& is_number(data->tokens[*i].value)
+				&& is_redir_following(*i, data)))
+		{
+			if (data->tokens[*i].type == STDOUT || data->tokens[*i].type == STDIN
+				|| data->tokens[*i].type == STDOUT_APPEND
+				|| (data->tokens[*i].type == COMMAND
+					&& is_number(data->tokens[*i].value)
+					&& is_redir_following(*i, data)))
+				parse_redirection(i, &cmd_node, data);
+			else if (data->tokens[*i].type == HEREDOC)
+				parse_heredoc(i, &cmd_node, data);
+		}
 	}
-	else
+	if (!cmd_node)
 		error("Expected command\n", 1, &data->gc);
-	while (data->tokens[*i].type == STDOUT || data->tokens[*i].type == STDIN
-		|| data->tokens[*i].type == STDOUT_APPEND
-		|| data->tokens[*i].type == HEREDOC || (data->tokens[*i].type == COMMAND
-		&& is_number(data->tokens[*i].value) && is_redir_following(*i, data)))
-	{
-		if (data->tokens[*i].type == STDOUT || data->tokens[*i].type == STDIN
-			|| data->tokens[*i].type == STDOUT_APPEND || (data->tokens[*i].type == COMMAND
-		&& is_number(data->tokens[*i].value) && is_redir_following(*i, data)))
-			parse_redirection(i, &cmd_node, data);
-		else if (data->tokens[*i].type == HEREDOC)
-			parse_heredoc(i, &cmd_node, data);
-	}
 	return (cmd_node);
 }
 
 t_node	*parse_command(int *i, t_minishell *data)
 {
-	t_node			*cmd_node;
+	t_node	*cmd_node;
+	t_node	*current;
 
 	if (data->tokens[*i].type == PARENTHESIS_OPEN)
 		cmd_node = parse_group(i, data);
 	else
 		cmd_node = parse_simple_command(i, data);
+	current = cmd_node;
+	while (current->next)
+		current = current->next;
 	if (data->tokens[*i].type == AND || data->tokens[*i].type == OR)
 	{
 		(*i)++;
