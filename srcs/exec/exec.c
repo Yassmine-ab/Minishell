@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
+/*   By: petitcoeur <petitcoeur@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 14:04:05 by petitcoeur        #+#    #+#             */
-/*   Updated: 2024/12/13 19:47:14 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/13 21:50:59 by petitcoeur       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,12 +120,12 @@ static void	concatenate_adjacent_nodes(t_node *node, t_minishell *data)
 		if (!current->space_after)
 		{
 			combined = ft_strjoin_gc(current->value, current->next->value, &data->gc);
-			free(current->value);
+			gc_free(current->value, &data->gc);
 			current->value = combined;
 			temp = current->next;
 			current->next = temp->next;
-			free(temp->value);
-			free(temp);
+			gc_free(temp->value, &data->gc);
+			gc_free(temp, &data->gc);
 		}
 		else
 			current = current->next;

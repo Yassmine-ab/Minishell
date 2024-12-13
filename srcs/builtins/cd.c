@@ -6,38 +6,44 @@
 /*   By: petitcoeur <petitcoeur@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 15:56:51 by besch             #+#    #+#             */
-/*   Updated: 2024/12/13 17:55:02 by petitcoeur       ###   ########.fr       */
+/*   Updated: 2024/12/13 21:34:16 by petitcoeur       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static void	update_pwd(t_minishell *data)
+static void	update_pwd_vars(char *new_path, t_minishell *data)
 {
 	char	*old_path;
-	char	*new_path;
 	int		var_pwd_idx;
 	int		var_old_pwd_idx;
+
+	old_path = get_env_value("PWD", data);
+	if (old_path)
+	{
+		var_pwd_idx = get_env_index("PWD", data);
+		gc_free(data->envp[var_pwd_idx], &data->gc);
+		data->envp[var_pwd_idx] = ft_strjoin_gc("PWD=", new_path, &data->gc);
+	}
+	var_old_pwd_idx = get_env_index("OLDPWD", data);
+	if (var_old_pwd_idx != -1 && old_path)
+	{
+		gc_free(data->envp[var_old_pwd_idx], &data->gc);
+		data->envp[var_old_pwd_idx] = \
+			ft_strjoin_gc("OLDPWD=", old_path, &data->gc);
+		gc_free(old_path, &data->gc);
+	}
+}
+
+static void	update_pwd(t_minishell *data)
+{
+	char	*new_path;
 
 	new_path = getcwd(NULL, 0);
 	if (new_path)
 	{
-		old_path = get_env_value("PWD", data);
-		if (old_path)
-		{
-			var_pwd_idx = get_env_index("PWD", data);
-			gc_free(data->envp[var_pwd_idx], &data->gc);
-			data->envp[var_pwd_idx] = \
-				ft_strjoin_gc("PWD=", new_path, &data->gc);
-		}
-		var_old_pwd_idx = get_env_index("OLDPWD", data);
-		if (var_old_pwd_idx && old_path)
-		{
-			gc_free(data->envp[var_old_pwd_idx], &data->gc);
-			data->envp[var_old_pwd_idx] = ft_strjoin_gc
-				("OLDPWD=", old_path, &data->gc);
-		}
-		(gc_free(old_path, &data->gc), free(new_path));
+		update_pwd_vars(new_path, data);
+		free(new_path);
 		data->last_exit_status = 0;
 		return ;
 	}

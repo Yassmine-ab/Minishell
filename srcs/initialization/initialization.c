@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   initialization.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
+/*   By: petitcoeur <petitcoeur@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/10 03:27:24 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/13 19:49:11 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/13 21:34:32 by petitcoeur       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ void	data_init(int argc, char **argv, char **envp, t_minishell *data)
 	data->here_doc[0] = -1;
 	data->here_doc[1] = -1;
 }
+
 char	**envp_is_null(t_minishell *data)
 {
 	char	**envp;
@@ -44,8 +45,7 @@ char	**envp_is_null(t_minishell *data)
 	path = getcwd(NULL, 0);
 	envp[0] = ft_strjoin_gc("PWD=", path, &data->gc);
 	envp[1] = ft_strdup_gc("SHLVL=1", &data->gc);
-	envp[2] = ft_strdup_gc("_=/usr/bin/env", &data->gc);
-	envp[3] = ft_strdup_gc("OLDPWD", &data->gc);
-	envp[4] = NULL;
+	envp[2] = ft_strdup_gc("OLDPWD", &data->gc);
+	envp[3] = NULL;
 	return (envp);
 }

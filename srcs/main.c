@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
+/*   By: petitcoeur <petitcoeur@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 11:06:43 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/13 19:57:48 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/13 21:34:50 by petitcoeur       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,7 @@ int	main(int argc, char **argv, char **envp)
 				"Running in interactive mode only.\n"), 1);
 	data_init(argc, argv, envp, &data);
 	prompt = create_prompt(&data.gc);
+	init_signal();
 	while (1)
 	{
 		data.line = readline(prompt);
