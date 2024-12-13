@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 05:22:40 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/12 01:33:58 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/13 02:17:25 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ void	error(const char *error_msg, int status, t_gc *gc)
 {
 	(void)gc;
 	dprintf(2, "%s\n", error_msg);
-	// gc_cleanup(gc);
+	gc_cleanup(gc);
 	exit(status);
 }
 

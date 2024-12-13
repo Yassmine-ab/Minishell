@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 14:53:50 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/11 22:17:51 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/13 02:36:51 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,11 +37,16 @@ static void	execute_here_doc(t_node *node, t_minishell *data)
 		close_fd(&data->here_doc[READ_END]);
 		while (1)
 		{
-			write(1, "heredoc > ", 10);
+			ft_putstr_fd("heredoc > ", STDOUT_FILENO);
 			line = get_next_line(STDIN_FILENO);
-			if (!line || (!ft_strncmp(line, limiter, ft_strlen(limiter))
-					&& line[ft_strlen(limiter)] == '\n'))
+			if (!line)
 				break ;
+			if (!ft_strncmp(line, limiter, ft_strlen(limiter))
+				&& line[ft_strlen(limiter)] == '\n')
+			{
+				free(line);
+				break ;
+			}
 			if (node->quoted)
 				node->value = ft_strdup_gc(line, &data->gc);
 			else
@@ -55,7 +60,7 @@ static void	execute_here_doc(t_node *node, t_minishell *data)
 	close_fd(&data->here_doc[WRITE_END]);
 	waitpid(hd_pid, &status, 0);
 	if (WIFEXITED(status))
-		WEXITSTATUS(status);
+		data->heredoc_status = WEXITSTATUS(status);
 }
 
 void	process_here_doc(t_node *node, t_minishell *data)

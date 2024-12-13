@@ -6,44 +6,38 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 14:04:05 by petitcoeur        #+#    #+#             */
-/*   Updated: 2024/12/12 00:52:46 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/13 03:13:03 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-// Après l'expansion des variables, concaténer les nodes adjacents sans espaces
-static void concatenate_adjacent_nodes(t_node *cmd_node, t_minishell *data)
-{
-	t_node *current = cmd_node->left;
-	while (current && current->next)
-	{
-		if (!current->space_after)
-		{
-			// Concaténer les valeurs des nodes
-			char *combined = ft_strjoin_gc(current->value, current->next->value, &data->gc);
-			free(current->value);
-			current->value = combined;
-
-			// Supprimer le node suivant
-			t_node *temp = current->next;
-			current->next = temp->next;
-			free(temp->value);
-			free(temp);
-		}
-		else
-		{
-			current = current->next;
-		}
-	}
-}
-
-void execute_ast(t_node *cmd_node, t_minishell *data)
+static void	concatenate_adjacent_nodes(t_node *node, t_minishell *data)
 {
 	t_node	*current;
 	t_node	*temp;
 	char	*combined;
 
+	current = node;
+	while (current && current->next)
+	{
+		if (!current->space_after)
+		{
+			combined = ft_strjoin_gc(current->value, current->next->value, &data->gc);
+			free(current->value);
+			current->value = combined;
+			temp = current->next;
+			current->next = temp->next;
+			free(temp->value);
+			free(temp);
+		}
+		else
+			current = current->next;
+	}
+}
+
+void execute_ast(t_node *cmd_node, t_minishell *data)
+{
 	if (!cmd_node)
 		return ;
 	while (cmd_node)
@@ -52,38 +46,8 @@ void execute_ast(t_node *cmd_node, t_minishell *data)
 		{
 			expand_variables(cmd_node->left, data);
 			expand_variables(cmd_node, data);
-
-			// Concaténer les nodes adjacents après l'expansion des variables
 			concatenate_adjacent_nodes(cmd_node, data);
-
-			if (cmd_node->left && !cmd_node->space_after)
-			{
-				combined = ft_strjoin_gc(cmd_node->value, cmd_node->left->value, &data->gc);
-				free(cmd_node->value);
-				cmd_node->value = combined;
-				temp = cmd_node->left;
-				cmd_node->left = temp->next;
-				free(temp->value);
-				free(temp);
-			}
-			current = cmd_node->left;
-			while (current && current->next)
-			{
-				if (!current->space_after)
-				{
-					combined = ft_strjoin_gc(current->value, current->next->value, &data->gc);
-					free(current->value);
-					current->value = combined;
-					temp = current->next;
-					current->next = temp->next;
-					free(temp->value);
-					free(temp);
-				}
-				else
-					current = current->next;
-			}
-
-			// Exécuter la commande
+			concatenate_adjacent_nodes(cmd_node->left, data);
 			if (!ft_strncmp(cmd_node->value, "echo", 5))
 				ft_echo(cmd_node);
 			else if (!ft_strncmp(cmd_node->value, "cd", 3))
@@ -91,7 +55,6 @@ void execute_ast(t_node *cmd_node, t_minishell *data)
 			else if (!ft_strncmp(cmd_node->value, "pwd", 4))
 				ft_pwd(cmd_node);
 		}
-		// Gérer le here_doc
 		if (cmd_node->left && cmd_node->left->type == NODE_HEREDOC)
 		{
 			process_here_doc(cmd_node->left, data);

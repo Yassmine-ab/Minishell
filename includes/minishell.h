@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 02:04:44 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/12 04:03:28 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/13 02:37:08 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,6 +144,7 @@ typedef struct s_minishell
 	t_token_type		current_type;
 	t_node				*node;
 	t_gc				gc;
+	int					heredoc_status;
 	int					last_exit_status;
 	int					open_parentheses;
 	pid_t				pid;
@@ -163,10 +164,9 @@ char	*create_prompt(t_gc *gc);
 /* --------------------------------- Lexing --------------------------------- */
 t_token	*tokenize_input(char *input, t_minishell *data);
 t_token	create_token(t_token_type type, char *value);
-void	free_tokens(t_token *tokens);
 void	skip_whitespace(char **input, int *index);
-void	process_single_quotes(char *input, int *i, char **value, t_minishell *data);
-void	process_double_quotes(char *input, int *i, char **value, int *count, t_minishell *data);
+char	*process_single_quotes(char *input, int *i, t_minishell *data);
+char	*process_double_quotes(char *input, int *i, t_minishell *data);
 void	process_parentheses(char *input, int *i, int *count, t_minishell *data);
 void	process_operator(char *input, int *i, int *count, t_minishell *data);
 void	process_word(char *input, int *i, int *count, t_minishell *data);
