@@ -6,7 +6,7 @@
 /*   By: petitcoeur <petitcoeur@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/10 03:27:24 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/13 21:34:32 by petitcoeur       ###   ########.fr       */
+/*   Updated: 2024/12/13 22:00:18 by petitcoeur       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ char	**envp_is_null(t_minishell *data)
 	char	**envp;
 	char	*path;
 
-	envp = gc_malloc(sizeof(char *) * 5, &data->gc);
+	envp = gc_malloc(sizeof(char *) * 4, &data->gc);
 	path = getcwd(NULL, 0);
 	envp[0] = ft_strjoin_gc("PWD=", path, &data->gc);
 	envp[1] = ft_strdup_gc("SHLVL=1", &data->gc);
