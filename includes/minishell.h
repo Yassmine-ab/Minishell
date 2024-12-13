@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 02:04:44 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/13 02:37:08 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/13 19:31:48 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@
 # include "get_next_line_bonus.h"
 # include "gc.h"
 # include <fnmatch.h>
+# include <termios.h>
 # include <signal.h>
 
 /* -------------------------------------------------------------------------- */
@@ -185,11 +186,33 @@ t_node	*create_node(t_node_type type, t_token token, t_gc *gc);
 /* --------------------------------- Exec ----------------------------------- */
 void	process_here_doc(t_node *node, t_minishell *data);
 void	execute_ast(t_node *ast, t_minishell *data);
+void	execute_ast(t_node *ast, t_minishell *data);
+void	execute_command(t_node *cmd_node, t_minishell *data);
+void	execute_builtins(t_node *current, t_minishell *data);
+void	execute_pipe(t_node *ast, t_minishell *data);
+void	execute_and(t_node *ast, t_minishell *data);
+void	execute_or(t_node *ast, t_minishell *data);
+
+/* ------------------------------ Environment ------------------------------- */
+char	**envp_is_null(t_minishell *data);
+void	free_envp(t_minishell *data);
+char	*get_env_value(char *env_key, t_minishell *data);
+int		get_env_index(char *env_key, t_minishell *data);
+void	update_env(char *key, char *new_value, t_minishell *data);
+void	add_env(char *key, char *value, t_minishell *data);
+
+/* -------------------------------- Signal ---------------------------------- */
+void	init_signal(void);
+void	handle_sigint(int sig);
 
 /* ------------------------------- Builtins --------------------------------- */
-void	ft_echo(t_node *cmd_node);
-int		ft_cd(t_node *cmd_node);
-void	ft_pwd(t_node *cmd_node);
+void	ft_echo(t_node *cmd_node, t_minishell *data);
+void	ft_cd(t_node *cmd_node, t_minishell *data);
+void	ft_pwd(t_node *cmd_node, t_minishell *data);
+void	ft_env(t_node *cmd_node, t_minishell *data);
+void	ft_unset(t_node *cmd_node, t_minishell *data);
+void	ft_export(t_node *cmd_node, t_minishell *data);
+void	ft_exit(t_node *cmd_node, t_minishell *data);
 
 /* ------------------------------- Utilities -------------------------------- */
 void	strncat_realloc(char **result, char *append, size_t *size, t_gc *gc);
@@ -197,5 +220,6 @@ void	error(const char *error_msg, int status, t_gc *gc);
 int		is_number(const char *str);
 int		is_redir_following(int current_index, t_minishell *data);
 void	close_fd(int *fd);
+void	bubble_sort(char **array, int size);
 
 #endif

@@ -69,6 +69,8 @@ LEXER =			$(SRC)lexer/
 PARSER =		$(SRC)parser/
 EXEC =			$(SRC)exec/
 BUILTINS =		$(SRC)builtins/
+ENV =			$(SRC)environment/
+SIGNAL =		$(SRC)signal/
 OBJ =			./objs/
 MYLIB_DIR =		./my_lib/
 INCLUDES =		./includes/ $(MYLIB_DIR)includes/
@@ -90,9 +92,15 @@ SRCS =			$(INIT)initialization.c \
 				$(EXEC)exec.c \
 				$(EXEC)expander.c \
 				$(EXEC)heredoc.c \
+				$(ENV)environment.c \
+				$(SIGNAL)signal.c \
 				$(BUILTINS)echo.c \
 				$(BUILTINS)cd.c \
 				$(BUILTINS)pwd.c \
+				$(BUILTINS)env.c \
+				$(BUILTINS)unset.c \
+				$(BUILTINS)export.c \
+				$(BUILTINS)exit.c \
 				$(SRC)utils.c \
 				$(SRC)main.c
 

@@ -81,6 +81,7 @@ SRCS =	       	$(LIBFT)ft_strchr.c \
         	    $(LIBFT)ft_memcpy.c \
         	    $(LIBFT)ft_memmove.c \
         	    $(LIBFT)ft_strjoin.c \
+				$(LIBFT)ft_tabstrlen.c \
 				$(LIBFT)ft_lstadd_back_bonus.c \
         	    $(LIBFT)ft_lstsize_bonus.c \
 				$(LIBFT)ft_lstlast_bonus.c \
@@ -103,7 +104,7 @@ SRCS =	       	$(LIBFT)ft_strchr.c \
 				$(GC)ft_substr_gc.c \
 				$(GC)ft_strjoin_gc.c \
 				$(GC)ft_strdup_gc.c \
-				$(GC)ft_itoa_gc.c
+				$(GC)ft_itoa_gc.c 
 
 # Converts source file paths to object file paths
 OBJS = $(patsubst $(SRC)%, $(OBJ)%, $(SRCS:.c=.o))
