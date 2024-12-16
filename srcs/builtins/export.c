@@ -55,6 +55,7 @@ static void	handle_export_with_value(char *arg, t_minishell *data)
 	char	*key;
 	char	*value;
 	char	*equal_sign;
+	// int		is_new;
 
 	equal_sign = ft_strchr(arg, '=');
 	key = ft_substr_gc(arg, 0, equal_sign - arg, &data->gc);
@@ -63,6 +64,8 @@ static void	handle_export_with_value(char *arg, t_minishell *data)
 		value = ft_strdup_gc(equal_sign + 1, &data->gc);
 		if (!value)
 			value = ft_strdup_gc("", &data->gc);
+		// is_new = get_env_index(key, data);
+		// if (is_new == -1)
 		if (get_env_index(key, data) == -1)
 			add_env(key, value, data);
 		else

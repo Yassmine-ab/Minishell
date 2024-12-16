@@ -135,7 +135,6 @@ void	execute_ast(t_node *ast, t_minishell *data)
 {
 	if (!ast)
 		return ;
-
 	while (ast)
 	{
 		if (ast->type == NODE_COMMAND)
