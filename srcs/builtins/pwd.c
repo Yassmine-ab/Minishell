@@ -6,18 +6,37 @@
 /*   By: petitcoeur <petitcoeur@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 15:57:04 by besch             #+#    #+#             */
-/*   Updated: 2024/12/13 09:08:51 by petitcoeur       ###   ########.fr       */
+/*   Updated: 2024/12/16 03:36:26 by petitcoeur       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+static void	pwd_invalid_option(char *key, t_minishell *data)
+{
+	ft_putstr_fd("pwd: ", STDERR_FILENO);
+	ft_putchar_fd(key[0], STDERR_FILENO);
+	ft_putchar_fd(key[1], STDERR_FILENO);
+	ft_putstr_fd(": invalid option\n", STDERR_FILENO);
+	ft_putstr_fd("usage: pwd [-LP]\n", STDERR_FILENO);
+	data->last_exit_status = 2;
+}
+
 void	ft_pwd(t_node *cmd_node, t_minishell *data)
 {
 	char	*path;
 
-	(void)data;
-	(void)cmd_node;
+	if (cmd_node->left)
+	{
+		if ((cmd_node->left->value[0] == '-' && cmd_node->left->value[1]
+				&& cmd_node->left->value[1] != '-')
+			|| (cmd_node->left->value[0] == '-'
+				&& cmd_node->left->value[1] == '-' && cmd_node->left->value[2]))
+		{
+			pwd_invalid_option(cmd_node->left->value, data);
+			return ;
+		}
+	}
 	path = getcwd(NULL, 0);
 	if (path)
 	{

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
+/*   By: petitcoeur <petitcoeur@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 02:04:44 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/13 19:31:48 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/16 03:01:29 by petitcoeur       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -220,6 +220,6 @@ void	error(const char *error_msg, int status, t_gc *gc);
 int		is_number(const char *str);
 int		is_redir_following(int current_index, t_minishell *data);
 void	close_fd(int *fd);
-void	bubble_sort(char **array, int size);
+void	print_export(t_minishell *data);
 
 #endif

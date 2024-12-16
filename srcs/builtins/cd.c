@@ -6,7 +6,7 @@
 /*   By: petitcoeur <petitcoeur@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 15:56:51 by besch             #+#    #+#             */
-/*   Updated: 2024/12/13 21:34:16 by petitcoeur       ###   ########.fr       */
+/*   Updated: 2024/12/16 03:40:02 by petitcoeur       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,12 @@ void	ft_cd(t_node *cmd_node, t_minishell *data)
 			data->last_exit_status = 1;
 			return ;
 		}
+	}
+	else if (cmd_node->left->next)
+	{
+		ft_putstr_fd("cd: too many arguments\n", STDERR_FILENO);
+		data->last_exit_status = 1;
+		return ;
 	}
 	else
 		path = cmd_node->left->value;
