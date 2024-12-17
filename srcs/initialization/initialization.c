@@ -3,14 +3,28 @@
 /*                                                        :::      ::::::::   */
 /*   initialization.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: petitcoeur <petitcoeur@student.42.fr>      +#+  +:+       +#+        */
+/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/10 03:27:24 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/13 22:00:18 by petitcoeur       ###   ########.fr       */
+/*   Updated: 2024/12/14 04:08:48 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+static char	**envp_is_null(t_minishell *data)
+{
+	char	**envp;
+	char	*path;
+
+	envp = gc_malloc(sizeof(char *) * 4, &data->gc);
+	path = getcwd(NULL, 0);
+	envp[0] = ft_strjoin_gc("PWD=", path, &data->gc);
+	envp[1] = ft_strdup_gc("SHLVL=1", &data->gc);
+	envp[2] = ft_strdup_gc("OLDPWD", &data->gc);
+	envp[3] = NULL;
+	return (envp);
+}
 
 void	data_init(int argc, char **argv, char **envp, t_minishell *data)
 {
@@ -34,18 +48,4 @@ void	data_init(int argc, char **argv, char **envp, t_minishell *data)
 	data->current_type = COMMAND;
 	data->here_doc[0] = -1;
 	data->here_doc[1] = -1;
-}
-
-char	**envp_is_null(t_minishell *data)
-{
-	char	**envp;
-	char	*path;
-
-	envp = gc_malloc(sizeof(char *) * 4, &data->gc);
-	path = getcwd(NULL, 0);
-	envp[0] = ft_strjoin_gc("PWD=", path, &data->gc);
-	envp[1] = ft_strdup_gc("SHLVL=1", &data->gc);
-	envp[2] = ft_strdup_gc("OLDPWD", &data->gc);
-	envp[3] = NULL;
-	return (envp);
 }

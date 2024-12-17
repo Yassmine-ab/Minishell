@@ -3,38 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: petitcoeur <petitcoeur@student.42.fr>      +#+  +:+       +#+        */
+/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 15:58:01 by besch             #+#    #+#             */
-/*   Updated: 2024/12/13 16:18:42 by petitcoeur       ###   ########.fr       */
+/*   Updated: 2024/12/16 03:43:18 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-/* Je l'ai foutu la mais il sert pour export
-j'voulais juste pas creer un fichier que pour ca */
-void	bubble_sort(char **envp, int size)
-{
-	char	*temp;
-	int		i;
-	int		j;
-
-	i = -1;
-	while (++i < size - 1)
-	{
-		j = -1;
-		while (++j < size - 1 - i)
-		{
-			if (ft_strncmp(envp[j], envp[j + 1], ft_strlen(envp[j]) + 1) > 0)
-			{
-				temp = envp[j];
-				envp[j] = envp[j + 1];
-				envp[j + 1] = temp;
-			}
-		}
-	}
-}
 
 void	ft_env(t_node *cmd_node, t_minishell *data)
 {

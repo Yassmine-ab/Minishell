@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 16:44:17 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/13 03:22:43 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/16 01:57:36 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,19 +35,19 @@ static t_node	*parse_group(int *i, t_minishell *data)
 static void	parse_arguments(int *i, t_node *cmd_node, t_minishell *data)
 {
 	t_node	*arg_node;
-	t_node	*last;
+	t_node	*last_arg;
 
 	while (data->tokens[*i].type == ARGUMENT)
 	{
 		arg_node = create_node(NODE_ARG, data->tokens[*i], &data->gc);
-		if (!cmd_node->left)
-			cmd_node->left = arg_node;
+		if (!cmd_node->args)
+			cmd_node->args = arg_node;
 		else
 		{
-			last = cmd_node->left;
-			while (last->next)
-				last = last->next;
-			last->next = arg_node;
+			last_arg = cmd_node->args;
+			while (last_arg->next)
+				last_arg = last_arg->next;
+			last_arg->next = arg_node;
 		}
 		(*i)++;
 	}

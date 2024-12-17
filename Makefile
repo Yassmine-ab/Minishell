@@ -67,7 +67,7 @@ SRC =			./srcs/
 INIT =			$(SRC)initialization/
 LEXER =			$(SRC)lexer/
 PARSER =		$(SRC)parser/
-EXEC =			$(SRC)exec/
+EXEC =			$(SRC)executor/
 BUILTINS =		$(SRC)builtins/
 ENV =			$(SRC)environment/
 SIGNAL =		$(SRC)signal/
@@ -89,9 +89,12 @@ SRCS =			$(INIT)initialization.c \
 				$(LEXER)words.c \
 				$(PARSER)parser.c \
 				$(PARSER)ast.c \
+				$(PARSER)parser_utils.c \
 				$(EXEC)exec.c \
 				$(EXEC)expander.c \
-				$(EXEC)heredoc.c \
+				$(EXEC)command.c \
+				$(EXEC)redirections.c \
+				$(EXEC)exec_utils.c \
 				$(ENV)environment.c \
 				$(SIGNAL)signal.c \
 				$(BUILTINS)echo.c \
@@ -101,7 +104,6 @@ SRCS =			$(INIT)initialization.c \
 				$(BUILTINS)unset.c \
 				$(BUILTINS)export.c \
 				$(BUILTINS)exit.c \
-				$(SRC)utils.c \
 				$(SRC)main.c
 
 SRCS_BONUS =	$(SRC)main_bonus.c

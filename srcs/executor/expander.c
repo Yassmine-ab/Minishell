@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 21:54:13 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/11 20:30:44 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/15 01:28:48 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,14 +149,10 @@ int (*expander)(char **, size_t *, int, char *, t_minishell *), char expansion_c
 	return (result);
 }
 
-void	expand_variables(t_node *node, t_minishell *data)
+void	expand_variables(char *value, t_minishell *data)
 {
-	char	*expanded;
-
-	if (!node || !node->value)
+	if (!value)
 		return ;
-	expanded = process_expansion(node->value, data, expand_env_variable, '$');
-	node->value = expanded;
-	expanded = process_expansion(node->value, data, expand_wildcard, '*');
-	node->value = expanded;
+	value = process_expansion(value, data, expand_env_variable, '$');
+	value = process_expansion(value, data, expand_wildcard, '*');
 }

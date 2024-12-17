@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 01:49:39 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/12 21:35:45 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/16 02:04:12 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,8 @@ t_node	*create_node(t_node_type type, t_token token, t_gc *gc)
 	node->fd = -1;
 	node->left = NULL;
 	node->right = NULL;
+	node->args = NULL;
+	node->redirections = NULL;
 	node->next = NULL;
 	return (node);
 }
@@ -56,7 +58,7 @@ int	parse_redirection(int *i, t_node **cmd_node, t_minishell *data)
 	t_node	*redir_node;
 	t_node	*file_node;
 	t_node	*fd_node;
-	t_node	*last;
+	t_node	*last_redir;
 	int		fd;
 	t_token	token;
 
@@ -85,14 +87,14 @@ int	parse_redirection(int *i, t_node **cmd_node, t_minishell *data)
 	file_node = create_node(NODE_FILE, data->tokens[*i], &data->gc);
 	(*i)++;
 	redir_node->right = file_node;
-	last = (*cmd_node)->left;
-	if (!last)
-		(*cmd_node)->left = redir_node;
+	last_redir = (*cmd_node)->redirections;
+	if (!last_redir)
+		(*cmd_node)->redirections = redir_node;
 	else
 	{
-		while (last->next)
-			last = last->next;
-		last->next = redir_node;
+		while (last_redir->next)
+			last_redir = last_redir->next;
+		last_redir->next = redir_node;
 	}
 	return (1);
 }
@@ -101,7 +103,7 @@ int	parse_heredoc(int *i, t_node **cmd_node, t_minishell *data)
 {
 	t_node	*hd_node;
 	t_node	*lim_node;
-	t_node	*last;
+	t_node	*last_redir;
 
 	hd_node = create_node(NODE_HEREDOC, data->tokens[*i], &data->gc);
 	(*i)++;
@@ -110,14 +112,14 @@ int	parse_heredoc(int *i, t_node **cmd_node, t_minishell *data)
 	lim_node = create_node(NODE_LIMITER, data->tokens[*i], &data->gc);
 	(*i)++;
 	hd_node->right = lim_node;
-	last = (*cmd_node)->left;
-	if (!last)
-		(*cmd_node)->left = hd_node;
+	if (!(*cmd_node)->redirections)
+		(*cmd_node)->redirections = hd_node;
 	else
 	{
-		while (last->next)
-			last = last->next;
-		last->next = hd_node;
+		last_redir = (*cmd_node)->redirections;
+		while (last_redir->next)
+			last_redir = last_redir->next;
+		last_redir->next = hd_node;
 	}
 	return (1);
 }
