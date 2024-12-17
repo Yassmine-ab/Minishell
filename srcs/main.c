@@ -62,11 +62,52 @@ static void	print_ast(t_node *node, int depth)
 	printf(DEFAULT);
 }
 
+// int	main(int argc, char **argv, char **envp)
+// {
+// 	t_minishell	data;
+// 	const char	*prompt;
+// 	// t_token		*tokens;
+// 	t_node		*ast_root;
+// 	int			i;
+
+// 	if (argc > 1)
+// 		return (printf("Minishell does" RED " not " DEFAULT "accept arguments. "
+// 				"Running in interactive mode only.\n"), 1);
+// 	data_init(argc, argv, envp, &data);
+// 	prompt = create_prompt(&data.gc);
+// 	init_signal();
+// 	while (1)
+// 	{
+// 		data.line = readline(prompt);
+// 		if (!data.line)
+// 			break ;
+// 		else if (data.line[0] == EOF || data.line[0] == '\0')
+// 		{
+// 			ft_free(&data.line);
+// 			break ;
+// 		}
+// 		add_history(data.line);
+// 		data.current_type = COMMAND;
+// 		tokenize_input(data.line, &data);
+// 		// print_tokens(tokens);
+// 		i = 0;
+// 		ast_root = parse_expression(&i, &data);
+// 		// print_ast(ast_root, 0);
+// 		execute_ast(ast_root, &data);
+// 	}
+// 	rl_clear_history();
+// 	gc_cleanup(&data.gc);
+// 	return (0);
+// }
+
 int	main(int argc, char **argv, char **envp)
 {
 	t_minishell	data;
 	const char	*prompt;
+<<<<<<< HEAD
 	t_token		*tokens;
+=======
+>>>>>>> 211797b3f769c80fddcb0e312b865f84358de7ff
 	t_node		*ast_root;
 	int			i;
 
@@ -81,11 +122,16 @@ int	main(int argc, char **argv, char **envp)
 		data.line = readline(prompt);
 		if (!data.line)
 			break ;
-		else if (data.line[0] == EOF || data.line[0] == '\0')
+		if (data.line[0] != '\0')
 		{
-			ft_free(&data.line);
-			break ;
+			add_history(data.line);
+			data.current_type = COMMAND;
+			tokenize_input(data.line, &data);
+			i = 0;
+			ast_root = parse_expression(&i, &data);
+			execute_ast(ast_root, &data);
 		}
+<<<<<<< HEAD
 		add_history(data.line);
 		data.current_type = COMMAND;
 		tokens = tokenize_input(data.line, &data);
@@ -94,6 +140,9 @@ int	main(int argc, char **argv, char **envp)
 		ast_root = parse_expression(&i, &data);
 		print_ast(ast_root, 0);
 		execute_ast(ast_root, &data);
+=======
+		ft_free(&data.line);
+>>>>>>> 211797b3f769c80fddcb0e312b865f84358de7ff
 	}
 	rl_clear_history();
 	gc_cleanup(&data.gc);

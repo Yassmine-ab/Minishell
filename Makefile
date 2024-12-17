@@ -103,6 +103,7 @@ SRCS =			$(INIT)initialization.c \
 				$(BUILTINS)env.c \
 				$(BUILTINS)unset.c \
 				$(BUILTINS)export.c \
+				$(BUILTINS)export_utils.c \
 				$(BUILTINS)exit.c \
 				$(SRC)main.c
 

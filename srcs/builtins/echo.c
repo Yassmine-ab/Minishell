@@ -6,11 +6,24 @@
 /*   By: petitcoeur <petitcoeur@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 15:56:38 by besch             #+#    #+#             */
-/*   Updated: 2024/12/13 05:13:41 by petitcoeur       ###   ########.fr       */
+/*   Updated: 2024/12/16 02:33:34 by petitcoeur       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+static int	is_valid_n_flag(const char *arg)
+{
+	int	i;
+
+	if (!arg || arg[0] != '-' || arg[1] != 'n')
+		return (0);
+	i = 1;
+	while (arg[++i])
+		if (arg[i] != 'n')
+			return (0);
+	return (1);
+}
 
 void	ft_echo(t_node *cmd_node, t_minishell *data)
 {
@@ -20,7 +33,7 @@ void	ft_echo(t_node *cmd_node, t_minishell *data)
 	newline = 1;
 	while (cmd_node->left && cmd_node->left->type == NODE_ARG
 		&& cmd_node->left->value
-		&& ft_strncmp(cmd_node->left->value, "-n", 3) == 0)
+		&& is_valid_n_flag(cmd_node->left->value))
 	{
 		newline = 0;
 		cmd_node->left = cmd_node->left->next;

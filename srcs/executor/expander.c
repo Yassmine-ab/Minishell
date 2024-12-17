@@ -12,7 +12,8 @@
 
 #include "minishell.h"
 
-int	expand_env_variable(char **result, size_t *size, int i, char *str, t_minishell *data)
+int	expand_env_variable(char **result, size_t *size, \
+	int i, char *str, t_minishell *data)
 {
 	char	*var_name;
 	char	*value;
@@ -30,7 +31,7 @@ int	expand_env_variable(char **result, size_t *size, int i, char *str, t_minishe
 				|| str[i] == '_'))
 			i++;
 		var_name = ft_substr_gc(str, start, i - start, &data->gc);
-		value = getenv(var_name);
+		value = get_env_value(var_name, data);
 		if (!value)
 			value = "";
 		i--;
@@ -121,7 +122,8 @@ int	expand_wildcard(char **result, size_t *size, int i, char *str, t_minishell *
 }
 
 static char	*process_expansion(char *value, t_minishell *data, \
-int (*expander)(char **, size_t *, int, char *, t_minishell *), char expansion_char)
+int (*expander)(char **, size_t *, int, char *, t_minishell *), \
+char expansion_char)
 {
 	char	*result;
 	size_t	size;
@@ -153,6 +155,15 @@ void	expand_variables(char *value, t_minishell *data)
 {
 	if (!value)
 		return ;
+<<<<<<< HEAD:srcs/executor/expander.c
 	value = process_expansion(value, data, expand_env_variable, '$');
 	value = process_expansion(value, data, expand_wildcard, '*');
+=======
+	expanded = process_expansion(node->value, data, expand_env_variable, '$');
+	gc_free(node->value, &data->gc);
+	node->value = expanded;
+	expanded = process_expansion(node->value, data, expand_wildcard, '*');
+	gc_free(node->value, &data->gc);
+	node->value = expanded;
+>>>>>>> 211797b3f769c80fddcb0e312b865f84358de7ff:srcs/exec/expander.c
 }

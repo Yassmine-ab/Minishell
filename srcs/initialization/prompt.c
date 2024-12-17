@@ -29,7 +29,8 @@ char	*create_prompt(t_gc *gc)
 		perror("Failed to retrieve USER environment variable");
 		user = "user";
 	}
-	prompt = ft_strjoin_gc(CYAN "\n", user, gc);
+	user = ft_strjoin_gc(CYAN, user, gc);
+	prompt = ft_strjoin_gc("", user, gc);
 	prompt = ft_strjoin_gc(prompt, DEFAULT " in ", gc);
 	prompt = ft_strjoin_gc(prompt, GREEN, gc);
 	prompt = ft_strjoin_gc(prompt, cwd, gc);

@@ -6,7 +6,7 @@
 /*   By: petitcoeur <petitcoeur@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 15:58:18 by besch             #+#    #+#             */
-/*   Updated: 2024/12/13 10:28:10 by petitcoeur       ###   ########.fr       */
+/*   Updated: 2024/12/16 03:46:37 by petitcoeur       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ static int	is_numeric(char *nb)
 		i++;
 	while (nb[i])
 	{
-		if (ft_isdigit(nb[i]) == 0)
+		if (!ft_isdigit(nb[i]))
 			return (1);
 		i++;
 	}
