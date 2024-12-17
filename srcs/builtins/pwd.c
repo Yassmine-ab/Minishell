@@ -22,18 +22,18 @@ static void	pwd_invalid_option(char *key, t_minishell *data)
 	data->last_exit_status = 2;
 }
 
-void	ft_pwd(t_node *cmd_node, t_minishell *data)
+void	ft_pwd(t_node *cmd_args, t_minishell *data)
 {
 	char	*path;
 
-	if (cmd_node->left)
+	if (cmd_args)
 	{
-		if ((cmd_node->left->value[0] == '-' && cmd_node->left->value[1]
-				&& cmd_node->left->value[1] != '-')
-			|| (cmd_node->left->value[0] == '-'
-				&& cmd_node->left->value[1] == '-' && cmd_node->left->value[2]))
+		if ((cmd_args->value[0] == '-' && cmd_args->value[1]
+				&& cmd_args->value[1] != '-')
+			|| (cmd_args->value[0] == '-'
+				&& cmd_args->value[1] == '-' && cmd_args->value[2]))
 		{
-			pwd_invalid_option(cmd_node->left->value, data);
+			pwd_invalid_option(cmd_args->value, data);
 			return ;
 		}
 	}

@@ -55,7 +55,6 @@ static void	handle_export_with_value(char *arg, t_minishell *data)
 	char	*key;
 	char	*value;
 	char	*equal_sign;
-	// int		is_new;
 
 	equal_sign = ft_strchr(arg, '=');
 	key = ft_substr_gc(arg, 0, equal_sign - arg, &data->gc);
@@ -64,8 +63,6 @@ static void	handle_export_with_value(char *arg, t_minishell *data)
 		value = ft_strdup_gc(equal_sign + 1, &data->gc);
 		if (!value)
 			value = ft_strdup_gc("", &data->gc);
-		// is_new = get_env_index(key, data);
-		// if (is_new == -1)
 		if (get_env_index(key, data) == -1)
 			add_env(key, value, data);
 		else
@@ -74,17 +71,17 @@ static void	handle_export_with_value(char *arg, t_minishell *data)
 	(gc_free(key, &data->gc), gc_free(value, &data->gc));
 }
 
-void	ft_export(t_node *cmd_node, t_minishell *data)
+void	ft_export(t_node *cmd_args, t_minishell *data)
 {
 	char	*arg;
 	char	*equal_sign;
 	char	*key;
 
-	if (!cmd_node->left)
+	if (!cmd_args)
 		print_export(data);
-	while (cmd_node->left)
+	while (cmd_args)
 	{
-		arg = cmd_node->left->value;
+		arg = cmd_args->value;
 		equal_sign = ft_strchr(arg, '=');
 		if (!equal_sign)
 		{
@@ -98,6 +95,6 @@ void	ft_export(t_node *cmd_node, t_minishell *data)
 		}
 		else
 			handle_export_with_value(arg, data);
-		cmd_node->left = cmd_node->left->next;
+		cmd_args = cmd_args->next;
 	}
 }

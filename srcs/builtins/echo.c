@@ -25,25 +25,24 @@ static int	is_valid_n_flag(const char *arg)
 	return (1);
 }
 
-void	ft_echo(t_node *cmd_node, t_minishell *data)
+void	ft_echo(t_node *cmd_args, t_minishell *data)
 {
 	int		newline;
 
 	(void)data;
 	newline = 1;
-	while (cmd_node->left && cmd_node->left->type == NODE_ARG
-		&& cmd_node->left->value
-		&& is_valid_n_flag(cmd_node->left->value))
+	while (cmd_args && cmd_args->value
+		&& is_valid_n_flag(cmd_args->value))
 	{
 		newline = 0;
-		cmd_node->left = cmd_node->left->next;
+		cmd_args = cmd_args->next;
 	}
-	while (cmd_node->left)
+	while (cmd_args)
 	{
-		ft_putstr_fd(cmd_node->left->value, STDOUT_FILENO);
-		if (cmd_node->left->next)
+		ft_putstr_fd(cmd_args->value, STDOUT_FILENO);
+		if (cmd_args->next)
 			ft_putchar_fd(' ', STDOUT_FILENO);
-		cmd_node->left = cmd_node->left->next;
+		cmd_args = cmd_args->next;
 	}
 	if (newline)
 		ft_putchar_fd('\n', STDOUT_FILENO);

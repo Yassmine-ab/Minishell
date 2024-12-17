@@ -12,12 +12,12 @@
 
 #include "minishell.h"
 
-void	ft_env(t_node *cmd_node, t_minishell *data)
+void	ft_env(t_node *cmd_args, t_minishell *data)
 {
 	char	*equal_sign;
 	int		i;
 
-	if (cmd_node->left)
+	if (cmd_args)
 	{
 		ft_putstr_fd("env: too many arguments\n", STDERR_FILENO);
 		data->last_exit_status = 1;

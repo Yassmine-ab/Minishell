@@ -184,7 +184,7 @@ void	execute_ast(t_node *ast, t_minishell *data);
 void	execute_command(t_node *cmd_node, t_minishell *data);
 void	execute_heredoc(t_node *ast, t_minishell *data, bool apply_dup2);
 void	execute_redirections(t_node *redir_node, t_minishell *data, bool apply_dup2);
-void	expand_variables(char *value, t_minishell *data);
+char	*expand_variables(char *value, t_minishell *data);
 int		expand_env_variable(char **result, size_t *size, int i, char *str, t_minishell *data);
 int		expand_wildcard(char **result, size_t *size, int i, char *str, t_minishell *data);
 
@@ -200,13 +200,13 @@ void	init_signal(void);
 void	handle_sigint(int sig);
 
 /* ------------------------------- Builtins --------------------------------- */
-void	ft_echo(t_node *cmd_node, t_minishell *data);
-void	ft_cd(t_node *cmd_node, t_minishell *data);
-void	ft_pwd(t_node *cmd_node, t_minishell *data);
-void	ft_env(t_node *cmd_node, t_minishell *data);
-void	ft_unset(t_node *cmd_node, t_minishell *data);
-void	ft_export(t_node *cmd_node, t_minishell *data);
-void	ft_exit(t_node *cmd_node, t_minishell *data);
+void	ft_echo(t_node *args, t_minishell *data);
+void	ft_cd(t_node *args, t_minishell *data);
+void	ft_pwd(t_node *args, t_minishell *data);
+void	ft_env(t_node *args, t_minishell *data);
+void	ft_unset(t_node *args, t_minishell *data);
+void	ft_export(t_node *args, t_minishell *data);
+void	ft_exit(t_node *args, t_minishell *data);
 
 /* ------------------------------- Utilities -------------------------------- */
 void	strncat_realloc(char **result, char *append, size_t *size, t_gc *gc);

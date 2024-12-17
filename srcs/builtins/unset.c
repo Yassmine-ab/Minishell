@@ -20,18 +20,18 @@ static void	print_unset_error(char *key, t_minishell *data)
 	data->last_exit_status = 1;
 }
 
-void	ft_unset(t_node *cmd_node, t_minishell *data)
+void	ft_unset(t_node *cmd_args, t_minishell *data)
 {
 	int		index;
 	char	**new_envp;
 	int		i;
 	int		j;
 
-	while (cmd_node->left)
+	while (cmd_args)
 	{
-		index = get_env_index(cmd_node->left->value, data);
+		index = get_env_index(cmd_args->value, data);
 		if (index == -1)
-			print_unset_error(cmd_node->left->value, data);
+			print_unset_error(cmd_args->value, data);
 		else
 		{
 			i = 0;
@@ -45,6 +45,6 @@ void	ft_unset(t_node *cmd_node, t_minishell *data)
 			free_envp(data);
 			data->envp = new_envp;
 		}
-		cmd_node->left = cmd_node->left->next;
+		cmd_args = cmd_args->next;
 	}
 }

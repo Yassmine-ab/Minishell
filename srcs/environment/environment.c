@@ -28,20 +28,23 @@ void	free_envp(t_minishell *data)
 char	*get_env_value(char *env_key, t_minishell *data)
 {
 	int		i;
-	char	*value;
+	char	*env_var;
+	char	*equal_sign;
 
 	i = 0;
-	value = NULL;
 	while (data->envp[i])
 	{
-		if (ft_strncmp(data->envp[i], env_key, ft_strlen(env_key)) == 0)
+		env_var = data->envp[i];
+		if (ft_strncmp(env_var, env_key, ft_strlen(env_key)) == 0 &&
+			(env_var[ft_strlen(env_key)] == '='))
 		{
-			value = ft_strdup_gc(ft_strchr(data->envp[i], '=') + 1, &data->gc);
-			break ;
+			equal_sign = ft_strchr(env_var, '=');
+			if (equal_sign)
+				return (ft_strdup_gc(equal_sign + 1, &data->gc));
 		}
 		i++;
 	}
-	return (value);
+	return (NULL);
 }
 
 int	get_env_index(char *env_key, t_minishell *data)

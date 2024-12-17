@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-static void	print_tokens(t_token *tokens)
+/* static void	print_tokens(t_token *tokens)
 {
 	int	i;
 	const char *token_names[] =
@@ -60,7 +60,7 @@ static void	print_ast(t_node *node, int depth)
 	if (node->next)
 		print_ast(node->next, depth);
 	printf(DEFAULT);
-}
+} */
 
 // int	main(int argc, char **argv, char **envp)
 // {
@@ -104,7 +104,7 @@ int	main(int argc, char **argv, char **envp)
 {
 	t_minishell	data;
 	const char	*prompt;
-	t_token		*tokens;
+	// t_token		*tokens;
 	t_node		*ast_root;
 	int			i;
 
@@ -128,14 +128,15 @@ int	main(int argc, char **argv, char **envp)
 			ast_root = parse_expression(&i, &data);
 			execute_ast(ast_root, &data);
 		}
-		add_history(data.line);
-		data.current_type = COMMAND;
-		tokens = tokenize_input(data.line, &data);
-		print_tokens(tokens);
-		i = 0;
-		ast_root = parse_expression(&i, &data);
-		print_ast(ast_root, 0);
-		execute_ast(ast_root, &data);
+		// add_history(data.line);
+		// data.current_type = COMMAND;
+		// tokens = tokenize_input(data.line, &data);
+		// print_tokens(tokens);
+		// i = 0;
+		// ast_root = parse_expression(&i, &data);
+		// print_ast(ast_root, 0);
+		// execute_ast(ast_root, &data);
+		ft_free(&data.line);
 	}
 	rl_clear_history();
 	gc_cleanup(&data.gc);

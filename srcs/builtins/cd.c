@@ -70,11 +70,11 @@ static int	change_directory(char *path, t_minishell *data)
 	return (0);
 }
 
-void	ft_cd(t_node *cmd_node, t_minishell *data)
+void	ft_cd(t_node *cmd_args, t_minishell *data)
 {
 	char	*path;
 
-	if (!cmd_node->left || !cmd_node->left->value)
+	if (!cmd_args)
 	{
 		path = getenv("HOME");
 		if (!path)
@@ -84,14 +84,14 @@ void	ft_cd(t_node *cmd_node, t_minishell *data)
 			return ;
 		}
 	}
-	else if (cmd_node->left->next)
+	else if (cmd_args->next)
 	{
 		ft_putstr_fd("cd: too many arguments\n", STDERR_FILENO);
 		data->last_exit_status = 1;
 		return ;
 	}
 	else
-		path = cmd_node->left->value;
+		path = cmd_args->value;
 	if (!change_directory(path, data))
 		update_pwd(data);
 }

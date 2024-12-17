@@ -151,10 +151,25 @@ char expansion_char)
 	return (result);
 }
 
-void	expand_variables(char *value, t_minishell *data)
+char	*expand_variables(char *value, t_minishell *data)
 {
 	if (!value)
-		return ;
+		return (NULL);
 	value = process_expansion(value, data, expand_env_variable, '$');
 	value = process_expansion(value, data, expand_wildcard, '*');
+	return (value);
 }
+
+// void	expand_variables(char *value, t_minishell *data)
+// {
+// 	char	*expanded;
+
+// 	if (!value)
+// 		return ;
+// 	expanded = process_expansion(value, data, expand_env_variable, '$');
+// 	gc_free(value, &data->gc);
+// 	value = expanded;
+// 	expanded = process_expansion(value, data, expand_wildcard, '*');
+// 	gc_free(value, &data->gc);
+// 	value = expanded;
+// }

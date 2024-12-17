@@ -72,11 +72,11 @@ static void	check_arg_value(char *arg, t_minishell *data)
 	return ;
 }
 
-void	ft_exit(t_node *cmd_node, t_minishell *data)
+void	ft_exit(t_node *cmd_args, t_minishell *data)
 {
-	if (cmd_node->left)
+	if (cmd_args)
 	{
-		if (cmd_node->left->next)
+		if (cmd_args->next)
 		{
 			ft_putstr_fd("exit\n", STDERR_FILENO);
 			ft_putstr_fd
@@ -84,7 +84,7 @@ void	ft_exit(t_node *cmd_node, t_minishell *data)
 			data->last_exit_status = 1;
 			return ;
 		}
-		check_arg_value(cmd_node->left->value, data);
+		check_arg_value(cmd_args->value, data);
 	}
 	ft_putstr_fd("exit\n", STDERR_FILENO);
 	gc_cleanup(&data->gc);
