@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 03:42:20 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/17 03:11:01 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/17 11:49:05 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,19 +121,20 @@ void	execute_command(t_node *ast, t_minishell *data)
 	concatenate_adjacent_nodes(ast, data);
 	concatenate_adjacent_nodes(ast->args, data);
 	args = get_command_args(ast, data);
-	execute_redirections(ast->redirections, data);
 	execute_builtins(ast, data);
 	pid = fork();
 	if (pid == -1)
 		error("Fork failed", 1, &data->gc);
 	else if (!pid)
 	{
+		execute_redirections(ast->redirections, data, true);
 		execve(get_command_path(args[0], data), args, data->envp);
 		exit(EXIT_FAILURE);
 	}
 	else
 	{
 		waitpid(pid, &status, 0);
+		if (WIFEXITED(status))
 		data->last_exit_status = WEXITSTATUS(status);
 	}
 	free_args(args, data);

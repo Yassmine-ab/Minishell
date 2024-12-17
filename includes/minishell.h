@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 02:04:44 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/17 05:46:13 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/17 11:47:34 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,7 +163,7 @@ void	data_init(int argc, char **argv, char **envp, t_minishell *data);
 /* --------------------------------- Prompt --------------------------------- */
 char	*create_prompt(t_gc *gc);
 
-/* --------------------------------- Lexing --------------------------------- */
+/* --------------------------------- Lexer ---------------------------------- */
 t_token	*tokenize_input(char *input, t_minishell *data);
 t_token	create_token(t_token_type type, char *value);
 void	skip_whitespace(char **input, int *index);
@@ -173,19 +173,17 @@ void	process_parentheses(char *input, int *i, int *count, t_minishell *data);
 void	process_operator(char *input, int *i, int *count, t_minishell *data);
 void	process_word(char *input, int *i, int *count, t_minishell *data);
 
-/* -------------------------------- Parsing --------------------------------- */
+/* -------------------------------- Parser ---------------------------------- */
 t_node	*create_node(t_node_type type, t_token token, t_gc *gc);
 t_node	*parse_expression(int *i, t_minishell *data);
 t_node	*parse_command(int *i, t_minishell *data);
 t_node	*parse_redirections(int *i, t_minishell *data);
-t_node	*parse_redirection(int *i, t_minishell *data);
-t_node	*parse_heredoc(int *i, t_minishell *data);
 
-/* --------------------------------- Exec ----------------------------------- */
+/* ------------------------------- Executor --------------------------------- */
 void	execute_ast(t_node *ast, t_minishell *data);
 void	execute_command(t_node *cmd_node, t_minishell *data);
-void	execute_heredoc(t_node *ast, t_minishell *data);
-void	execute_redirections(t_node *redir_node, t_minishell *data);
+void	execute_heredoc(t_node *ast, t_minishell *data, bool apply_dup2);
+void	execute_redirections(t_node *redir_node, t_minishell *data, bool apply_dup2);
 void	expand_variables(char *value, t_minishell *data);
 int		expand_env_variable(char **result, size_t *size, int i, char *str, t_minishell *data);
 int		expand_wildcard(char **result, size_t *size, int i, char *str, t_minishell *data);

@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 14:04:05 by petitcoeur        #+#    #+#             */
-/*   Updated: 2024/12/17 04:37:27 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/17 11:48:29 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,14 +75,25 @@ static void	execute_group(t_node *ast, t_minishell *data)
 	}
 }
 
+static bool	has_command(t_node *node)
+{
+	while (node)
+	{
+		if (node->type == NODE_COMMAND)
+			return (true);
+		node = node->next;
+	}
+	return (false);
+}
+
 void	execute_ast(t_node *ast, t_minishell *data)
 {
 	if (!ast)
 		return ;
 	while (ast)
 	{
-		if (ast->type == NODE_HEREDOC)
-			execute_heredoc(ast, data);
+		if ((ast->type == NODE_HEREDOC || ast->type == NODE_REDIR) && !has_command(ast))
+			execute_redirections(ast, data, false);
 		else if (ast->type == NODE_COMMAND)
 			execute_command(ast, data);
 		else if (ast->type == NODE_PIPE)

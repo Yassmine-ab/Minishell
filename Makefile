@@ -88,7 +88,7 @@ SRCS =			$(INIT)initialization.c \
 				$(LEXER)operators.c \
 				$(LEXER)words.c \
 				$(PARSER)parser.c \
-				$(PARSER)ast.c \
+				$(PARSER)command.c \
 				$(PARSER)parser_utils.c \
 				$(EXEC)exec.c \
 				$(EXEC)expander.c \

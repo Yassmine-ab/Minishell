@@ -6,42 +6,13 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 03:42:11 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/17 05:09:00 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/17 11:56:37 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-// void	execute_redir(t_node *ast, t_minishell *data)
-// {
-// 	int		fd;
-// 	pid_t	pid;
-// 	int		status;
-
-// 	fd = open(ast->right->value, O_CREAT | O_WRONLY | O_TRUNC, 0644);
-// 	if (fd == -1)
-// 	{
-// 		ft_putstr_fd("open error\n", STDERR_FILENO);
-// 		return ;
-// 	}
-// 	pid = fork();
-// 	if (pid == -1)
-// 	{
-// 		ft_putstr_fd("fork error\n", STDERR_FILENO);
-// 		return ;
-// 	}
-// 	if (pid == 0)
-// 	{
-// 		dup2(fd, STDOUT_FILENO);
-// 		close(fd);
-// 		execute_ast(ast->left, data);
-// 		exit(0);
-// 	}
-// 	else
-// 		waitpid(pid, &status, 0);
-// }
-
-static void	process_heredoc(t_node *node, t_minishell *data)
+static void	process_heredoc(t_node *node, t_minishell *data, bool apply_dup2)
 {
 	char	*line;
 	int		status;
@@ -67,8 +38,8 @@ static void	process_heredoc(t_node *node, t_minishell *data)
 				ft_putstr_fd(msg, STDERR_FILENO);
 				break ;
 			}
-			if (!ft_strncmp(line, limiter, ft_strlen(limiter))
-				&& line[ft_strlen(limiter)] == '\n')
+			line[strcspn(line, "\n")] = '\0'; // Supprimer le '\n'
+			if (strcmp(line, limiter) == 0)
 			{
 				free(line);
 				break ;
@@ -76,9 +47,16 @@ static void	process_heredoc(t_node *node, t_minishell *data)
 			if (!node->quoted)
 				expand_variables(line, data);
 			ft_putstr_fd(line, data->here_doc[WRITE_END]);
+			ft_putstr_fd("\n", data->here_doc[WRITE_END]); // Réajouter le '\n'
 			free(line);
 		}
 		close_fd(&data->here_doc[WRITE_END]);
+		if (apply_dup2)
+		{
+			// Dup2 seulement si associé à une commande
+			if (dup2(data->here_doc[READ_END], STDIN_FILENO) == -1)
+				error("Failed to redirect stdin for heredoc", 1, &data->gc);
+		}
 		exit(EXIT_SUCCESS);
 	}
 	close_fd(&data->here_doc[WRITE_END]);
@@ -87,17 +65,21 @@ static void	process_heredoc(t_node *node, t_minishell *data)
 		data->heredoc_status = WEXITSTATUS(status);
 }
 
-void	execute_heredoc(t_node *ast, t_minishell *data)
+void	execute_heredoc(t_node *ast, t_minishell *data, bool apply_dup2)
 {
 	if (pipe(data->here_doc) == -1)
 		error("Failed to create here_doc pipe", 1, &data->gc);
-	process_heredoc(ast, data);
-	if (dup2(data->here_doc[READ_END], STDIN_FILENO) == -1)
-		error("Failed to redirect stdin for heredoc", 1, &data->gc);
-	close_fd(&data->here_doc[READ_END]);
+	process_heredoc(ast, data, apply_dup2);
+	if (apply_dup2)
+		close_fd(&data->here_doc[READ_END]);
 }
 
-void	execute_redirections(t_node *redir_node, t_minishell *data)
+/* redirections.c */
+
+#include "minishell.h"
+
+// Modifier la signature pour inclure un indicateur `apply_dup2`
+void	execute_redirections(t_node *redir_node, t_minishell *data, bool apply_dup2)
 {
 	int	fd;
 
@@ -113,12 +95,29 @@ void	execute_redirections(t_node *redir_node, t_minishell *data)
 				fd = open(redir_node->right->value, O_RDONLY);
 			if (fd == -1)
 				error("Failed to open file for redirection", 1, &data->gc);
-			// if (dup2(fd, (redir_node->fd == -1) ? ((redir_node->value[0] == '<') ? STDIN_FILENO : STDOUT_FILENO) : redir_node->fd) == -1)
-			// 	error("Failed to duplicate file descriptor", 1, &data->gc);
+			
+			if (redir_node->value[0] == '<')
+			{
+				if (apply_dup2)
+				{
+					if (dup2(fd, STDIN_FILENO) == -1)
+						error("Failed to redirect stdin", 1, &data->gc);
+				}
+			}
+			else
+			{
+				if (apply_dup2)
+				{
+					if (dup2(fd, STDOUT_FILENO) == -1)
+						error("Failed to redirect stdout", 1, &data->gc);
+				}
+			}
 			close(fd);
 		}
 		else if (redir_node->type == NODE_HEREDOC)
-			execute_heredoc(redir_node, data);
+		{
+			execute_heredoc(redir_node, data, apply_dup2);
+		}
 		redir_node = redir_node->next;
 	}
 }
