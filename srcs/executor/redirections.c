@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 03:42:11 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/17 02:31:12 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/17 05:09:00 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@ void	execute_heredoc(t_node *ast, t_minishell *data)
 {
 	if (pipe(data->here_doc) == -1)
 		error("Failed to create here_doc pipe", 1, &data->gc);
-	process_heredoc(ast->left, data);
+	process_heredoc(ast, data);
 	if (dup2(data->here_doc[READ_END], STDIN_FILENO) == -1)
 		error("Failed to redirect stdin for heredoc", 1, &data->gc);
 	close_fd(&data->here_doc[READ_END]);
@@ -113,8 +113,8 @@ void	execute_redirections(t_node *redir_node, t_minishell *data)
 				fd = open(redir_node->right->value, O_RDONLY);
 			if (fd == -1)
 				error("Failed to open file for redirection", 1, &data->gc);
-			if (dup2(fd, (redir_node->fd == -1) ? ((redir_node->value[0] == '<') ? STDIN_FILENO : STDOUT_FILENO) : redir_node->fd) == -1)
-				error("Failed to duplicate file descriptor", 1, &data->gc);
+			// if (dup2(fd, (redir_node->fd == -1) ? ((redir_node->value[0] == '<') ? STDIN_FILENO : STDOUT_FILENO) : redir_node->fd) == -1)
+			// 	error("Failed to duplicate file descriptor", 1, &data->gc);
 			close(fd);
 		}
 		else if (redir_node->type == NODE_HEREDOC)

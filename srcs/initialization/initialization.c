@@ -6,11 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/10 03:27:24 by yaabdall          #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2024/12/14 04:08:48 by yaabdall         ###   ########.fr       */
-=======
-/*   Updated: 2024/12/16 03:16:51 by petitcoeur       ###   ########.fr       */
->>>>>>> 211797b3f769c80fddcb0e312b865f84358de7ff
+/*   Updated: 2024/12/17 02:49:19 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,21 +49,3 @@ void	data_init(int argc, char **argv, char **envp, t_minishell *data)
 	data->here_doc[0] = -1;
 	data->here_doc[1] = -1;
 }
-<<<<<<< HEAD
-=======
-
-char	**envp_is_null(t_minishell *data)
-{
-	char	**envp;
-	char	*path;
-
-	envp = gc_malloc(sizeof(char *) * 5, &data->gc);
-	path = getcwd(NULL, 0);
-	envp[0] = ft_strjoin_gc("PWD=", path, &data->gc);
-	envp[1] = ft_strdup_gc("SHLVL=1", &data->gc);
-	envp[2] = ft_strdup_gc("OLDPWD", &data->gc);
-	envp[3] = ft_strdup_gc("_=/usr/bin/env", &data->gc);
-	envp[4] = NULL;
-	return (envp);
-}
->>>>>>> 211797b3f769c80fddcb0e312b865f84358de7ff

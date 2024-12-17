@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 11:06:43 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/16 03:34:33 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/17 02:57:26 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,10 +104,7 @@ int	main(int argc, char **argv, char **envp)
 {
 	t_minishell	data;
 	const char	*prompt;
-<<<<<<< HEAD
 	t_token		*tokens;
-=======
->>>>>>> 211797b3f769c80fddcb0e312b865f84358de7ff
 	t_node		*ast_root;
 	int			i;
 
@@ -131,7 +128,6 @@ int	main(int argc, char **argv, char **envp)
 			ast_root = parse_expression(&i, &data);
 			execute_ast(ast_root, &data);
 		}
-<<<<<<< HEAD
 		add_history(data.line);
 		data.current_type = COMMAND;
 		tokens = tokenize_input(data.line, &data);
@@ -140,9 +136,6 @@ int	main(int argc, char **argv, char **envp)
 		ast_root = parse_expression(&i, &data);
 		print_ast(ast_root, 0);
 		execute_ast(ast_root, &data);
-=======
-		ft_free(&data.line);
->>>>>>> 211797b3f769c80fddcb0e312b865f84358de7ff
 	}
 	rl_clear_history();
 	gc_cleanup(&data.gc);

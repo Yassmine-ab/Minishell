@@ -6,13 +6,13 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 14:04:05 by petitcoeur        #+#    #+#             */
-/*   Updated: 2024/12/17 02:30:23 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/17 04:37:27 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static void	execute_pipe(t_node *ast, t_minishell *data)
+void	execute_pipe(t_node *ast, t_minishell *data)
 {
 	int	fd[2];
 	int	pid[2];
@@ -81,7 +81,9 @@ void	execute_ast(t_node *ast, t_minishell *data)
 		return ;
 	while (ast)
 	{
-		if (ast->type == NODE_COMMAND)
+		if (ast->type == NODE_HEREDOC)
+			execute_heredoc(ast, data);
+		else if (ast->type == NODE_COMMAND)
 			execute_command(ast, data);
 		else if (ast->type == NODE_PIPE)
 			execute_pipe(ast, data);

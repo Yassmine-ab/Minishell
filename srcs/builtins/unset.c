@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   unset.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: petitcoeur <petitcoeur@student.42.fr>      +#+  +:+       +#+        */
+/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 15:57:42 by besch             #+#    #+#             */
-/*   Updated: 2024/12/13 06:44:18 by petitcoeur       ###   ########.fr       */
+/*   Updated: 2024/12/17 03:22:34 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,5 +48,3 @@ void	ft_unset(t_node *cmd_node, t_minishell *data)
 		cmd_node->left = cmd_node->left->next;
 	}
 }
-
-

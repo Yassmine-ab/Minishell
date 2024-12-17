@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 03:42:20 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/17 02:23:45 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/17 03:11:01 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,7 +119,7 @@ void	execute_command(t_node *ast, t_minishell *data)
 		expand_variables(ast->args->value, data);
 	expand_variables(ast->value, data);
 	concatenate_adjacent_nodes(ast, data);
-	concatenate_adjacent_nodes(ast->left, data);
+	concatenate_adjacent_nodes(ast->args, data);
 	args = get_command_args(ast, data);
 	execute_redirections(ast->redirections, data);
 	execute_builtins(ast, data);

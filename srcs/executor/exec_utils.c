@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 03:42:30 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/17 02:18:22 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/17 02:55:29 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,26 +64,4 @@ void	free_args(char **args, t_minishell *data)
 		i++;
 	}
 	gc_free(args, &data->gc);
-}
-
-void	bubble_sort(char **envp, int size)
-{
-	char	*temp;
-	int		i;
-	int		j;
-
-	i = -1;
-	while (++i < size - 1)
-	{
-		j = -1;
-		while (++j < size - 1 - i)
-		{
-			if (ft_strncmp(envp[j], envp[j + 1], ft_strlen(envp[j]) + 1) > 0)
-			{
-				temp = envp[j];
-				envp[j] = envp[j + 1];
-				envp[j + 1] = temp;
-			}
-		}
-	}
 }

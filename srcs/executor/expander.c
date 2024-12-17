@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 21:54:13 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/15 01:28:48 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/17 02:51:40 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,15 +155,6 @@ void	expand_variables(char *value, t_minishell *data)
 {
 	if (!value)
 		return ;
-<<<<<<< HEAD:srcs/executor/expander.c
 	value = process_expansion(value, data, expand_env_variable, '$');
 	value = process_expansion(value, data, expand_wildcard, '*');
-=======
-	expanded = process_expansion(node->value, data, expand_env_variable, '$');
-	gc_free(node->value, &data->gc);
-	node->value = expanded;
-	expanded = process_expansion(node->value, data, expand_wildcard, '*');
-	gc_free(node->value, &data->gc);
-	node->value = expanded;
->>>>>>> 211797b3f769c80fddcb0e312b865f84358de7ff:srcs/exec/expander.c
 }

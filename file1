@@ -34,3 +34,32 @@ Issues :
 	// 	*i += 2;
 	// 	temp = ft_substr_gc(input, *i - 1, 1, &data->gc);
 	// }
+
+
+		// || (data->tokens[*i].type == COMMAND
+		// 	&& is_number(data->tokens[*i].value)
+		// 	&& is_redir_following(*i, data)))
+
+	// t_token	token;
+
+	// token.value = "";
+	// token.quoted = 0;
+	// token.space_after = 1;
+	// fd = -1;
+
+	// if (data->tokens[*i].type != STDOUT && data->tokens[*i].type != STDIN
+	// 	&& data->tokens[*i].type != STDOUT_APPEND)
+	// 	error("Invalid redirection operator\n", 1, &data->gc);
+
+	// if (data->tokens[*i].type == COMMAND && is_number(data->tokens[*i].value))
+	// {
+	// 	fd = ft_atoi(data->tokens[*i].value);
+	// 	(*i)++;
+	// }
+
+	// if (fd != -1)
+	// {
+	// 	fd_node = create_node(NODE_FD, token, &data->gc);
+	// 	fd_node->value = ft_itoa(fd);
+	// 	redir_node->fd = fd;
+	// }

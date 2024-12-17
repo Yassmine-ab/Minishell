@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 16:44:17 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/16 01:57:36 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/17 05:46:13 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,38 +53,19 @@ static void	parse_arguments(int *i, t_node *cmd_node, t_minishell *data)
 	}
 }
 
-static void	parse_redirections(int *i, t_node **cmd_node, t_minishell *data)
-{
-	while (data->tokens[*i].type == STDOUT || data->tokens[*i].type == STDIN
-		|| data->tokens[*i].type == STDOUT_APPEND
-		|| data->tokens[*i].type == HEREDOC
-		|| (data->tokens[*i].type == COMMAND
-			&& is_number(data->tokens[*i].value)
-			&& is_redir_following(*i, data)))
-	{
-		if (data->tokens[*i].type == STDOUT || data->tokens[*i].type == STDIN
-			|| data->tokens[*i].type == STDOUT_APPEND
-			|| (data->tokens[*i].type == COMMAND
-				&& is_number(data->tokens[*i].value)
-				&& is_redir_following(*i, data)))
-			parse_redirection(i, cmd_node, data);
-		else if (data->tokens[*i].type == HEREDOC)
-			parse_heredoc(i, cmd_node, data);
-	}
-}
-
 static t_node	*parse_simple_command(int *i, t_minishell *data)
 {
 	t_node	*cmd_node;
 	t_token	token;
 	t_node	*new_cmd;
-	t_node	*last_cmd = NULL;
+	t_node	*last_cmd;
 
+	last_cmd = NULL;
 	token.value = "";
 	token.quoted = 0;
 	token.space_after = 1;
 	cmd_node = create_node(NODE_COMMAND, token, &data->gc);
-	parse_redirections(i, &cmd_node, data);
+	parse_redirections(i, data);
 	while (data->tokens[*i].type == COMMAND)
 	{
 		new_cmd = create_node(NODE_COMMAND, data->tokens[*i], &data->gc);
@@ -95,8 +76,8 @@ static t_node	*parse_simple_command(int *i, t_minishell *data)
 		last_cmd = new_cmd;
 		(*i)++;
 		parse_arguments(i, cmd_node, data);
+		parse_redirections(i, data);
 	}
-	parse_redirections(i, &cmd_node, data);
 	if (!cmd_node)
 		error("Expected command\n", 1, &data->gc);
 	return (cmd_node);
@@ -109,8 +90,13 @@ t_node	*parse_command(int *i, t_minishell *data)
 
 	if (data->tokens[*i].type == PARENTHESIS_OPEN)
 		cmd_node = parse_group(i, data);
-	else
+	else if (data->tokens[*i].type == COMMAND)
 		cmd_node = parse_simple_command(i, data);
+	else if (data->tokens[*i].type == HEREDOC
+		|| data->tokens[*i].type == STDOUT
+		|| data->tokens[*i].type == STDIN
+		|| data->tokens[*i].type == STDOUT_APPEND)
+		cmd_node = parse_redirections(i, data);
 	current = cmd_node;
 	while (current->next)
 		current = current->next;
