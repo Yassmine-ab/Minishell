@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/10 03:01:45 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/17 05:46:13 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/18 06:41:30 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,17 +16,11 @@ static void	process_pipe(char *input, int *i, int *count, t_minishell *data)
 {
 	if (input[*i + 1] == '|')
 	{
-		if (ft_strchr("|&<>", input[*i + 2]))
-			error("Consecutive or invalid operators", 1, &data->gc);
 		data->tokens[*count] = create_token(OR, "||");
 		(*i)++;
 	}
 	else
-	{
-		if (ft_strchr("&<>", input[*i + 1]))
-			error("Consecutive or invalid operators", 1, &data->gc);
 		data->tokens[*count] = create_token(PIPE, "|");
-	}
 	(*i)++;
 	(*count)++;
 	skip_whitespace(&input, i);
@@ -37,8 +31,6 @@ static void	process_stdin(char *input, int *i, int *count, t_minishell *data)
 {
 	if (input[*i + 1] == '<')
 	{
-		if (ft_strchr("|&<>", input[*i + 2]))
-			error("Consecutive or invalid operators", 1, &data->gc);
 		data->tokens[*count] = create_token(HEREDOC, "<<");
 		(*i) += 2;
 		skip_whitespace(&input, i);
@@ -46,8 +38,6 @@ static void	process_stdin(char *input, int *i, int *count, t_minishell *data)
 	}
 	else
 	{
-		if (ft_strchr("|&>", input[*i + 1]))
-			error("Consecutive or invalid operators", 1, &data->gc);
 		data->tokens[*count] = create_token(STDIN, "<");
 		(*i)++;
 		skip_whitespace(&input, i);
@@ -60,17 +50,11 @@ static void	process_stdout(char *input, int *i, int *count, t_minishell *data)
 {
 	if (input[*i + 1] == '>')
 	{
-		if (ft_strchr("|&<>", input[*i + 2]))
-			error("Consecutive or invalid operators", 1, &data->gc);
 		data->tokens[*count] = create_token(STDOUT_APPEND, ">>");
 		(*i)++;
 	}
 	else
-	{
-		if (ft_strchr("|&<", input[*i + 1]))
-			error("Consecutive or invalid operators", 1, &data->gc);
 		data->tokens[*count] = create_token(STDOUT, ">");
-	}
 	(*i)++;
 	(*count)++;
 	skip_whitespace(&input, i);
@@ -79,8 +63,6 @@ static void	process_stdout(char *input, int *i, int *count, t_minishell *data)
 
 static void	process_and(char *input, int *i, int *count, t_minishell *data)
 {
-	if (ft_strchr("|&<>", input[*i + 2]))
-		error("Consecutive or invalid operators", 1, &data->gc);
 	data->tokens[*count] = create_token(AND, "&&");
 	*i += 2;
 	(*count)++;

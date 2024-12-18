@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 05:22:40 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/17 05:46:13 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/18 12:42:52 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,27 +20,15 @@ void	error(const char *error_msg, int status, t_gc *gc)
 	exit(status);
 }
 
-int	is_number(const char *str)
+bool	is_redir(int current_index, t_minishell *data)
 {
-	if (!str)
-		return (0);
-	while (*str)
-	{
-		if (!ft_isdigit(*str))
-			return (0);
-		str++;
-	}
-	return (1);
+	return (data->tokens[current_index].type == STDOUT
+		|| data->tokens[current_index].type == STDIN
+		|| data->tokens[current_index].type == STDOUT_APPEND);
 }
 
-int	is_redir_following(int current_index, t_minishell *data)
+bool	is_operator(t_token_type type)
 {
-	int	next;
-
-	next = current_index + 1;
-	if (data->tokens[next].type == STDOUT
-		|| data->tokens[next].type == STDIN
-		|| data->tokens[next].type == STDOUT_APPEND)
-		return (1);
-	return (0);
+	return (type == PIPE || type == AND || type == OR
+		|| type == STDIN || type == STDOUT || type == STDOUT_APPEND);
 }

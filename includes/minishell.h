@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 02:04:44 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/17 11:47:34 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/18 10:38:38 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -209,10 +209,10 @@ void	ft_export(t_node *args, t_minishell *data);
 void	ft_exit(t_node *args, t_minishell *data);
 
 /* ------------------------------- Utilities -------------------------------- */
-void	strncat_realloc(char **result, char *append, size_t *size, t_gc *gc);
 void	error(const char *error_msg, int status, t_gc *gc);
-int		is_number(const char *str);
-int		is_redir_following(int current_index, t_minishell *data);
+void	strncat_realloc(char **result, char *append, size_t *size, t_gc *gc);
+bool	is_operator(t_token_type type);
+bool	is_redir(int current_index, t_minishell *data);
 void	close_fd(int *fd);
 void	free_split(char **strs, t_gc *gc);
 void	free_args(char **args, t_minishell *data);

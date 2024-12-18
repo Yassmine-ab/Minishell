@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 21:42:36 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/12 22:33:29 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/18 11:43:48 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,30 @@ void	skip_whitespace(char **input, int *index)
 		(*index)++;
 }
 
+static void	validate_tokens(t_minishell *data)
+{
+	int	i;
+
+	i = -1;
+	while (data->tokens[++i].type != END)
+	{
+		if (i == 0 && is_operator(data->tokens[i].type))
+			error("Unexpected operator at the beginning", 1, &data->gc);
+		if (is_operator(data->tokens[i].type)
+			|| data->tokens[i].type == HEREDOC)
+		{
+			if (data->tokens[i + 1].type == END)
+				error("Unexpected end of command after operator", 1, &data->gc);
+			if (is_operator(data->tokens[i + 1].type)
+				|| data->tokens[i + 1].type == HEREDOC)
+				error("Consecutive or invalid operators", 1, &data->gc);
+		}
+		else if (data->tokens[i].type == COMMAND
+			&& data->tokens[i + 1].type == PARENTHESIS_OPEN)
+			error("Unexpected opening parenthesis after command", 1, &data->gc);
+	}
+}
+
 t_token	*tokenize_input(char *input, t_minishell *data)
 {
 	int	count;
@@ -49,5 +73,6 @@ t_token	*tokenize_input(char *input, t_minishell *data)
 			process_word(input, &i, &count, data);
 	}
 	data->tokens[count] = create_token(END, NULL);
+	validate_tokens(data);
 	return (data->tokens);
 }

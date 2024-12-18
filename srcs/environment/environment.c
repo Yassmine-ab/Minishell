@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   environment.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: petitcoeur <petitcoeur@student.42.fr>      +#+  +:+       +#+        */
+/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 14:08:19 by petitcoeur        #+#    #+#             */
-/*   Updated: 2024/12/13 08:32:59 by petitcoeur       ###   ########.fr       */
+/*   Updated: 2024/12/18 11:45:35 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,8 @@ char	*get_env_value(char *env_key, t_minishell *data)
 	while (data->envp[i])
 	{
 		env_var = data->envp[i];
-		if (ft_strncmp(env_var, env_key, ft_strlen(env_key)) == 0 &&
-			(env_var[ft_strlen(env_key)] == '='))
+		if (ft_strncmp(env_var, env_key, ft_strlen(env_key)) == 0
+			&& (env_var[ft_strlen(env_key)] == '='))
 		{
 			equal_sign = ft_strchr(env_var, '=');
 			if (equal_sign)

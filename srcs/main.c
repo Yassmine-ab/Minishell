@@ -6,13 +6,13 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 11:06:43 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/17 02:57:26 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/18 04:08:22 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-/* static void	print_tokens(t_token *tokens)
+static void	print_tokens(t_token *tokens)
 {
 	int	i;
 	const char *token_names[] =
@@ -60,7 +60,45 @@ static void	print_ast(t_node *node, int depth)
 	if (node->next)
 		print_ast(node->next, depth);
 	printf(DEFAULT);
-} */
+}
+
+int	main(int argc, char **argv, char **envp)
+{
+	t_minishell	data;
+	const char	*prompt;
+	t_token		*tokens;
+	t_node		*ast_root;
+	int			i;
+
+	if (argc > 1)
+		return (printf("Minishell does" RED " not " DEFAULT "accept arguments. "
+				"Running in interactive mode only.\n"), 1);
+	data_init(argc, argv, envp, &data);
+	prompt = create_prompt(&data.gc);
+	init_signal();
+	while (1)
+	{
+		data.line = readline(prompt);
+		if (!data.line)
+			break ;
+		else if (data.line[0] == EOF || data.line[0] == '\0')
+		{
+			ft_free(&data.line);
+			break ;
+		}
+		add_history(data.line);
+		data.current_type = COMMAND;
+		tokens = tokenize_input(data.line, &data);
+		print_tokens(tokens);
+		i = 0;
+		ast_root = parse_expression(&i, &data);
+		print_ast(ast_root, 0);
+		execute_ast(ast_root, &data);
+	}
+	rl_clear_history();
+	gc_cleanup(&data.gc);
+	return (0);
+}
 
 // int	main(int argc, char **argv, char **envp)
 // {
@@ -81,64 +119,26 @@ static void	print_ast(t_node *node, int depth)
 // 		data.line = readline(prompt);
 // 		if (!data.line)
 // 			break ;
-// 		else if (data.line[0] == EOF || data.line[0] == '\0')
+// 		if (data.line[0] != '\0')
 // 		{
-// 			ft_free(&data.line);
-// 			break ;
+// 			add_history(data.line);
+// 			data.current_type = COMMAND;
+// 			tokenize_input(data.line, &data);
+// 			i = 0;
+// 			ast_root = parse_expression(&i, &data);
+// 			execute_ast(ast_root, &data);
 // 		}
-// 		add_history(data.line);
-// 		data.current_type = COMMAND;
-// 		tokenize_input(data.line, &data);
+// 		// add_history(data.line);
+// 		// data.current_type = COMMAND;
+// 		// tokens = tokenize_input(data.line, &data);
 // 		// print_tokens(tokens);
-// 		i = 0;
-// 		ast_root = parse_expression(&i, &data);
+// 		// i = 0;
+// 		// ast_root = parse_expression(&i, &data);
 // 		// print_ast(ast_root, 0);
-// 		execute_ast(ast_root, &data);
+// 		// execute_ast(ast_root, &data);
+// 		ft_free(&data.line);
 // 	}
 // 	rl_clear_history();
 // 	gc_cleanup(&data.gc);
 // 	return (0);
 // }
-
-int	main(int argc, char **argv, char **envp)
-{
-	t_minishell	data;
-	const char	*prompt;
-	// t_token		*tokens;
-	t_node		*ast_root;
-	int			i;
-
-	if (argc > 1)
-		return (printf("Minishell does" RED " not " DEFAULT "accept arguments. "
-				"Running in interactive mode only.\n"), 1);
-	data_init(argc, argv, envp, &data);
-	prompt = create_prompt(&data.gc);
-	init_signal();
-	while (1)
-	{
-		data.line = readline(prompt);
-		if (!data.line)
-			break ;
-		if (data.line[0] != '\0')
-		{
-			add_history(data.line);
-			data.current_type = COMMAND;
-			tokenize_input(data.line, &data);
-			i = 0;
-			ast_root = parse_expression(&i, &data);
-			execute_ast(ast_root, &data);
-		}
-		// add_history(data.line);
-		// data.current_type = COMMAND;
-		// tokens = tokenize_input(data.line, &data);
-		// print_tokens(tokens);
-		// i = 0;
-		// ast_root = parse_expression(&i, &data);
-		// print_ast(ast_root, 0);
-		// execute_ast(ast_root, &data);
-		ft_free(&data.line);
-	}
-	rl_clear_history();
-	gc_cleanup(&data.gc);
-	return (0);
-}
