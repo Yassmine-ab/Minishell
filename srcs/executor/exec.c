@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 14:04:05 by petitcoeur        #+#    #+#             */
-/*   Updated: 2024/12/18 12:42:09 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/19 11:36:56 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,31 +14,53 @@
 
 void	execute_pipe(t_node *ast, t_minishell *data)
 {
-	int	fd[2];
-	int	pid[2];
-	int	status;
+	int		pipe_fd[2];
+	int		in_fd;
+	pid_t	pid;
+	int		status;
 
-	if (pipe(fd) == -1)
-		exit(-1);
-	pid[0] = fork();
-	if (pid[0] == 0)
+	in_fd = STDIN_FILENO;
+	while (ast && ast->type == NODE_PIPE)
 	{
-		dup2(fd[1], STDOUT_FILENO);
-		(close(fd[0]), close(fd[1]));
-		execute_ast(ast->left, data);
-		exit(-1);
+		if (pipe(pipe_fd) == -1)
+			error("Failed to create pipe", 1, &data->gc);
+		pid = fork();
+		if (pid == -1)
+			error("Fork failed", 1, &data->gc);
+		if (pid == 0)
+		{
+			dup2(in_fd, STDIN_FILENO);
+			dup2(pipe_fd[1], STDOUT_FILENO);
+			close_fd(&pipe_fd[0]);
+			execute_ast(ast->left, data);
+			exit(EXIT_FAILURE);
+		}
+		else
+		{
+			close_fd(&pipe_fd[1]);
+			if (in_fd != STDIN_FILENO)
+				close_fd(&in_fd);
+			in_fd = pipe_fd[0];
+			ast = ast->right;
+		}
 	}
-	pid[1] = fork();
-	if (pid[1] == 0)
+	if (in_fd != STDIN_FILENO)
 	{
-		dup2(fd[0], STDIN_FILENO);
-		(close(fd[0]), close(fd[1]));
-		execute_ast(ast->right, data);
-		exit(-1);
+		dup2(in_fd, STDIN_FILENO);
+		close_fd(&in_fd);
 	}
-	(close(fd[0]), close(fd[1]));
-	waitpid(pid[0], &status, 0);
-	waitpid(pid[1], &status, 0);
+	pid = fork();
+	if (pid == -1)
+		error("Fork failed", 1, &data->gc);
+	if (pid == 0)
+	{
+		execute_ast(ast, data);
+		exit(EXIT_FAILURE);
+	}
+	close_fd(&in_fd);
+	while (wait(&status) > 0)
+		;
+	data->last_exit_status = WEXITSTATUS(status);
 }
 
 static void	execute_and(t_node *ast, t_minishell *data)
@@ -91,6 +113,9 @@ void	execute_ast(t_node *ast, t_minishell *data)
 			execute_or(ast, data);
 		else if (ast->type == NODE_GROUP)
 			execute_group(ast, data);
-		ast = ast->next;
+		if (ast->type != NODE_PIPE)
+			ast = ast->next;
+		else
+			break ;
 	}
 }

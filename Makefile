@@ -158,9 +158,6 @@ fclean:
 				@echo -n "\n🗑️  $(RED)Deleting $(CYAN)$(NAME)$(DEFAULT) executable\t\t"
 				@$(RM) $(NAME)
 				$(PROGRESS_BAR)
-				@echo -n "\n🗑️  $(RED)Deleting $(CYAN)$(NAME_BONUS)$(DEFAULT) executable\t\t"
-				@$(RM) $(NAME_BONUS)
-				$(PROGRESS_BAR)
 				@echo ""
 
 # Rebuild rule

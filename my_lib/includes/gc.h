@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/25 18:24:53 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/24 17:04:21 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/19 10:55:06 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,5 +40,6 @@ char	*ft_substr_gc(char *s, unsigned int start, size_t len, t_gc *gc);
 char	*ft_strjoin_gc(char const *s1, char const *s2, t_gc *gc);
 char	*ft_strdup_gc(const char *s1, t_gc *gc);
 char	*ft_itoa_gc(int n, t_gc *gc);
+char	**ft_split_gc(char *s, char c, t_gc *gc);
 
 #endif

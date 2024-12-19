@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/10 02:54:14 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/18 05:48:44 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/19 10:04:48 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ static void	ft_strappend(char **str, char c, t_gc *gc)
 	ft_memcpy(new_str, *str, len);
 	new_str[len] = c;
 	new_str[len + 1] = '\0';
-	ft_free(str);
+	gc_free(str, gc);
 	*str = new_str;
 }
 
@@ -59,7 +59,7 @@ static int	handle_unclosed_char(char **input, int start, t_gc *gc)
 			return (-1);
 		if (*additional_input)
 			*input = ft_strjoin_gc(*input, additional_input, gc);
-		ft_free(&additional_input);
+		gc_free(&additional_input, gc);
 		end = find_matching_char(*input, start);
 		if (end != -1)
 			return (end);

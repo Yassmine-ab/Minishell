@@ -6,13 +6,13 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 11:06:43 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/18 04:08:22 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/19 11:11:41 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static void	print_tokens(t_token *tokens)
+/*static void	print_tokens(t_token *tokens)
 {
 	int	i;
 	const char *token_names[] =
@@ -60,13 +60,13 @@ static void	print_ast(t_node *node, int depth)
 	if (node->next)
 		print_ast(node->next, depth);
 	printf(DEFAULT);
-}
+}*/
 
 int	main(int argc, char **argv, char **envp)
 {
 	t_minishell	data;
 	const char	*prompt;
-	t_token		*tokens;
+	// t_token		*tokens;
 	t_node		*ast_root;
 	int			i;
 
@@ -83,17 +83,23 @@ int	main(int argc, char **argv, char **envp)
 			break ;
 		else if (data.line[0] == EOF || data.line[0] == '\0')
 		{
-			ft_free(&data.line);
+			gc_free(&data.line, &data.gc);
 			break ;
 		}
 		add_history(data.line);
 		data.current_type = COMMAND;
-		tokens = tokenize_input(data.line, &data);
-		print_tokens(tokens);
+		tokenize_input(data.line, &data);
+		// print_tokens(tokens);
 		i = 0;
 		ast_root = parse_expression(&i, &data);
-		print_ast(ast_root, 0);
+		// print_ast(ast_root, 0);
 		execute_ast(ast_root, &data);
+		gc_free(&data.line, &data.gc);
+		if (g_signal_received)
+		{
+			printf("Signal received. Cleaning up and exiting.\n");
+			break ;
+		}
 	}
 	rl_clear_history();
 	gc_cleanup(&data.gc);

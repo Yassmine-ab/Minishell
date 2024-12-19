@@ -6,19 +6,11 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/03 22:13:54 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/24 11:01:46 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/19 09:55:40 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "gc.h"
-
-// static void	ft_free(t_gc_node **s)
-// {
-// 	if (!s || !*s)
-// 		return ;
-// 	free(*s);
-// 	*s = NULL;
-// }
 
 void	gc_cleanup(t_gc *gc)
 {

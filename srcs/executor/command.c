@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 03:42:20 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/18 12:31:02 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/19 10:52:49 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ static char	*get_command_path(char *command, t_minishell *data)
 	path_env = getenv("PATH");
 	if (!path_env)
 		return (NULL);
-	paths = ft_split(path_env, ':');
+	paths = ft_split_gc(path_env, ':', &data->gc);
 	if (!paths)
 		return (NULL);
 	i = -1;
@@ -115,12 +115,69 @@ static void	execute_builtins(t_node *current, t_minishell *data)
 	// }
 }
 
+static int	is_builtin(const char *cmd)
+{
+	const char	*builtin_commands[] = {
+	"cd",
+	"echo",
+	"export",
+	"pwd",
+	"unset",
+	"env",
+	"exit",
+	NULL
+};
+	int	i;
+
+	i = 0;
+	while (builtin_commands[i])
+	{
+		if (strcmp(cmd, builtin_commands[i]) == 0)
+			return (1);
+		i++;
+	}
+	return (0);
+}
+static void	execute_commandpath(t_node *ast, char **args, t_minishell *data)
+{
+	pid_t	pid;
+	int		status;
+    char	*path;
+
+	pid = fork();
+	if (pid == -1)
+	{
+		data->last_exit_status = 1;
+		error("Fork failed", 1, &data->gc);
+	}
+	else if (!pid)
+	{
+		path = get_command_path(args[0], data);
+		if (!path)
+		{
+			data->last_exit_status = 127;
+			error("Command not found", 127, &data->gc);
+		}
+		if (ast->redirections)
+			execute_redirections(ast->redirections, data);
+		execve(path, args, data->envp);
+		data->last_exit_status = 127;
+		error("Command execution failed", 127, &data->gc);
+	}
+	else
+	{
+		waitpid(pid, &status, 0);
+		if (WIFEXITED(status))
+			data->last_exit_status = WEXITSTATUS(status);
+		else
+			data->last_exit_status = 1;
+	}
+}
+
 void	execute_command(t_node *ast, t_minishell *data)
 {
 	t_node	*tmp;
 	char	**args;
-	pid_t	pid;
-	int		status;
 
 	if (ast->args)
 	{
@@ -135,21 +192,9 @@ void	execute_command(t_node *ast, t_minishell *data)
 	concatenate_adjacent_nodes(ast, data);
 	concatenate_adjacent_nodes(ast->args, data);
 	args = get_command_args(ast, data);
-	execute_builtins(ast, data);
-	pid = fork();
-	if (pid == -1)
-		error("Fork failed", 1, &data->gc);
-	else if (!pid)
-	{
-		execute_redirections(ast->redirections, data, true);
-		execve(get_command_path(args[0], data), args, data->envp);
-		exit(EXIT_FAILURE);
-	}
+	if (is_builtin(ast->value))
+		execute_builtins(ast, data);
 	else
-	{
-		waitpid(pid, &status, 0);
-		if (WIFEXITED(status))
-			data->last_exit_status = WEXITSTATUS(status);
-	}
+		execute_commandpath(ast, args, data);
 	free_args(args, data);
 }

@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 02:04:44 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/18 10:38:38 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/19 11:19:26 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,8 @@
 # include <termios.h>
 # include <signal.h>
 # include <fcntl.h>
+
+extern volatile sig_atomic_t	g_signal_received;
 
 /* -------------------------------------------------------------------------- */
 /*                                  DEFINES                                   */
@@ -182,8 +184,7 @@ t_node	*parse_redirections(int *i, t_minishell *data);
 /* ------------------------------- Executor --------------------------------- */
 void	execute_ast(t_node *ast, t_minishell *data);
 void	execute_command(t_node *cmd_node, t_minishell *data);
-void	execute_heredoc(t_node *ast, t_minishell *data, bool apply_dup2);
-void	execute_redirections(t_node *redir_node, t_minishell *data, bool apply_dup2);
+void	execute_redirections(t_node *redir_node, t_minishell *data);
 char	*expand_variables(char *value, t_minishell *data);
 int		expand_env_variable(char **result, size_t *size, int i, char *str, t_minishell *data);
 int		expand_wildcard(char **result, size_t *size, int i, char *str, t_minishell *data);
