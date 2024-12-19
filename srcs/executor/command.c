@@ -71,7 +71,7 @@ static char	*get_command_path(char *command, t_minishell *data)
 	char	*full_path;
 	int		i;
 
-	if (!access(command, X_OK))
+	if (access(command, X_OK) == 0)
 		return (command);
 	path_env = getenv("PATH");
 	if (!path_env)
@@ -84,10 +84,17 @@ static char	*get_command_path(char *command, t_minishell *data)
 	{
 		full_path = ft_strjoin_gc(paths[i], "/", &data->gc);
 		full_path = ft_strjoin_gc(full_path, command, &data->gc);
-		if (!access(full_path, X_OK))
+		if (access(full_path, X_OK))
+		{
+			if (errno == EACCES)
+				error("Permission denied", 126, &data->gc);
+		}
+		else
 			return (free_split(paths, &data->gc), full_path);
 	}
 	free_split(paths, &data->gc);
+	if (access(command, X_OK))
+		error("Permission denied", 126, &data->gc);
 	return (NULL);
 }
 
@@ -142,7 +149,7 @@ static void	execute_commandpath(t_node *ast, char **args, t_minishell *data)
 {
 	pid_t	pid;
 	int		status;
-    char	*path;
+	char	*path;
 
 	pid = fork();
 	if (pid == -1)

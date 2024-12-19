@@ -25,10 +25,7 @@ char	*create_prompt(t_minishell *data)
 	}
 	user = get_env_value("USER", data);
 	if (!user)
-	{
-		perror("Failed to retrieve USER environment variable");
 		user = "user";
-	}
 	user = ft_strjoin_gc(CYAN, user, &data->gc);
 	prompt = ft_strjoin_gc("", user, &data->gc);
 	prompt = ft_strjoin_gc(prompt, DEFAULT " in ", &data->gc);
