@@ -12,37 +12,35 @@
 
 #include "minishell.h"
 
-static void	update_pwd_vars(char *new_path, t_minishell *data)
+static void	update_pwd_vars(char *old_path, char *new_path, t_minishell *data)
 {
-	char	*old_path;
 	int		var_pwd_idx;
 	int		var_old_pwd_idx;
 
-	old_path = get_env_value("PWD", data);
-	if (old_path)
+	var_pwd_idx = get_env_index("PWD", data);
+	if (var_pwd_idx != -1)
 	{
-		var_pwd_idx = get_env_index("PWD", data);
 		gc_free(data->envp[var_pwd_idx], &data->gc);
 		data->envp[var_pwd_idx] = ft_strjoin_gc("PWD=", new_path, &data->gc);
 	}
 	var_old_pwd_idx = get_env_index("OLDPWD", data);
-	if (var_old_pwd_idx != -1 && old_path)
+	if (var_old_pwd_idx != -1)
 	{
 		gc_free(data->envp[var_old_pwd_idx], &data->gc);
 		data->envp[var_old_pwd_idx] = \
 			ft_strjoin_gc("OLDPWD=", old_path, &data->gc);
-		gc_free(old_path, &data->gc);
 	}
+	free(old_path);
 }
 
-static void	update_pwd(t_minishell *data)
+static void	update_pwd(char *old_path, t_minishell *data)
 {
 	char	*new_path;
 
 	new_path = getcwd(NULL, 0);
 	if (new_path)
 	{
-		update_pwd_vars(new_path, data);
+		update_pwd_vars(old_path, new_path, data);
 		free(new_path);
 		data->last_exit_status = 0;
 		return ;
@@ -51,19 +49,23 @@ static void	update_pwd(t_minishell *data)
 	data->last_exit_status = 1;
 }
 
-static int	change_directory(char *path, t_minishell *data)
+static int	change_directory(char *old_path, char *new_path, t_minishell *data)
 {
-	if (access(path, F_OK) != 0)
+	if (access(new_path, F_OK) != 0)
 	{
 		ft_putstr_fd("cd: no such file or directory: ", STDERR_FILENO);
-		ft_putstr_fd(path, STDERR_FILENO);
+		ft_putstr_fd(new_path, STDERR_FILENO);
 		ft_putchar_fd('\n', STDERR_FILENO);
+		if (old_path)
+			free(old_path);
 		data->last_exit_status = 1;
 		return (1);
 	}
-	if (chdir(path) != 0)
+	if (chdir(new_path) != 0)
 	{
 		ft_putstr_fd("cd: permission denied: ", STDERR_FILENO);
+		if (old_path)
+			free(old_path);
 		data->last_exit_status = 1;
 		return (1);
 	}
@@ -72,12 +74,13 @@ static int	change_directory(char *path, t_minishell *data)
 
 void	ft_cd(t_node *cmd_args, t_minishell *data)
 {
-	char	*path;
+	char	*old_path;
+	char	*new_path;
 
 	if (!cmd_args)
 	{
-		path = getenv("HOME");
-		if (!path)
+		new_path = getenv("HOME");
+		if (!new_path)
 		{
 			ft_putstr_fd("cd: HOME not set\n", STDERR_FILENO);
 			data->last_exit_status = 1;
@@ -91,7 +94,8 @@ void	ft_cd(t_node *cmd_args, t_minishell *data)
 		return ;
 	}
 	else
-		path = cmd_args->value;
-	if (!change_directory(path, data))
-		update_pwd(data);
+		new_path = cmd_args->value;
+	old_path = getcwd(NULL, 0);
+	if (!change_directory(old_path, new_path, data))
+		update_pwd(old_path, data);
 }

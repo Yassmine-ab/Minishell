@@ -80,20 +80,21 @@ int	main(int argc, char **argv, char **envp)
 	{
 		data.line = readline(prompt);
 		if (!data.line)
-			break ;
-		else if (data.line[0] == EOF || data.line[0] == '\0')
 		{
-			gc_free(&data.line, &data.gc);
+			ft_putstr_fd("exit\n", STDERR_FILENO);
 			break ;
 		}
-		add_history(data.line);
-		data.current_type = COMMAND;
-		tokenize_input(data.line, &data);
-		// print_tokens(tokens);
-		i = 0;
-		ast_root = parse_expression(&i, &data);
-		// print_ast(ast_root, 0);
-		execute_ast(ast_root, &data);
+		if (data.line[0] != '\0')
+		{
+			add_history(data.line);
+			data.current_type = COMMAND;
+			tokenize_input(data.line, &data);
+			// print_tokens(tokens);
+			i = 0;
+			ast_root = parse_expression(&i, &data);
+			// print_ast(ast_root, 0);
+			execute_ast(ast_root, &data);
+		}
 		gc_free(&data.line, &data.gc);
 		if (g_signal_received)
 		{
