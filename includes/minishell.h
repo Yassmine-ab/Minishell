@@ -163,7 +163,7 @@ typedef struct s_minishell
 void	data_init(int argc, char **argv, char **envp, t_minishell *data);
 
 /* --------------------------------- Prompt --------------------------------- */
-char	*create_prompt(t_gc *gc);
+char	*create_prompt(t_minishell *data);
 
 /* --------------------------------- Lexer ---------------------------------- */
 t_token	*tokenize_input(char *input, t_minishell *data);

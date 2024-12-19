@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-char	*create_prompt(t_gc *gc)
+char	*create_prompt(t_minishell *data)
 {
 	char	*prompt;
 	char	*user;
@@ -23,17 +23,17 @@ char	*create_prompt(t_gc *gc)
 		perror("Failed to get current working directory (getcwd)");
 		cwd[0] = '\0';
 	}
-	user = getenv("USER");
+	user = get_env_value("USER", data);
 	if (!user)
 	{
 		perror("Failed to retrieve USER environment variable");
 		user = "user";
 	}
-	user = ft_strjoin_gc(CYAN, user, gc);
-	prompt = ft_strjoin_gc("", user, gc);
-	prompt = ft_strjoin_gc(prompt, DEFAULT " in ", gc);
-	prompt = ft_strjoin_gc(prompt, GREEN, gc);
-	prompt = ft_strjoin_gc(prompt, cwd, gc);
-	prompt = ft_strjoin_gc(prompt, DEFAULT " 🥚👶🕺 ⋙  ", gc);
+	user = ft_strjoin_gc(CYAN, user, &data->gc);
+	prompt = ft_strjoin_gc("", user, &data->gc);
+	prompt = ft_strjoin_gc(prompt, DEFAULT " in ", &data->gc);
+	prompt = ft_strjoin_gc(prompt, GREEN, &data->gc);
+	prompt = ft_strjoin_gc(prompt, cwd, &data->gc);
+	prompt = ft_strjoin_gc(prompt, DEFAULT " 🥚👶🕺 ⋙  ", &data->gc);
 	return (prompt);
 }
