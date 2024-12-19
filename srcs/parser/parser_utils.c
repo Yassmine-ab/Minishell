@@ -14,7 +14,6 @@
 
 void	error(const char *error_msg, int status, t_gc *gc)
 {
-	(void)gc;
 	dprintf(2, "%s\n", error_msg);
 	gc_cleanup(gc);
 	exit(status);

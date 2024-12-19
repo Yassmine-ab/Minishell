@@ -98,53 +98,25 @@ static char	*get_command_path(char *command, t_minishell *data)
 	return (NULL);
 }
 
-static void	execute_builtins(t_node *current, t_minishell *data)
+static int	execute_builtins(t_node *current, t_minishell *data)
 {
 	if (!ft_strncmp(current->value, "cd", 3))
-		ft_cd(current->args, data);
+		return (ft_cd(current->args, data), 1);
 	else if (!ft_strncmp(current->value, "echo", 5))
-		ft_echo(current->args, data);
+		return (ft_echo(current->args, data), 1);
 	else if (!ft_strncmp(current->value, "env", 4))
-		ft_env(current->args, data);
+		return (ft_env(current->args, data), 1);
 	else if (!ft_strncmp(current->value, "exit", 5))
-		ft_exit(current->args, data);
+		return (ft_exit(current->args, data), 1);
 	else if (!ft_strncmp(current->value, "export", 7))
-		ft_export(current->args, data);
+		return (ft_export(current->args, data), 1);
 	else if (!ft_strncmp(current->value, "pwd", 4))
-		ft_pwd(current->args, data);
+		return (ft_pwd(current->args, data), 1);
 	else if (!ft_strncmp(current->value, "unset", 6))
-		ft_unset(current->args, data);
-	// else
-	// {
-	// 	ft_putstr_fd(current->value, STDERR_FILENO);
-	// 	ft_putstr_fd(": Commande non reconnue\n", STDERR_FILENO);
-	// 	data->last_exit_status = 127;
-	// }
-}
-
-static int	is_builtin(const char *cmd)
-{
-	const char	*builtin_commands[] = {
-	"cd",
-	"echo",
-	"export",
-	"pwd",
-	"unset",
-	"env",
-	"exit",
-	NULL
-};
-	int	i;
-
-	i = 0;
-	while (builtin_commands[i])
-	{
-		if (strcmp(cmd, builtin_commands[i]) == 0)
-			return (1);
-		i++;
-	}
+		return (ft_unset(current->args, data), 1);
 	return (0);
 }
+
 static void	execute_commandpath(t_node *ast, char **args, t_minishell *data)
 {
 	pid_t	pid;
@@ -199,9 +171,7 @@ void	execute_command(t_node *ast, t_minishell *data)
 	concatenate_adjacent_nodes(ast, data);
 	concatenate_adjacent_nodes(ast->args, data);
 	args = get_command_args(ast, data);
-	if (is_builtin(ast->value))
-		execute_builtins(ast, data);
-	else
+	if (!execute_builtins(ast, data))
 		execute_commandpath(ast, args, data);
 	free_args(args, data);
 }
