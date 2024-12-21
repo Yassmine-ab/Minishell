@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   command.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jcantin <jcantin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 16:44:17 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/18 13:06:50 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/21 14:57:51 by jcantin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ static t_node	*parse_group(int *i, t_minishell *data)
 	group_node = create_node(NODE_GROUP, data->tokens[*i], &data->gc);
 	(*i)++;
 	group_node->left = parse_expression(i, data);
-	if (!group_node->left)
+	if (group_node->left == NULL)
 		error("Empty parentheses", 1, &data->gc);
 	(*i)++;
 	return (group_node);
@@ -34,7 +34,7 @@ static void	parse_arguments(int *i, t_node *cmd_node, t_minishell *data)
 	while (data->tokens[*i].type == ARGUMENT)
 	{
 		arg_node = create_node(NODE_ARG, data->tokens[*i], &data->gc);
-		if (!cmd_node->args)
+		if (cmd_node->args == NULL)
 			cmd_node->args = arg_node;
 		else
 			last_arg->next = arg_node;
@@ -55,7 +55,7 @@ static t_node	*parse_simple_command(int *i, t_minishell *data)
 	while (data->tokens[*i].type == COMMAND)
 	{
 		new_cmd = create_node(NODE_COMMAND, data->tokens[*i], &data->gc);
-		if (!cmd_node)
+		if (cmd_node == NULL)
 		{
 			cmd_node = new_cmd;
 			last_cmd = new_cmd;
@@ -70,7 +70,7 @@ static t_node	*parse_simple_command(int *i, t_minishell *data)
 		redir = parse_redirections(i, data);
 		if (redir)
 		{
-			if (!cmd_node->redirections)
+			if (cmd_node->redirections == NULL)
 				cmd_node->redirections = redir;
 			else
 			{

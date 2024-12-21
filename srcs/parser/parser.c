@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jcantin <jcantin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 01:49:39 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/18 11:44:38 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/21 15:25:41 by jcantin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,16 +16,11 @@ t_node	*create_node(t_node_type type, t_token token, t_gc *gc)
 {
 	t_node	*node;
 
-	node = gc_malloc(sizeof(t_node), gc);
+	node = gc_calloc(1, sizeof(t_node), gc);
 	node->type = type;
 	node->value = token.value;
 	node->quoted = token.quoted;
 	node->space_after = token.space_after;
-	node->left = NULL;
-	node->right = NULL;
-	node->args = NULL;
-	node->redirections = NULL;
-	node->next = NULL;
 	return (node);
 }
 
@@ -61,7 +56,7 @@ t_node	*parse_redirections(int *i, t_minishell *data)
 			&data->gc);
 			(*i)++;
 		}
-		if (!redir_list)
+		if (redir_list == NULL)
 			redir_list = redir_node;
 		else
 			last_redir->next = redir_node;
@@ -76,7 +71,7 @@ static t_node	*parse_pipeline(int *i, t_minishell *data)
 	t_node	*pipe_node;
 
 	left = parse_command(i, data);
-	if (!left)
+	if (left == NULL)
 		left = parse_redirections(i, data);
 	while (data->tokens[*i].type == PIPE)
 	{

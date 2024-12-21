@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   prompt.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jcantin <jcantin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/10 03:27:27 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/11/29 15:20:24 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/21 14:55:11 by jcantin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,13 +18,13 @@ char	*create_prompt(t_minishell *data)
 	char	*user;
 	char	cwd[MAX_PATHLENGTH];
 
-	if (!getcwd(cwd, sizeof(cwd)))
+	if (getcwd(cwd, sizeof(cwd)) == NULL)
 	{
 		perror("Failed to get current working directory (getcwd)");
 		cwd[0] = '\0';
 	}
 	user = get_env_value("USER", data);
-	if (!user)
+	if (user == NULL)
 		user = "user";
 	user = ft_strjoin_gc(CYAN, user, &data->gc);
 	prompt = ft_strjoin_gc("", user, &data->gc);

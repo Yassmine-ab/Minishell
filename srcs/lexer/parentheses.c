@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parentheses.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jcantin <jcantin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/10 02:55:32 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/18 10:19:23 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/21 14:55:26 by jcantin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ void	process_parentheses(char *input, int *i, int *count, t_minishell *data)
 	}
 	else if (input[*i] == ')')
 	{
-		if (!data->open_parentheses)
+		if (data->open_parentheses == 0)
 			error("Unmatched closing parenthesis", 1, &data->gc);
 		data->open_parentheses--;
 		data->tokens[*count] = create_token(PARENTHESIS_CLOSE, ")");

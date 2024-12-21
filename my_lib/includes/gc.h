@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   gc.h                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jcantin <jcantin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/25 18:24:53 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/19 10:55:06 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/21 15:15:53 by jcantin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ void	gc_remove(t_gc *gc, void *ptr);
 void	gc_free(void *ptr, t_gc *gc);
 void	gc_cleanup(t_gc *gc);
 void	*gc_malloc(size_t size, t_gc *gc);
+void	*gc_calloc(size_t nmemb, size_t size, t_gc *gc);
 size_t	gc_malloc_size(void *ptr, t_gc *gc);
 void	*gc_realloc(void *ptr, size_t new_size, t_gc *gc);
 char	*ft_substr_gc(char *s, unsigned int start, size_t len, t_gc *gc);

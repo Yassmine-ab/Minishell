@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   quotes.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jcantin <jcantin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/10 02:54:14 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/19 10:04:48 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/21 14:56:31 by jcantin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ static void	ft_strappend(char **str, char c, t_gc *gc)
 	char	*new_str;
 	size_t	len;
 
-	if (!str || !*str)
+	if (str == NULL || *str == NULL)
 		return ;
 	len = ft_strlen(*str);
 	new_str = gc_malloc((len + 2) * sizeof(char), gc);
@@ -55,7 +55,7 @@ static int	handle_unclosed_char(char **input, int start, t_gc *gc)
 	{
 		write(1, "Unclosed quote detected. Continue input > ", 42);
 		additional_input = get_next_line(0);
-		if (!additional_input)
+		if (additional_input == NULL)
 			return (-1);
 		if (*additional_input)
 			*input = ft_strjoin_gc(*input, additional_input, gc);

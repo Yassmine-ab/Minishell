@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jcantin <jcantin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 21:54:13 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/17 02:51:40 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/21 15:24:14 by jcantin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ int	expand_env_variable(char **result, size_t *size, \
 			i++;
 		var_name = ft_substr_gc(str, start, i - start, &data->gc);
 		value = get_env_value(var_name, data);
-		if (!value)
+		if (value == NULL)
 			value = "";
 		i--;
 	}
@@ -69,21 +69,21 @@ static char	**find_wildcard_matches(char *pattern, t_minishell *data)
 	char			**matches;
 	int				count;
 
-	matches = gc_malloc(sizeof(char *) * (MAX_MATCHES + 1), &data->gc);
+	matches = gc_calloc(MAX_MATCHES + 1, sizeof(char *), &data->gc);
 	count = 0;
 	dir = opendir(".");
-	if (!dir)
+	if (dir == NULL)
 		return (perror("Unable to open directory"), NULL);
-	while ((entry = readdir(dir)))
+	entry = readdir(dir);
+	while (1)
 	{
+		entry = readdir(dir);
+		if (entry == NULL)
+			break ;
 		if ((entry->d_name[0] != '.' && pattern[0] != '.')
 			// && match_pattern(entry->d_name, pattern))
 			&& fnmatch(pattern, entry->d_name, 0) == 0)
-		{
 			matches[count++] = ft_strdup_gc(entry->d_name, &data->gc);
-			if (count >= MAX_MATCHES)
-				break ;
-		}
 	}
 	closedir(dir);
 	if (count == 0)
@@ -99,12 +99,12 @@ int	expand_wildcard(char **result, size_t *size, int i, char *str, t_minishell *
 	char	*pattern;
 	int		start;
 
-	while (i > 0 && !ft_isspace(str[i - 1])
-		&& !ft_strchr("\"'()|<>&", str[i - 1]))
+	while (i > 0 && ft_isspace(str[i - 1]) == 0
+		&& ft_strchr("\"'()|<>&", str[i - 1]) == NULL)
 		i--;
 	start = i;
 	while (str[i]
-		&& !ft_isspace(str[i]) && !ft_strchr("\"'()|<>&", str[i]))
+		&& ft_isspace(str[i]) == 0 && ft_strchr("\"'()|<>&", str[i]) == NULL)
 		i++;
 	pattern = ft_substr_gc(str, start, i - start, &data->gc);
 	matches = find_wildcard_matches(pattern, data);
@@ -153,23 +153,9 @@ char expansion_char)
 
 char	*expand_variables(char *value, t_minishell *data)
 {
-	if (!value)
+	if (value == NULL)
 		return (NULL);
 	value = process_expansion(value, data, expand_env_variable, '$');
 	value = process_expansion(value, data, expand_wildcard, '*');
 	return (value);
 }
-
-// void	expand_variables(char *value, t_minishell *data)
-// {
-// 	char	*expanded;
-
-// 	if (!value)
-// 		return ;
-// 	expanded = process_expansion(value, data, expand_env_variable, '$');
-// 	gc_free(value, &data->gc);
-// 	value = expanded;
-// 	expanded = process_expansion(value, data, expand_wildcard, '*');
-// 	gc_free(value, &data->gc);
-// 	value = expanded;
-// }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   words.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jcantin <jcantin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/10 19:30:54 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/13 02:09:55 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/21 14:56:52 by jcantin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ static char	*extract_value(char *input, int *i, t_minishell *data)
 
 	value = ft_strdup_gc("", &data->gc);
 	while (input[*i]
-		&& !ft_isspace(input[*i]) && !ft_strchr("()|<>", input[*i]))
+		&& ft_isspace(input[*i]) == 0 && ft_strchr("()|<>", input[*i]) == NULL)
 	{
 		if (input[*i] == '&' && input[*i + 1] && input[*i + 1] == '&')
 			break ;

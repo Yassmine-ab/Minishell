@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   command.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jcantin <jcantin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 03:42:20 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/20 12:06:51 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/21 15:05:08 by jcantin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ static void	concatenate_adjacent_nodes(t_node *node, t_minishell *data)
 	current = node;
 	while (current && current->next)
 	{
-		if (!current->space_after)
+		if (current->space_after == false)
 		{
 			combined = ft_strjoin_gc(current->value, \
 			current->next->value, &data->gc);
@@ -74,10 +74,10 @@ static char	*get_command_path(char *command, t_minishell *data)
 	if (access(command, X_OK) == 0)
 		return (command);
 	path_env = getenv("PATH");
-	if (!path_env)
+	if (path_env == NULL)
 		return (NULL);
 	paths = ft_split_gc(path_env, ':', &data->gc);
-	if (!paths)
+	if (paths == NULL)
 		return (NULL);
 	i = -1;
 	while (paths[++i])
@@ -90,10 +90,8 @@ static char	*get_command_path(char *command, t_minishell *data)
 				error("Permission denied", 126, &data->gc);
 		}
 		else
-			// return (free_split(paths, &data->gc), full_path);
 			return (full_path);
 	}
-	// free_split(paths, &data->gc);
 	if (access(command, X_OK))
 		error("Permission denied", 126, &data->gc);
 	return (NULL);
@@ -101,29 +99,30 @@ static char	*get_command_path(char *command, t_minishell *data)
 
 static int	execute_builtins(t_node *current, t_minishell *data)
 {
-	if (!ft_strncmp(current->value, "cd", 3))
+	if (ft_strncmp(current->value, "cd", 3) == 0)
 		return (ft_cd(current->args, data), 1);
-	else if (!ft_strncmp(current->value, "echo", 5))
+	else if (ft_strncmp(current->value, "echo", 5) == 0)
 		return (ft_echo(current->args, data), 1);
-	else if (!ft_strncmp(current->value, "env", 4))
+	else if (ft_strncmp(current->value, "env", 4) == 0)
 		return (ft_env(current->args, data), 1);
-	else if (!ft_strncmp(current->value, "exit", 5))
+	else if (ft_strncmp(current->value, "exit", 5) == 0)
 		return (ft_exit(current->args, data), 1);
-	else if (!ft_strncmp(current->value, "export", 7))
+	else if (ft_strncmp(current->value, "export", 7) == 0)
 		return (ft_export(current->args, data), 1);
-	else if (!ft_strncmp(current->value, "pwd", 4))
+	else if (ft_strncmp(current->value, "pwd", 4) == 0)
 		return (ft_pwd(current->args, data), 1);
-	else if (!ft_strncmp(current->value, "unset", 6))
+	else if (ft_strncmp(current->value, "unset", 6) == 0)
 		return (ft_unset(current->args, data), 1);
 	return (0);
 }
 
-static void	execute_command_in_pipeline(t_node *ast, char **args, t_minishell *data)
+static void	execute_command_in_pipeline(t_node *ast, char **args, \
+t_minishell *data)
 {
 	char	*path;
 
 	path = get_command_path(args[0], data);
-	if (!path)
+	if (path == 0)
 	{
 		data->last_exit_status = 127;
 		error("Command not found", 127, &data->gc);
@@ -147,10 +146,10 @@ static void	execute_extern_command(t_node *ast, char **args, t_minishell *data)
 		data->last_exit_status = 1;
 		error("Fork failed", 1, &data->gc);
 	}
-	else if (!pid)
+	else if (pid == 0)
 	{
 		path = get_command_path(args[0], data);
-		if (!path)
+		if (path == 0)
 		{
 			data->last_exit_status = 127;
 			error("Command not found", 127, &data->gc);
@@ -189,12 +188,11 @@ void	execute_command(t_node *ast, t_minishell *data, bool in_pipeline)
 	concatenate_adjacent_nodes(ast, data);
 	concatenate_adjacent_nodes(ast->args, data);
 	args = get_command_args(ast, data);
-	if (!execute_builtins(ast, data))
+	if (execute_builtins(ast, data) == 0)
 	{
 		if (in_pipeline)
 			execute_command_in_pipeline(ast, args, data);
 		else
 			execute_extern_command(ast, args, data);
 	}
-	// free_args(args, data);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirections.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jcantin <jcantin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 03:42:11 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/19 10:05:13 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/21 14:58:52 by jcantin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ static void	execute_heredoc(t_node *redir, t_minishell *data)
 		{
 			write(STDOUT_FILENO, "heredoc > ", 10);
 			line = get_next_line(STDIN_FILENO);
-			if (!line || (ft_strncmp(line, limiter, !ft_strlen(limiter))
+			if (line == NULL || (ft_strncmp(line, limiter, ft_strlen(limiter)) == 0
 					&& line[ft_strlen(limiter)] == '\n'))
 				break ;
 			write(data->here_doc[WRITE_END], line, strlen(line));
@@ -79,7 +79,6 @@ void	execute_redirections(t_node *cmd, t_minishell *data)
 	t_node	*redir;
 
 	redir = cmd->redirections;
-	
 	while (redir)
 	{
 		if (redir->type == NODE_REDIR)

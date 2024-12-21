@@ -3,27 +3,27 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jcantin <jcantin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 14:04:05 by petitcoeur        #+#    #+#             */
-/*   Updated: 2024/12/20 17:08:25 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/21 15:00:15 by jcantin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static void execute_pipeline(t_node *ast, t_minishell *data)
+static void	execute_pipeline(t_node *ast, t_minishell *data)
 {
-	int pipe_fd[2];
-	int prev_fd = -1;
-	pid_t pid;
-	int status;
+	int		pipe_fd[2];
+	int		prev_fd;
+	pid_t	pid;
+	int		status;
 
+	prev_fd = -1;
 	while (ast && ast->type == NODE_PIPE)
 	{
 		if (pipe(pipe_fd) == -1)
 			error("Failed to create pipe", 1, &data->gc);
-
 		pid = fork();
 		if (pid == -1)
 			error("Fork failed", 1, &data->gc);
@@ -39,7 +39,6 @@ static void execute_pipeline(t_node *ast, t_minishell *data)
 				error("Failed to redirect output to pipe", 1, &data->gc);
 			safe_close(&pipe_fd[WRITE_END]);
 			safe_close(&pipe_fd[READ_END]);
-
 			execute_ast(ast->left, data, true);
 			exit(data->last_exit_status);
 		}
@@ -69,7 +68,6 @@ static void execute_pipeline(t_node *ast, t_minishell *data)
 					error("Failed to redirect input from pipe", 1, &data->gc);
 				safe_close(&prev_fd);
 			}
-
 			execute_ast(ast, data, false);
 			exit(data->last_exit_status);
 		}
@@ -126,7 +124,7 @@ static void	execute_group(t_node *ast, t_minishell *data)
 
 void	execute_ast(t_node *ast, t_minishell *data, bool in_pipeline)
 {
-	if (!ast)
+	if (ast == NULL)
 		return ;
 	while (ast)
 	{
