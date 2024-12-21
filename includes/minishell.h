@@ -33,8 +33,6 @@
 # include <signal.h>
 # include <fcntl.h>
 
-extern volatile sig_atomic_t	g_signal_received;
-
 /* -------------------------------------------------------------------------- */
 /*                                  DEFINES                                   */
 /* -------------------------------------------------------------------------- */
@@ -71,6 +69,12 @@ extern volatile sig_atomic_t	g_signal_received;
 // PIPE FILE DESCRIPTORS
 # define READ_END 0
 # define WRITE_END 1
+
+/* -------------------------------------------------------------------------- */
+/*                               EXTERN VARIABLE                              */
+/* -------------------------------------------------------------------------- */
+
+extern volatile sig_atomic_t	g_signal_received;
 
 /* -------------------------------------------------------------------------- */
 /*                                   ENUMS                                    */
@@ -214,7 +218,7 @@ void	error(const char *error_msg, int status, t_gc *gc);
 void	strncat_realloc(char **result, char *append, size_t *size, t_gc *gc);
 bool	is_operator(t_token_type type);
 bool	is_redir(int current_index, t_minishell *data);
-void	close_fd(int *fd);
+void	safe_close(int *fd);
 void	free_split(char **strs, t_gc *gc);
 void	free_args(char **args, t_minishell *data);
 void	print_export(t_minishell *data);

@@ -26,7 +26,7 @@ static void	execute_heredoc(t_node *redir, t_minishell *data)
 		error("Fork failed", 1, &data->gc);
 	if (hd_pid == 0)
 	{
-		close_fd(&data->here_doc[READ_END]);
+		safe_close(&data->here_doc[READ_END]);
 		limiter = redir->right->value;
 		while (1)
 		{
@@ -38,10 +38,10 @@ static void	execute_heredoc(t_node *redir, t_minishell *data)
 			write(data->here_doc[WRITE_END], line, strlen(line));
 			gc_free(line, &data->gc);
 		}
-		close_fd(&data->here_doc[WRITE_END]);
+		safe_close(&data->here_doc[WRITE_END]);
 		exit(EXIT_SUCCESS);
 	}
-	close_fd(&data->here_doc[WRITE_END]);
+	safe_close(&data->here_doc[WRITE_END]);
 	waitpid(hd_pid, &status, 0);
 	if (WIFEXITED(status))
 		data->heredoc_status = WEXITSTATUS(status);
@@ -56,21 +56,21 @@ static void	redirect_fd(t_node *redir, t_minishell *data)
 		fd = open(redir->right->value, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 		if (dup2(fd, STDOUT_FILENO) == -1)
 			error("Failed to redirect output to file", 1, &data->gc);
-		close_fd(&fd);
+		safe_close(&fd);
 	}
 	else if (ft_strncmp(redir->value, ">>", 3) == 0)
 	{
 		fd = open(redir->right->value, O_WRONLY | O_CREAT | O_APPEND, 0644);
 		if (dup2(fd, STDOUT_FILENO) == -1)
 			error("Failed to redirect output to file", 1, &data->gc);
-		close_fd(&fd);
+		safe_close(&fd);
 	}
 	else if (ft_strncmp(redir->value, "<", 2) == 0)
 	{
 		fd = open(redir->right->value, O_RDONLY, 0644);
 		if (dup2(fd, STDIN_FILENO) == -1)
 			error("Failed to redirect input from file", 1, &data->gc);
-		close_fd(&fd);
+		safe_close(&fd);
 	}
 }
 

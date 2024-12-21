@@ -25,14 +25,13 @@ void	strncat_realloc(char **result, char *append, size_t *size, t_gc *gc)
 	ft_strlcat(*result, append, *size);
 }
 
-void	close_fd(int *fd)
+void	safe_close(int *fd)
 {
 	if (fd && *fd != -1)
 	{
 		if (close(*fd) == -1)
 			perror("Error closing file descriptor");
-		else
-			*fd = -1;
+		*fd = -1;
 	}
 }
 

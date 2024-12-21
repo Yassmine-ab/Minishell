@@ -54,7 +54,7 @@ endef
 NAME =			minishell
 NAME_BONUS =	minishell_bonus
 CC =			gcc
-CFLAGS =		-Wall -Wextra -Werror -g3
+CFLAGS =		-Wall -Wextra -Werror
 AR =			ar rcs
 RM =			rm -f
 
@@ -134,10 +134,10 @@ $(NAME):		$(OBJS)
 all:			$(NAME)
 
 # Bonus rule
-bonus:			$(OBJS_BONUS)
+bonus:			$(OBJS) $(OBJS_BONUS)
 				@make all --no-print-directory -C $(MYLIB_DIR)
 				@echo -n "\n🔗 $(WHITE)Linking $(CYAN)$(NAME_BONUS)$(DEFAULT) executable\t\t"
-				@$(CC) $(CFLAGS) $(OBJS_BONUS) $(MYLIB) $(READLINE) -o $(NAME_BONUS)
+				@$(CC) $(CFLAGS) $(OBJS) $(OBJS_BONUS) $(MYLIB) $(READLINE) -o $(NAME_BONUS)
 				$(PROGRESS_BAR)
 				@echo "\n$$HEADER"
 
