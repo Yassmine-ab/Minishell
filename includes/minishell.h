@@ -157,6 +157,8 @@ typedef struct s_minishell
 	int					open_parentheses;
 	pid_t				pid;
 	int					here_doc[2];
+	bool				is_child_process;
+	bool				child_end_with_signal;
 }	t_minishell;
 
 /* -------------------------------------------------------------------------- */
@@ -201,8 +203,10 @@ void	update_env(char *key, char *new_value, t_minishell *data);
 void	add_env(char *key, char *value, t_minishell *data);
 
 /* -------------------------------- Signal ---------------------------------- */
-void	init_signal(void);
-void	handle_sigint(int sig);
+void	init_signal_interactive_mode(void);
+void	init_signal_exec(void);
+void	signal_child_process(void);
+void	child_signal_to_action(t_minishell *data);
 
 /* ------------------------------- Builtins --------------------------------- */
 void	ft_echo(t_node *args, t_minishell *data);

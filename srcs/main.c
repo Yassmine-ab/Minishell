@@ -92,9 +92,9 @@ int	main(int argc, char **argv, char **envp)
 		return (printf("Minishell does" RED " not " DEFAULT "accept arguments. "
 				"Running in interactive mode only.\n"), 1);
 	data_init(argc, argv, envp, &data);
-	init_signal();
 	while (1)
 	{
+		init_signal_interactive_mode();
 		prompt = create_prompt(&data);
 		data.line = readline(prompt);
 		if (data.line == 0)
@@ -117,12 +117,9 @@ int	main(int argc, char **argv, char **envp)
 		}
 		gc_free(&data.line, &data.gc);
 		if (g_signal_received)
-		{
-			printf("Signal received. Cleaning up and exiting.\n");
-			break ;
-		}
+			child_signal_to_action(&data);
 	}
 	rl_clear_history();
-	// gc_cleanup(&data.gc);
+	gc_cleanup(&data.gc);
 	return (data.last_exit_status);
 }

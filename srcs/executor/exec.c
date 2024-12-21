@@ -29,6 +29,8 @@ static void	execute_pipeline(t_node *ast, t_minishell *data)
 			error("Fork failed", 1, &data->gc);
 		else if (pid == 0)
 		{
+			data->is_child_process = true;
+			signal_child_process();
 			if (prev_fd != -1)
 			{
 				if (dup2(prev_fd, STDIN_FILENO) == -1)
@@ -58,6 +60,8 @@ static void	execute_pipeline(t_node *ast, t_minishell *data)
 			error("Fork failed", 1, &data->gc);
 		else if (pid == 0)
 		{
+			data->is_child_process = true;
+			signal_child_process();
 			if (prev_fd != -1)
 			{
 				if (dup2(prev_fd, STDIN_FILENO) == -1)
@@ -75,7 +79,12 @@ static void	execute_pipeline(t_node *ast, t_minishell *data)
 	}
 	while (wait(&status) > 0)
 		;
-	if (WIFEXITED(status))
+	if (WIFSIGNALED(status))
+	{
+		data->last_exit_status = 128 + WTERMSIG(status);
+		data->child_end_with_signal = true;
+	}
+	else if (WIFEXITED(status))
 		data->last_exit_status = WEXITSTATUS(status);
 	else
 		data->last_exit_status = 1;
@@ -119,6 +128,7 @@ void	execute_ast(t_node *ast, t_minishell *data, bool in_pipeline)
 {
 	if (ast == NULL)
 		return ;
+	init_signal_exec();
 	while (ast)
 	{
 		if (ast->type == NODE_COMMAND)

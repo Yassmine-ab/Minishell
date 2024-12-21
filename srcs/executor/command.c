@@ -134,6 +134,23 @@ t_minishell *data)
 	error("Command execution failed", 127, &data->gc);
 }
 
+static void	launch_execve(char *path, char **args, t_minishell *data)
+{
+	if (execve(path, args, data->envp) == -1)
+	{
+		if (errno == EACCES)
+		{
+			error("Permission denied", 126, &data->gc);
+			data->last_exit_status = 126;
+		}
+		else
+		{
+			error("Command execution failed", 127, &data->gc);
+			data->last_exit_status = 127;
+		}
+	}
+}
+
 static void	execute_extern_command(t_node *ast, char **args, t_minishell *data)
 {
 	pid_t	pid;
@@ -148,6 +165,8 @@ static void	execute_extern_command(t_node *ast, char **args, t_minishell *data)
 	}
 	else if (pid == 0)
 	{
+		data->is_child_process = true;
+		signal_child_process();
 		path = get_command_path(args[0], data);
 		if (path == 0)
 		{
@@ -156,18 +175,18 @@ static void	execute_extern_command(t_node *ast, char **args, t_minishell *data)
 		}
 		if (ast->redirections)
 			execute_redirections(ast->redirections, data);
-		execve(path, args, data->envp);
-		data->last_exit_status = 127;
-		error("Command execution failed", 127, &data->gc);
+		launch_execve(path, args, data);
 	}
-	else
+	waitpid(pid, &status, 0);
+	if (WIFSIGNALED(status))
 	{
-		waitpid(pid, &status, 0);
-		if (WIFEXITED(status))
-			data->last_exit_status = WEXITSTATUS(status);
-		else
-			data->last_exit_status = 1;
+		data->last_exit_status = 128 + WTERMSIG(status);
+		data->child_end_with_signal = true;
 	}
+	else if (WIFEXITED(status))
+		data->last_exit_status = WEXITSTATUS(status);
+	else
+		data->last_exit_status = 1;
 }
 
 void	execute_command(t_node *ast, t_minishell *data, bool in_pipeline)
