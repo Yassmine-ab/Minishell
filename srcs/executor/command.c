@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 03:42:20 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/19 10:52:49 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/20 12:06:51 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,7 +117,24 @@ static int	execute_builtins(t_node *current, t_minishell *data)
 	return (0);
 }
 
-static void	execute_commandpath(t_node *ast, char **args, t_minishell *data)
+static void	execute_command_in_pipeline(t_node *ast, char **args, t_minishell *data)
+{
+	char	*path;
+
+	path = get_command_path(args[0], data);
+	if (!path)
+	{
+		data->last_exit_status = 127;
+		error("Command not found", 127, &data->gc);
+	}
+	if (ast->redirections)
+		execute_redirections(ast->redirections, data);
+	execve(path, args, data->envp);
+	data->last_exit_status = 127;
+	error("Command execution failed", 127, &data->gc);
+}
+
+static void	execute_extern_command(t_node *ast, char **args, t_minishell *data)
 {
 	pid_t	pid;
 	int		status;
@@ -153,7 +170,7 @@ static void	execute_commandpath(t_node *ast, char **args, t_minishell *data)
 	}
 }
 
-void	execute_command(t_node *ast, t_minishell *data)
+void	execute_command(t_node *ast, t_minishell *data, bool in_pipeline)
 {
 	t_node	*tmp;
 	char	**args;
@@ -172,6 +189,11 @@ void	execute_command(t_node *ast, t_minishell *data)
 	concatenate_adjacent_nodes(ast->args, data);
 	args = get_command_args(ast, data);
 	if (!execute_builtins(ast, data))
-		execute_commandpath(ast, args, data);
+	{
+		if (in_pipeline)
+			execute_command_in_pipeline(ast, args, data);
+		else
+			execute_extern_command(ast, args, data);
+	}
 	free_args(args, data);
 }

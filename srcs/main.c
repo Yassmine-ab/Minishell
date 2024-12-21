@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 11:06:43 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/19 11:11:41 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/20 17:02:02 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,10 @@ static void	print_ast(t_node *node, int depth)
 	print_ast(node->right, depth + 1);
 	if (node->next)
 		print_ast(node->next, depth);
+	if (node->args)
+		print_ast(node->args, depth + 1);
+	if (node->redirections)
+		print_ast(node->redirections, depth + 1);
 	printf(DEFAULT);
 }*/
 
@@ -93,7 +97,7 @@ int	main(int argc, char **argv, char **envp)
 			i = 0;
 			ast_root = parse_expression(&i, &data);
 			// print_ast(ast_root, 0);
-			execute_ast(ast_root, &data);
+			execute_ast(ast_root, &data, false);
 		}
 		gc_free(&data.line, &data.gc);
 		if (g_signal_received)
@@ -104,7 +108,7 @@ int	main(int argc, char **argv, char **envp)
 	}
 	rl_clear_history();
 	gc_cleanup(&data.gc);
-	return (0);
+	return (data.last_exit_status);
 }
 
 // int	main(int argc, char **argv, char **envp)
