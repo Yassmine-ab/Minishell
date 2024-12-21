@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   initialization.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jcantin <jcantin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/10 03:27:24 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/17 02:49:19 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/21 15:50:07 by jcantin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ void	data_init(int argc, char **argv, char **envp, t_minishell *data)
 	int	i;
 
 	ft_memset(data, 0, sizeof(t_minishell));
+	gc_init(&data->gc);
 	data->argc = argc;
 	data->argv = argv;
 	if (envp[0] == NULL)

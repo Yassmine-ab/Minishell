@@ -6,7 +6,7 @@
 /*   By: jcantin <jcantin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 11:06:43 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/21 14:47:06 by jcantin          ###   ########.fr       */
+/*   Updated: 2024/12/21 16:47:52 by jcantin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,20 @@ static void	print_ast(t_node *node, int depth)
 	printf(DEFAULT);
 }*/
 
+static void	free_ast(t_node *node, t_gc *gc)
+{
+	if (!node)
+		return ;
+	free_ast(node->left, gc);
+	free_ast(node->right, gc);
+	free_ast(node->next, gc);
+	free_ast(node->args, gc);
+	free_ast(node->redirections, gc);
+	if (node->value)
+		gc_free(node->value, gc);
+	gc_free(node, gc);
+}
+
 int	main(int argc, char **argv, char **envp)
 {
 	t_minishell	data;
@@ -98,6 +112,8 @@ int	main(int argc, char **argv, char **envp)
 			ast_root = parse_expression(&i, &data);
 			// print_ast(ast_root, 0);
 			execute_ast(ast_root, &data, false);
+			free_ast(ast_root, &data.gc);
+            ast_root = NULL;
 		}
 		gc_free(&data.line, &data.gc);
 		if (g_signal_received)
@@ -107,6 +123,6 @@ int	main(int argc, char **argv, char **envp)
 		}
 	}
 	rl_clear_history();
-	gc_cleanup(&data.gc);
+	// gc_cleanup(&data.gc);
 	return (data.last_exit_status);
 }

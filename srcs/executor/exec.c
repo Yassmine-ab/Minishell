@@ -6,7 +6,7 @@
 /*   By: jcantin <jcantin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 14:04:05 by petitcoeur        #+#    #+#             */
-/*   Updated: 2024/12/21 15:00:15 by jcantin          ###   ########.fr       */
+/*   Updated: 2024/12/21 15:32:34 by jcantin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,12 +46,8 @@ static void	execute_pipeline(t_node *ast, t_minishell *data)
 		{
 			safe_close(&pipe_fd[WRITE_END]);
 			if (prev_fd != -1)
-			{
 				safe_close(&prev_fd);
-				printf("Parent: Closed previous READ_END (%d)\n", prev_fd);
-			}
 			prev_fd = pipe_fd[READ_END];
-			printf("Parent: Set prev_fd to READ_END (%d)\n", prev_fd);
 			ast = ast->right;
 		}
 	}
@@ -74,10 +70,7 @@ static void	execute_pipeline(t_node *ast, t_minishell *data)
 		else
 		{
 			if (prev_fd != -1)
-			{
 				safe_close(&prev_fd);
-				printf("Parent: Closed last READ_END (%d)\n", prev_fd);
-			}
 		}
 	}
 	while (wait(&status) > 0)
@@ -128,7 +121,6 @@ void	execute_ast(t_node *ast, t_minishell *data, bool in_pipeline)
 		return ;
 	while (ast)
 	{
-		printf("Executing node: %s\n", ast->value);
 		if (ast->type == NODE_COMMAND)
 			execute_command(ast, data, in_pipeline);
 		else if (ast->type == NODE_PIPE)
