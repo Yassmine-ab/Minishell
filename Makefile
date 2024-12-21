@@ -89,12 +89,10 @@ SRCS =			$(INIT)initialization.c \
 				$(LEXER)words.c \
 				$(PARSER)parser.c \
 				$(PARSER)command.c \
-				$(PARSER)parser_utils.c \
 				$(EXEC)exec.c \
 				$(EXEC)expander.c \
 				$(EXEC)command.c \
 				$(EXEC)redirections.c \
-				$(EXEC)exec_utils.c \
 				$(ENV)environment.c \
 				$(SIGNAL)signal.c \
 				$(BUILTINS)echo.c \
@@ -105,6 +103,7 @@ SRCS =			$(INIT)initialization.c \
 				$(BUILTINS)export.c \
 				$(BUILTINS)export_utils.c \
 				$(BUILTINS)exit.c \
+				$(SRC)utils.c \
 				$(SRC)main.c
 
 SRCS_BONUS =	$(SRC)main_bonus.c

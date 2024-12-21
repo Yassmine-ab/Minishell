@@ -219,8 +219,8 @@ void	strncat_realloc(char **result, char *append, size_t *size, t_gc *gc);
 bool	is_operator(t_token_type type);
 bool	is_redir(int current_index, t_minishell *data);
 void	safe_close(int *fd);
-void	free_split(char **strs, t_gc *gc);
-void	free_args(char **args, t_minishell *data);
+// void	free_split(char **strs, t_gc *gc);
+// void	free_args(char **args, t_minishell *data);
 void	print_export(t_minishell *data);
 
 #endif

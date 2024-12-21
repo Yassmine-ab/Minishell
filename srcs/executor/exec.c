@@ -130,6 +130,7 @@ void	execute_ast(t_node *ast, t_minishell *data, bool in_pipeline)
 		return ;
 	while (ast)
 	{
+		printf("Executing node: %s\n", ast->value);
 		if (ast->type == NODE_COMMAND)
 			execute_command(ast, data, in_pipeline);
 		else if (ast->type == NODE_PIPE)

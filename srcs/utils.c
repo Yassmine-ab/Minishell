@@ -1,16 +1,36 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   exec_utils.c                                       :+:      :+:    :+:   */
+/*   parser_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/16 03:42:30 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/17 02:55:29 by yaabdall         ###   ########.fr       */
+/*   Created: 2024/11/13 05:22:40 by yaabdall          #+#    #+#             */
+/*   Updated: 2024/12/20 11:39:05 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+void	error(const char *error_msg, int status, t_gc *gc)
+{
+	dprintf(2, "%s\n", error_msg);
+	gc_cleanup(gc);
+	exit(status);
+}
+
+bool	is_redir(int current_index, t_minishell *data)
+{
+	return (data->tokens[current_index].type == STDOUT
+		|| data->tokens[current_index].type == STDIN
+		|| data->tokens[current_index].type == STDOUT_APPEND);
+}
+
+bool	is_operator(t_token_type type)
+{
+	return (type == PIPE || type == AND || type == OR
+		|| type == STDIN || type == STDOUT || type == STDOUT_APPEND);
+}
 
 void	strncat_realloc(char **result, char *append, size_t *size, t_gc *gc)
 {
@@ -33,34 +53,4 @@ void	safe_close(int *fd)
 			perror("Error closing file descriptor");
 		*fd = -1;
 	}
-}
-
-void	free_split(char **strs, t_gc *gc)
-{
-	int	i;
-
-	i = 0;
-	if (strs == NULL)
-		return ;
-	while (strs[i])
-	{
-		gc_free(strs[i], gc);
-		i++;
-	}
-	gc_free(strs, gc);
-}
-
-void	free_args(char **args, t_minishell *data)
-{
-	int	i;
-
-	if (!args)
-		return ;
-	i = 0;
-	while (args[i])
-	{
-		gc_free(args[i], &data->gc);
-		i++;
-	}
-	gc_free(args, &data->gc);
 }

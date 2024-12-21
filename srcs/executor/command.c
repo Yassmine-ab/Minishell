@@ -90,9 +90,10 @@ static char	*get_command_path(char *command, t_minishell *data)
 				error("Permission denied", 126, &data->gc);
 		}
 		else
-			return (free_split(paths, &data->gc), full_path);
+			// return (free_split(paths, &data->gc), full_path);
+			return (full_path);
 	}
-	free_split(paths, &data->gc);
+	// free_split(paths, &data->gc);
 	if (access(command, X_OK))
 		error("Permission denied", 126, &data->gc);
 	return (NULL);
@@ -195,5 +196,5 @@ void	execute_command(t_node *ast, t_minishell *data, bool in_pipeline)
 		else
 			execute_extern_command(ast, args, data);
 	}
-	free_args(args, data);
+	// free_args(args, data);
 }
