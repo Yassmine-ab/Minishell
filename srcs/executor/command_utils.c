@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 10:49:41 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/22 11:05:40 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/22 14:32:40 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,30 +37,6 @@ void	concatenate_adjacent_nodes(t_node *node, t_minishell *data)
 	}
 }
 
-static bool	is_executable_file(const char *path, t_minishell *data)
-{
-	struct stat	st;
-
-	if (stat(path, &st) == -1)
-	{
-		printf("Stat échoué pour: %s, errno: %d\n", path, errno);
-		if (errno == ENOENT)
-			error("No such file or directory", 127, &data->gc);
-		else
-			error(strerror(errno), 1, &data->gc);
-	}
-	if (!S_ISREG(st.st_mode))
-		error("Not a regular file", 126, &data->gc);
-	if (access(path, X_OK) == -1)
-	{
-		if (errno == EACCES)
-			error("Permission denied", 126, &data->gc);
-		else
-			error(strerror(errno), 1, &data->gc);
-	}
-	return (true);
-}
-
 char	**get_command_args(t_node *cmd_node, t_minishell *data)
 {
 	int		arg_count;
@@ -88,6 +64,30 @@ char	**get_command_args(t_node *cmd_node, t_minishell *data)
 	return (args);
 }
 
+static bool	is_executable(const char *path, t_minishell *data)
+{
+	struct stat	st;
+
+	if (stat(path, &st) == -1)
+	{
+		printf("Stat échoué pour: %s, errno: %d\n", path, errno);
+		if (errno == ENOENT)
+			error("No such file or directory", 127, &data->gc);
+		else
+			error(strerror(errno), 1, &data->gc);
+	}
+	if (!S_ISREG(st.st_mode))
+		error("Not a regular file", 126, &data->gc);
+	if (access(path, X_OK) == -1)
+	{
+		if (errno == EACCES)
+			error("Permission denied", 126, &data->gc);
+		else
+			error(strerror(errno), 1, &data->gc);
+	}
+	return (true);
+}
+
 char	*get_command_path(char *command, t_minishell *data)
 {
 	char	**paths;
@@ -95,7 +95,7 @@ char	*get_command_path(char *command, t_minishell *data)
 	char	*full_path;
 	int		i;
 
-	if (is_executable_file(command, data) == true)
+	if (is_executable(command, data) == true)
 		return (command);
 	path_env = getenv("PATH");
 	if (path_env == NULL)
@@ -108,7 +108,7 @@ char	*get_command_path(char *command, t_minishell *data)
 	{
 		full_path = ft_strjoin_gc(paths[i], "/", &data->gc);
 		full_path = ft_strjoin_gc(full_path, command, &data->gc);
-		if (is_executable_file(full_path, data) == true)
+		if (is_executable(full_path, data) == true)
 			return (full_path);
 	}
 	return (NULL);
