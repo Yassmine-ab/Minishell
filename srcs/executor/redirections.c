@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 03:42:11 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/22 17:04:03 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/22 18:26:16 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,15 @@ void	execute_redirections(t_node *redir, t_minishell *data)
 		if (redir->type == NODE_REDIR)
 			redirect_fd(redir, data);
 		else if (redir->type == NODE_HEREDOC)
+		{
 			execute_heredoc(redir, data);
+			if (data->in_command)
+			{
+				if (dup2(data->here_doc[READ_END], STDIN_FILENO) == -1)
+					error("Failed to redirect heredoc to stdin", 1, &data->gc);
+				safe_close(&data->here_doc[READ_END]);
+			}
+		}
 		redir = redir->next;
 	}
 }

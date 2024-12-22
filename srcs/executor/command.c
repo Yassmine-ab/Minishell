@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 03:42:20 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/22 16:53:52 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/22 18:29:01 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,20 +36,17 @@ t_minishell *data)
 {
 	char	*path;
 
-	(void)ast;
 	path = get_command_path(args[0], data);
 	if (path == NULL)
 	{
-		if (data->last_exec_error == EXEC_NO_FILE)
-			error("No such file or directory", 127, &data->gc);
 		if (data->last_exec_error == EXEC_NOT_REGULAR)
 			error("Not a regular file", 126, &data->gc);
 		if (data->last_exec_error == EXEC_NO_PERMISSION)
 			error("Permission denied", 126, &data->gc);
 		error("Command not found", 127, &data->gc);
 	}
-	// if (ast->redirections)
-	// 	execute_redirections(ast->redirections, data);
+	if (ast->redirections)
+		execute_redirections(ast->redirections, data);
 	execve(path, args, data->envp);
 	error("Command execution failed", 127, &data->gc);
 }
@@ -98,9 +95,8 @@ void	execute_command(t_node *ast, t_minishell *data, bool in_pipeline)
 	ast->value = expand_variables(ast->value, data);
 	concatenate_adjacent_nodes(ast, data);
 	concatenate_adjacent_nodes(ast->args, data);
-	if (ast->redirections)
-		execute_redirections(ast->redirections, data);
 	args = get_command_args(ast, data);
+	data->in_command = true;
 	if (execute_builtins(ast, data) == 0)
 	{
 		if (in_pipeline)
@@ -108,4 +104,5 @@ void	execute_command(t_node *ast, t_minishell *data, bool in_pipeline)
 		else
 			execute_extern_command(ast, args, data);
 	}
+	data->in_command = false;
 }

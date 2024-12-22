@@ -167,7 +167,7 @@ re:				fclean all
 debug:			$(OBJS)
 				@make all --no-print-directory -C $(MYLIB_DIR)
 				@echo -n "\n🔗 $(CYAN)Compiling in debug mode $(DEFAULT)\t\t\t"
-				@$(CC) $(CFLAGS) $(OBJS) $(MYLIB) $(READLINE) -o $(NAME) -g3 -fsanitize=address
+				@$(CC) $(CFLAGS) $(OBJS) $(MYLIB) $(READLINE) -o $(NAME) -g3
 				$(PROGRESS_BAR)
 				@echo "$$HEADER"
 

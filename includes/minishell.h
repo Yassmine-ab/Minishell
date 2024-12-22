@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 02:04:44 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/22 15:47:02 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/22 18:09:33 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -176,6 +176,7 @@ typedef struct s_minishell
 	int					here_doc[2];
 	bool				is_child_process;
 	bool				child_end_with_signal;
+	bool				in_command;
 	t_exec_error		last_exec_error;
 }	t_minishell;
 
