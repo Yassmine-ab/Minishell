@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 03:42:20 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/22 14:07:51 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/22 14:21:21 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,6 @@ static void	execute_extern_command(t_node *ast, char **args, t_minishell *data)
 {
 	pid_t	pid;
 	int		status;
-	char	*path;
 
 	pid = fork();
 	if (pid == -1)
