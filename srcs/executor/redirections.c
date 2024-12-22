@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirections.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jcantin <jcantin@student.42.fr>            +#+  +:+       +#+        */
+/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 03:42:11 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/21 14:58:52 by jcantin          ###   ########.fr       */
+/*   Updated: 2024/12/22 14:19:32 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,16 +26,18 @@ static void	execute_heredoc(t_node *redir, t_minishell *data)
 		error("Fork failed", 1, &data->gc);
 	if (hd_pid == 0)
 	{
+		data->is_child_process = 1;
 		safe_close(&data->here_doc[READ_END]);
 		limiter = redir->right->value;
 		while (1)
 		{
-			write(STDOUT_FILENO, "heredoc > ", 10);
+			ft_putstr_fd("heredoc > ", STDOUT_FILENO);
 			line = get_next_line(STDIN_FILENO);
-			if (line == NULL || (ft_strncmp(line, limiter, ft_strlen(limiter)) == 0
+			if (line == NULL
+				|| (ft_strncmp(line, limiter, ft_strlen(limiter)) == 0
 					&& line[ft_strlen(limiter)] == '\n'))
 				break ;
-			write(data->here_doc[WRITE_END], line, strlen(line));
+			ft_putstr_fd(line, data->here_doc[WRITE_END]);
 			gc_free(line, &data->gc);
 		}
 		safe_close(&data->here_doc[WRITE_END]);
@@ -44,7 +46,12 @@ static void	execute_heredoc(t_node *redir, t_minishell *data)
 	safe_close(&data->here_doc[WRITE_END]);
 	waitpid(hd_pid, &status, 0);
 	if (WIFEXITED(status))
-		data->heredoc_status = WEXITSTATUS(status);
+		data->last_exit_status = WEXITSTATUS(status);
+	else if (WIFSIGNALED(status))
+	{
+		data->last_exit_status = 128 + WTERMSIG(status);
+		data->child_end_with_signal = true;
+	}
 }
 
 static void	redirect_fd(t_node *redir, t_minishell *data)

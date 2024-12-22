@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 03:42:20 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/22 11:19:04 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/22 14:07:51 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ static int	execute_builtins(t_node *current, t_minishell *data)
 	return (0);
 }
 
-static void	execute_command_in_pipeline(t_node *ast, char **args, \
+static void	execute_command_in_child(t_node *ast, char **args, \
 t_minishell *data)
 {
 	char	*path;
@@ -43,17 +43,6 @@ t_minishell *data)
 		execute_redirections(ast->redirections, data);
 	execve(path, args, data->envp);
 	error("Command execution failed", 127, &data->gc);
-}
-
-static void	launch_execve(char *path, char **args, t_minishell *data)
-{
-	if (execve(path, args, data->envp) == -1)
-	{
-		if (errno == EACCES)
-			error("Permission denied", 126, &data->gc);
-		else
-			error("Command execution failed", 127, &data->gc);
-	}
 }
 
 static void	execute_extern_command(t_node *ast, char **args, t_minishell *data)
@@ -69,20 +58,18 @@ static void	execute_extern_command(t_node *ast, char **args, t_minishell *data)
 	{
 		data->is_child_process = true;
 		signal_child_process();
-		path = get_command_path(args[0], data);
-		if (path == 0)
-			error("Command not found", 127, &data->gc);
-		if (ast->redirections)
-			execute_redirections(ast->redirections, data);
-		launch_execve(path, args, data);
+		execute_command_in_child(ast, args, data);
 	}
-	waitpid(pid, &status, 0);
-	if (WIFEXITED(status))
-		data->last_exit_status = WEXITSTATUS(status);
-	else if (WIFSIGNALED(status))
+	else
 	{
-		data->last_exit_status = 128 + WTERMSIG(status);
-		data->child_end_with_signal = true;
+		waitpid(pid, &status, 0);
+		if (WIFEXITED(status))
+			data->last_exit_status = WEXITSTATUS(status);
+		else if (WIFSIGNALED(status))
+		{
+			data->last_exit_status = 128 + WTERMSIG(status);
+			data->child_end_with_signal = true;
+		}
 	}
 }
 
@@ -107,7 +94,7 @@ void	execute_command(t_node *ast, t_minishell *data, bool in_pipeline)
 	if (execute_builtins(ast, data) == 0)
 	{
 		if (in_pipeline)
-			execute_command_in_pipeline(ast, args, data);
+			execute_command_in_child(ast, args, data);
 		else
 			execute_extern_command(ast, args, data);
 	}

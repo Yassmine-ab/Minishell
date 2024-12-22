@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 02:04:44 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/22 12:39:26 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/22 13:08:48 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,6 +142,7 @@ typedef struct s_node
 	struct s_node		*next;
 }	t_node;
 
+// PIDS STRUCTURE
 typedef struct s_pids
 {
 	pid_t				*pids;

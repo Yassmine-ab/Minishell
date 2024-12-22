@@ -6,18 +6,11 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 11:22:57 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/22 12:50:50 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/22 14:13:52 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-static void	pids_init(t_pids *pids, t_minishell *data)
-{
-	pids->count = 0;
-	pids->capacity = 10;
-	pids->pids = gc_malloc(sizeof(pid_t) * pids->capacity, &data->gc);
-}
 
 static void	add_pid(t_pids *pids, pid_t pid, t_minishell *data)
 {
@@ -49,7 +42,7 @@ static void	wait_all_pids(t_pids *pids, t_minishell *data)
 			data->child_end_with_signal = true;
 		}
 	}
-	free(pids);
+	gc_free(pids, &data->gc);
 }
 
 void	execute_pipeline(t_node *ast, t_minishell *data)
@@ -58,7 +51,6 @@ void	execute_pipeline(t_node *ast, t_minishell *data)
 	int		prev_fd;
 	pid_t	pid;
 
-	pids_init(data->pids, data);
 	prev_fd = -1;
 	while (ast && ast->type == NODE_PIPE)
 	{
@@ -94,30 +86,6 @@ void	execute_pipeline(t_node *ast, t_minishell *data)
 			ast = ast->right;
 		}
 	}
-	if (ast)
-	{
-		pid = fork();
-		if (pid == -1)
-			error("Fork failed", 1, &data->gc);
-		else if (pid == 0)
-		{
-			data->is_child_process = true;
-			signal_child_process();
-			if (prev_fd != -1)
-			{
-				if (dup2(prev_fd, STDIN_FILENO) == -1)
-					error("Failed to redirect input from pipe", 1, &data->gc);
-				safe_close(&prev_fd);
-			}
-			execute_ast(ast, data, false);
-			exit(data->last_exit_status);
-		}
-		else
-		{
-			add_pid(data->pids, pid, data);
-			if (prev_fd != -1)
-				safe_close(&prev_fd);
-		}
-	}
+	execute_ast(ast, data, false);
 	wait_all_pids(data->pids, data);
 }
