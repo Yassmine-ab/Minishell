@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/10 03:27:24 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/22 13:48:27 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/22 16:27:30 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,4 +76,5 @@ void	data_init(int argc, char **argv, char **envp, t_minishell *data)
 	data->current_type = COMMAND;
 	data->here_doc[0] = -1;
 	data->here_doc[1] = -1;
+	data->last_exec_error = EXEC_NO_FILE;
 }

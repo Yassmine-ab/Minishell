@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 03:42:20 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/22 15:47:02 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/22 16:30:52 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,16 +37,15 @@ t_minishell *data)
 	char	*path;
 
 	path = get_command_path(args[0], data);
-	if (path == 0)
+	if (path == NULL)
 	{
 		if (data->last_exec_error == EXEC_NO_FILE)
 			error("No such file or directory", 127, &data->gc);
-		else if (data->last_exec_error == EXEC_NOT_REGULAR)
+		if (data->last_exec_error == EXEC_NOT_REGULAR)
 			error("Not a regular file", 126, &data->gc);
-		else if (data->last_exec_error == EXEC_NO_PERMISSION)
+		if (data->last_exec_error == EXEC_NO_PERMISSION)
 			error("Permission denied", 126, &data->gc);
-		else
-			error("Command not found", 127, &data->gc);
+		error("Command not found", 127, &data->gc);
 	}
 	if (ast->redirections)
 		execute_redirections(ast->redirections, data);
