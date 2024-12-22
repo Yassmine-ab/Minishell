@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   initialization.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jcantin <jcantin@student.42.fr>            +#+  +:+       +#+        */
+/*   By: petitcoeur <petitcoeur@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/10 03:27:24 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/21 15:50:07 by jcantin          ###   ########.fr       */
+/*   Updated: 2024/12/22 00:47:53 by petitcoeur       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,15 @@ static char	**envp_is_null(t_minishell *data)
 	return (envp);
 }
 
+static void	update_shlvl(t_minishell *data)
+{
+	if (get_env_index("SHLVL", data) == -1)
+		add_env("SHLVL", "1", data);
+	else
+		update_env("SHLVL", ft_itoa_gc
+			(ft_atoi(get_env_value("SHLVL", data)) + 1, &data->gc), data);
+}
+
 void	data_init(int argc, char **argv, char **envp, t_minishell *data)
 {
 	int	i;
@@ -45,6 +54,7 @@ void	data_init(int argc, char **argv, char **envp, t_minishell *data)
 		while (envp[++i])
 			data->envp[i] = ft_strdup_gc(envp[i], &data->gc);
 		data->envp[i] = NULL;
+		update_shlvl(data);
 	}
 	data->tokens = gc_malloc(sizeof(t_token) * (MAX_TOKENS + 1), &data->gc);
 	data->current_type = COMMAND;

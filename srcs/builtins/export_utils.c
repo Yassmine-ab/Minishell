@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
+/*   By: petitcoeur <petitcoeur@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 02:48:46 by petitcoeur        #+#    #+#             */
-/*   Updated: 2024/12/17 02:55:39 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/22 00:43:26 by petitcoeur       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,9 +34,11 @@ static void	bubble_sort(char **envp, int size)
 	}
 }
 
-static void	display_export_vars(char **sorted_envp)
+static void	display_export_vars(char **sorted_envp, t_minishell *data)
 {
 	char	*equal_sign;
+	char	*key;
+	char	*value;
 	int		i;
 
 	i = -1;
@@ -48,9 +50,13 @@ static void	display_export_vars(char **sorted_envp)
 			ft_putstr_fd(sorted_envp[i], STDOUT_FILENO);
 		else
 		{
-			ft_putstr_fd(sorted_envp[i], STDOUT_FILENO);
-			if (*(equal_sign + 1) == '\0')
-				ft_putstr_fd("\"\"", STDOUT_FILENO);
+			key = ft_substr_gc
+				(sorted_envp[i], 0, equal_sign - sorted_envp[i], &data->gc);
+			value = get_env_value(key, data);
+			ft_putstr_fd(key, STDOUT_FILENO);
+			ft_putstr_fd("=\"", STDOUT_FILENO);
+			ft_putstr_fd(value, STDOUT_FILENO);
+			ft_putchar_fd('"', STDOUT_FILENO);
 		}
 		ft_putstr_fd("\n", STDOUT_FILENO);
 	}
@@ -69,7 +75,7 @@ void	print_export(t_minishell *data)
 		sorted_envp[i] = ft_strdup_gc(data->envp[i], &data->gc);
 	sorted_envp[i] = NULL;
 	bubble_sort(sorted_envp, env_count);
-	display_export_vars(sorted_envp);
+	display_export_vars(sorted_envp, data);
 	i = -1;
 	while (sorted_envp[++i])
 		gc_free(sorted_envp[i], &data->gc);

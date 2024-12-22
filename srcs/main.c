@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jcantin <jcantin@student.42.fr>            +#+  +:+       +#+        */
+/*   By: petitcoeur <petitcoeur@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 11:06:43 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/21 16:47:52 by jcantin          ###   ########.fr       */
+/*   Updated: 2024/12/22 01:39:02 by petitcoeur       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,7 +113,7 @@ int	main(int argc, char **argv, char **envp)
 			// print_ast(ast_root, 0);
 			execute_ast(ast_root, &data, false);
 			free_ast(ast_root, &data.gc);
-            ast_root = NULL;
+			ast_root = NULL;
 		}
 		gc_free(&data.line, &data.gc);
 		if (g_signal_received)
