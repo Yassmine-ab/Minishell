@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   quotes.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jcantin <jcantin@student.42.fr>            +#+  +:+       +#+        */
+/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/10 02:54:14 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/21 14:56:31 by jcantin          ###   ########.fr       */
+/*   Updated: 2024/12/22 19:41:56 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ static int	handle_unclosed_char(char **input, int start, t_gc *gc)
 
 	while (1)
 	{
-		write(1, "Unclosed quote detected. Continue input > ", 42);
+		ft_putstr_fd("Unclosed quote detected. Continue input > ", 1);
 		additional_input = get_next_line(0);
 		if (additional_input == NULL)
 			return (-1);

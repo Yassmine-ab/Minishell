@@ -6,17 +6,20 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 05:22:40 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/22 16:38:21 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/22 19:02:08 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	error(const char *error_msg, int status, t_gc *gc)
+void	error(const char *error_msg, int status, t_minishell *data)
 {
 	dprintf(2, "%s\n", error_msg);
-	gc_cleanup(gc);
-	exit(status);
+	if (data->is_child_process)
+	{
+		gc_cleanup(&data->gc);
+		exit(status);
+	}
 }
 
 bool	is_redir(int current_index, t_minishell *data)
@@ -50,7 +53,7 @@ void	safe_close(int *fd)
 	if (fd && *fd != -1)
 	{
 		if (close(*fd) == -1)
-			perror("Error closing file descriptor");
+			dprintf(2, "Error closing file descriptor\n");
 		*fd = -1;
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 14:04:05 by petitcoeur        #+#    #+#             */
-/*   Updated: 2024/12/22 18:10:28 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/22 19:11:16 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,9 +32,7 @@ static void	execute_group(t_node *ast, t_minishell *data)
 	int		status;
 
 	pid = fork();
-	if (pid == -1)
-		error("Fork failed", 1, &data->gc);
-	else if (pid == 0)
+	if (pid == 0)
 		execute_ast(ast->left, data, false);
 	else
 	{

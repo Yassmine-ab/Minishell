@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   command.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jcantin <jcantin@student.42.fr>            +#+  +:+       +#+        */
+/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 16:44:17 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/21 14:57:51 by jcantin          ###   ########.fr       */
+/*   Updated: 2024/12/22 19:42:47 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ static t_node	*parse_group(int *i, t_minishell *data)
 	(*i)++;
 	group_node->left = parse_expression(i, data);
 	if (group_node->left == NULL)
-		error("Empty parentheses", 1, &data->gc);
+		return (error("Empty parentheses", 1, data), NULL);
 	(*i)++;
 	return (group_node);
 }

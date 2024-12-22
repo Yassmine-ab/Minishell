@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 21:54:13 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/22 13:36:57 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/22 19:03:27 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ static char	**find_wildcard_matches(char *pattern, t_minishell *data)
 	count = 0;
 	dir = opendir(".");
 	if (dir == NULL)
-		return (perror("Unable to open directory"), NULL);
+		return (dprintf(2, "Unable to open directory"), NULL);
 	entry = readdir(dir);
 	while (1)
 	{

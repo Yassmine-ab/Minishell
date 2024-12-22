@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 03:42:11 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/22 18:26:16 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/22 19:47:01 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,8 @@ static void	execute_heredoc(t_node *redir, t_minishell *data)
 	pid_t	hd_pid;
 	int		status;
 
-	if (pipe(data->here_doc) == -1)
-		error("Failed to create here_doc pipe", 1, &data->gc);
+	pipe(data->here_doc);
 	hd_pid = fork();
-	if (hd_pid == -1)
-		error("Fork failed", 1, &data->gc);
 	if (hd_pid == 0)
 	{
 		data->is_child_process = 1;
@@ -63,21 +60,21 @@ static void	redirect_fd(t_node *redir, t_minishell *data)
 	{
 		fd = open(redir->right->value, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 		if (dup2(fd, STDOUT_FILENO) == -1)
-			error("Failed to redirect output to file", 1, &data->gc);
+			error("Failed to redirect output to file", 1, data);
 		safe_close(&fd);
 	}
 	else if (ft_strncmp(redir->value, ">>", 3) == 0)
 	{
 		fd = open(redir->right->value, O_WRONLY | O_CREAT | O_APPEND, 0644);
 		if (dup2(fd, STDOUT_FILENO) == -1)
-			error("Failed to redirect output to file", 1, &data->gc);
+			error("Failed to redirect output to file", 1, data);
 		safe_close(&fd);
 	}
 	else if (ft_strncmp(redir->value, "<", 2) == 0)
 	{
 		fd = open(redir->right->value, O_RDONLY, 0644);
 		if (dup2(fd, STDIN_FILENO) == -1)
-			error("Failed to redirect input from file", 1, &data->gc);
+			error("Failed to redirect input from file", 1, data);
 		safe_close(&fd);
 	}
 }
@@ -94,7 +91,7 @@ void	execute_redirections(t_node *redir, t_minishell *data)
 			if (data->in_command)
 			{
 				if (dup2(data->here_doc[READ_END], STDIN_FILENO) == -1)
-					error("Failed to redirect heredoc to stdin", 1, &data->gc);
+					error("Failed to redirect heredoc to stdin", 1, data);
 				safe_close(&data->here_doc[READ_END]);
 			}
 		}

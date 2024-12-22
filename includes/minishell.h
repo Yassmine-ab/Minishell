@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 02:04:44 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/22 18:09:33 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/22 19:39:07 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -180,7 +180,6 @@ typedef struct s_minishell
 	t_exec_error		last_exec_error;
 }	t_minishell;
 
-
 /* -------------------------------------------------------------------------- */
 /*                             FUNCTION PROTOTYPES                            */
 /* -------------------------------------------------------------------------- */
@@ -197,7 +196,7 @@ t_token	create_token(t_token_type type, char *value);
 void	skip_whitespace(char **input, int *index);
 char	*process_single_quotes(char *input, int *i, t_minishell *data);
 char	*process_double_quotes(char *input, int *i, t_minishell *data);
-void	process_parentheses(char *input, int *i, int *count, t_minishell *data);
+bool	process_parentheses(char *input, int *i, int *count, t_minishell *data);
 void	process_operator(char *input, int *i, int *count, t_minishell *data);
 void	process_word(char *input, int *i, int *count, t_minishell *data);
 
@@ -242,7 +241,7 @@ void	ft_export(t_node *args, t_minishell *data);
 void	ft_exit(t_node *args, t_minishell *data);
 
 /* ------------------------------- Utilities -------------------------------- */
-void	error(const char *error_msg, int status, t_gc *gc);
+void	error(const char *error_msg, int status, t_minishell *data);
 void	strncat_realloc(char **result, char *append, size_t *size, t_gc *gc);
 bool	is_operator(t_token_type type);
 bool	is_redir(int current_index, t_minishell *data);

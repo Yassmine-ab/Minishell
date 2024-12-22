@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 21:42:36 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/22 16:39:04 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/22 19:40:18 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void	skip_whitespace(char **input, int *index)
 		(*index)++;
 }
 
-static void	validate_tokens(t_minishell *data)
+static bool	validate_tokens(t_minishell *data)
 {
 	int	i;
 
@@ -37,22 +37,25 @@ static void	validate_tokens(t_minishell *data)
 	while (data->tokens[++i].type != END)
 	{
 		if (i == 0 && is_operator(data->tokens[i].type))
-			error("Unexpected operator at the beginning", 1, &data->gc);
+			return (error("Unexpected operator at start", 1, data), false);
 		if (is_operator(data->tokens[i].type)
 			|| data->tokens[i].type == HEREDOC
 			|| data->tokens[i].type == STDIN)
 		{
 			if (data->tokens[i + 1].type == END)
-				error("Unexpected end of command after operator", 1, &data->gc);
+				return (error("Unexpected end of command after operator", \
+				1, data), false);
 			if (is_operator(data->tokens[i + 1].type)
 				|| data->tokens[i + 1].type == HEREDOC
 				|| data->tokens[i + 1].type == STDIN)
-				error("Consecutive or invalid operators", 1, &data->gc);
+				return (error("Consecutive operators", 1, data), false);
 		}
 		else if (data->tokens[i].type == COMMAND
 			&& data->tokens[i + 1].type == PARENTHESIS_OPEN)
-			error("Unexpected opening parenthesis after command", 1, &data->gc);
+			return (error("Unexpected opening parenthesis after command", \
+			1, data), false);
 	}
+	return (true);
 }
 
 t_token	*tokenize_input(char *input, t_minishell *data)
@@ -67,7 +70,10 @@ t_token	*tokenize_input(char *input, t_minishell *data)
 		if (ft_isspace(input[i]))
 			skip_whitespace(&input, &i);
 		else if (ft_strchr("()", input[i]))
-			process_parentheses(input, &i, &count, data);
+		{
+			if (process_parentheses(input, &i, &count, data) == false)
+				return (NULL);
+		}
 		else if (ft_strchr("|<>", input[i])
 			|| (input[i] == '&' && input[i + 1] == '&'))
 			process_operator(input, &i, &count, data);
@@ -75,6 +81,7 @@ t_token	*tokenize_input(char *input, t_minishell *data)
 			process_word(input, &i, &count, data);
 	}
 	data->tokens[count] = create_token(END, NULL);
-	validate_tokens(data);
+	if (validate_tokens(data) == false)
+		return (NULL);
 	return (data->tokens);
 }

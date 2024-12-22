@@ -6,13 +6,13 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 11:06:43 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/22 17:18:27 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/22 19:36:45 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-/*static void	print_tokens(t_token *tokens)
+static void	print_tokens(t_token *tokens)
 {
 	int	i;
 	const char *token_names[] =
@@ -64,7 +64,7 @@ static void	print_ast(t_node *node, int depth)
 	if (node->redirections)
 		print_ast(node->redirections, depth + 1);
 	printf(DEFAULT);
-}*/
+}
 
 static void	free_ast(t_node *node, t_gc *gc)
 {
@@ -83,8 +83,8 @@ static void	free_ast(t_node *node, t_gc *gc)
 int	main(int argc, char **argv, char **envp)
 {
 	t_minishell	data;
-	char	*prompt;
-	// t_token		*tokens;
+	char		*prompt;
+	t_token		*tokens;
 	t_node		*ast_root;
 	int			i;
 
@@ -110,14 +110,16 @@ int	main(int argc, char **argv, char **envp)
 		{
 			add_history(data.line);
 			data.current_type = COMMAND;
-			tokenize_input(data.line, &data);
-			// print_tokens(tokens);
-			i = 0;
-			ast_root = parse_expression(&i, &data);
-			// print_ast(ast_root, 0);
-			execute_ast(ast_root, &data, false);
-			free_ast(ast_root, &data.gc);
-			ast_root = NULL;
+			if ((tokens = tokenize_input(data.line, &data)))
+			{
+				print_tokens(tokens);
+				i = 0;
+				ast_root = parse_expression(&i, &data);
+				print_ast(ast_root, 0);
+				execute_ast(ast_root, &data, false);
+				free_ast(ast_root, &data.gc);
+				ast_root = NULL;
+			}
 		}
 		gc_free(&data.line, &data.gc);
 		if (g_signal_received)

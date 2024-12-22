@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 03:42:20 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/22 18:29:01 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/22 19:47:34 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,15 +40,15 @@ t_minishell *data)
 	if (path == NULL)
 	{
 		if (data->last_exec_error == EXEC_NOT_REGULAR)
-			error("Not a regular file", 126, &data->gc);
+			error("Not a regular file", 126, data);
 		if (data->last_exec_error == EXEC_NO_PERMISSION)
-			error("Permission denied", 126, &data->gc);
-		error("Command not found", 127, &data->gc);
+			error("Permission denied", 126, data);
+		error("Command not found", 127, data);
 	}
 	if (ast->redirections)
 		execute_redirections(ast->redirections, data);
 	execve(path, args, data->envp);
-	error("Command execution failed", 127, &data->gc);
+	error("Command execution failed", 127, data);
 }
 
 static void	execute_extern_command(t_node *ast, char **args, t_minishell *data)
@@ -57,9 +57,7 @@ static void	execute_extern_command(t_node *ast, char **args, t_minishell *data)
 	int		status;
 
 	pid = fork();
-	if (pid == -1)
-		error("Fork failed", 1, &data->gc);
-	else if (pid == 0)
+	if (pid == 0)
 	{
 		data->is_child_process = true;
 		signal_child_process();
