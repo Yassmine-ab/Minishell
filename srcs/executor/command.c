@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 03:42:20 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/22 16:30:52 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/22 16:53:52 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ t_minishell *data)
 {
 	char	*path;
 
+	(void)ast;
 	path = get_command_path(args[0], data);
 	if (path == NULL)
 	{
@@ -47,8 +48,8 @@ t_minishell *data)
 			error("Permission denied", 126, &data->gc);
 		error("Command not found", 127, &data->gc);
 	}
-	if (ast->redirections)
-		execute_redirections(ast->redirections, data);
+	// if (ast->redirections)
+	// 	execute_redirections(ast->redirections, data);
 	execve(path, args, data->envp);
 	error("Command execution failed", 127, &data->gc);
 }
@@ -97,6 +98,8 @@ void	execute_command(t_node *ast, t_minishell *data, bool in_pipeline)
 	ast->value = expand_variables(ast->value, data);
 	concatenate_adjacent_nodes(ast, data);
 	concatenate_adjacent_nodes(ast->args, data);
+	if (ast->redirections)
+		execute_redirections(ast->redirections, data);
 	args = get_command_args(ast, data);
 	if (execute_builtins(ast, data) == 0)
 	{

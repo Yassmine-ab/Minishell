@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 21:42:36 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/18 11:43:48 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/22 16:39:04 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,12 +39,14 @@ static void	validate_tokens(t_minishell *data)
 		if (i == 0 && is_operator(data->tokens[i].type))
 			error("Unexpected operator at the beginning", 1, &data->gc);
 		if (is_operator(data->tokens[i].type)
-			|| data->tokens[i].type == HEREDOC)
+			|| data->tokens[i].type == HEREDOC
+			|| data->tokens[i].type == STDIN)
 		{
 			if (data->tokens[i + 1].type == END)
 				error("Unexpected end of command after operator", 1, &data->gc);
 			if (is_operator(data->tokens[i + 1].type)
-				|| data->tokens[i + 1].type == HEREDOC)
+				|| data->tokens[i + 1].type == HEREDOC
+				|| data->tokens[i + 1].type == STDIN)
 				error("Consecutive or invalid operators", 1, &data->gc);
 		}
 		else if (data->tokens[i].type == COMMAND

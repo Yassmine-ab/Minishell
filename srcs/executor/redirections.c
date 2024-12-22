@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 03:42:11 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/22 14:57:19 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/22 17:04:03 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,8 @@ static void	execute_heredoc(t_node *redir, t_minishell *data)
 		limiter = redir->right->value;
 		while (1)
 		{
-			ft_putstr_fd("heredoc > ", STDOUT_FILENO);
+			if (isatty(STDIN_FILENO))
+				ft_putstr_fd("heredoc > ", STDOUT_FILENO);
 			line = get_next_line(STDIN_FILENO);
 			if (line == NULL
 				|| (ft_strncmp(line, limiter, ft_strlen(limiter)) == 0

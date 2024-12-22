@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: petitcoeur <petitcoeur@student.42.fr>      +#+  +:+       +#+        */
+/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 11:06:43 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/22 01:39:02 by petitcoeur       ###   ########.fr       */
+/*   Updated: 2024/12/22 17:18:27 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ static void	free_ast(t_node *node, t_gc *gc)
 int	main(int argc, char **argv, char **envp)
 {
 	t_minishell	data;
-	const char	*prompt;
+	char	*prompt;
 	// t_token		*tokens;
 	t_node		*ast_root;
 	int			i;
@@ -92,10 +92,14 @@ int	main(int argc, char **argv, char **envp)
 		return (printf("Minishell does" RED " not " DEFAULT "accept arguments. "
 				"Running in interactive mode only.\n"), 1);
 	data_init(argc, argv, envp, &data);
+	rl_outstream = stderr;
 	while (1)
 	{
 		init_signal_interactive_mode();
-		prompt = create_prompt(&data);
+		if (isatty(STDIN_FILENO))
+			prompt = create_prompt(&data);
+		else
+			prompt = "";
 		data.line = readline(prompt);
 		if (data.line == 0)
 		{

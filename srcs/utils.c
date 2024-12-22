@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parser_utils.c                                     :+:      :+:    :+:   */
+/*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 05:22:40 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/20 11:39:05 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/22 16:38:21 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ bool	is_redir(int current_index, t_minishell *data)
 bool	is_operator(t_token_type type)
 {
 	return (type == PIPE || type == AND || type == OR
-		|| type == STDIN || type == STDOUT || type == STDOUT_APPEND);
+		|| type == STDOUT || type == STDOUT_APPEND);
 }
 
 void	strncat_realloc(char **result, char *append, size_t *size, t_gc *gc)
