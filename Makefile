@@ -92,6 +92,8 @@ SRCS =			$(INIT)initialization.c \
 				$(EXEC)exec.c \
 				$(EXEC)expander.c \
 				$(EXEC)command.c \
+				$(EXEC)command_utils.c \
+				$(EXEC)pipeline.c \
 				$(EXEC)redirections.c \
 				$(ENV)environment.c \
 				$(SIGNAL)signal.c \

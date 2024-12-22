@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: petitcoeur <petitcoeur@student.42.fr>      +#+  +:+       +#+        */
+/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 02:04:44 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/22 01:39:30 by petitcoeur       ###   ########.fr       */
+/*   Updated: 2024/12/22 12:39:26 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@
 # include <errno.h>
 # include <sys/types.h>
 # include <sys/wait.h>
+# include <sys/stat.h>
 # include <dirent.h>
 # include "get_next_line_bonus.h"
 # include "gc.h"
@@ -141,6 +142,13 @@ typedef struct s_node
 	struct s_node		*next;
 }	t_node;
 
+typedef struct s_pids
+{
+	pid_t				*pids;
+	int					count;
+	int					capacity;
+}	t_pids;
+
 // DATA STRUCTURE
 typedef struct s_minishell
 {
@@ -155,11 +163,12 @@ typedef struct s_minishell
 	int					heredoc_status;
 	int					last_exit_status;
 	int					open_parentheses;
-	pid_t				pid;
+	t_pids				*pids;
 	int					here_doc[2];
 	bool				is_child_process;
 	bool				child_end_with_signal;
 }	t_minishell;
+
 
 /* -------------------------------------------------------------------------- */
 /*                             FUNCTION PROTOTYPES                            */
@@ -190,6 +199,10 @@ t_node	*parse_redirections(int *i, t_minishell *data);
 /* ------------------------------- Executor --------------------------------- */
 void	execute_ast(t_node *ast, t_minishell *data, bool in_pipeline);
 void	execute_command(t_node *cmd_node, t_minishell *data, bool in_pipeline);
+char	*get_command_path(char *command, t_minishell *data);
+char	**get_command_args(t_node *cmd_node, t_minishell *data);
+void	concatenate_adjacent_nodes(t_node *node, t_minishell *data);
+void	execute_pipeline(t_node *ast, t_minishell *data);
 void	execute_redirections(t_node *redir_node, t_minishell *data);
 char	*expand_variables(char *value, t_minishell *data);
 int		expand_env_variable(char **result, size_t *size, int i, char *str, t_minishell *data);

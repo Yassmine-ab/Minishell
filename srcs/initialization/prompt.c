@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   prompt.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jcantin <jcantin@student.42.fr>            +#+  +:+       +#+        */
+/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/10 03:27:27 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/21 14:55:11 by jcantin          ###   ########.fr       */
+/*   Updated: 2024/12/22 09:16:09 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,6 @@ char	*create_prompt(t_minishell *data)
 	prompt = ft_strjoin_gc(prompt, DEFAULT " in ", &data->gc);
 	prompt = ft_strjoin_gc(prompt, GREEN, &data->gc);
 	prompt = ft_strjoin_gc(prompt, cwd, &data->gc);
-	prompt = ft_strjoin_gc(prompt, DEFAULT " 🥚👶🕺 ⋙  ", &data->gc);
+	prompt = ft_strjoin_gc(prompt, DEFAULT " ⋙  ", &data->gc);
 	return (prompt);
 }

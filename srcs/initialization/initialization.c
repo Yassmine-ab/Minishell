@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   initialization.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: petitcoeur <petitcoeur@student.42.fr>      +#+  +:+       +#+        */
+/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/10 03:27:24 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/22 02:25:27 by petitcoeur       ###   ########.fr       */
+/*   Updated: 2024/12/22 12:49:46 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
