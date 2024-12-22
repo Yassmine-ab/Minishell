@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 10:49:41 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/22 14:32:40 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/22 16:07:10 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,34 +69,25 @@ static bool	is_executable(const char *path, t_minishell *data)
 	struct stat	st;
 
 	if (stat(path, &st) == -1)
-	{
-		printf("Stat échoué pour: %s, errno: %d\n", path, errno);
-		if (errno == ENOENT)
-			error("No such file or directory", 127, &data->gc);
-		else
-			error(strerror(errno), 1, &data->gc);
-	}
+		return (data->last_exec_error = EXEC_NO_FILE, false);
 	if (!S_ISREG(st.st_mode))
-		error("Not a regular file", 126, &data->gc);
+		return (data->last_exec_error = EXEC_NOT_REGULAR, false);
 	if (access(path, X_OK) == -1)
-	{
-		if (errno == EACCES)
-			error("Permission denied", 126, &data->gc);
-		else
-			error(strerror(errno), 1, &data->gc);
-	}
-	return (true);
+		return (data->last_exec_error = EXEC_NO_PERMISSION, false);
+	return (data->last_exec_error = EXEC_SUCCESS, true);
 }
 
 char	*get_command_path(char *command, t_minishell *data)
 {
-	char	**paths;
-	char	*path_env;
-	char	*full_path;
-	int		i;
+	char		**paths;
+	char		*path_env;
+	char		*full_path;
+	int			initial_error;
+	int			i;
 
 	if (is_executable(command, data) == true)
 		return (command);
+	initial_error = data->last_exec_error;
 	path_env = getenv("PATH");
 	if (path_env == NULL)
 		return (NULL);
@@ -111,5 +102,6 @@ char	*get_command_path(char *command, t_minishell *data)
 		if (is_executable(full_path, data) == true)
 			return (full_path);
 	}
+	data->last_exec_error = initial_error;
 	return (NULL);
 }

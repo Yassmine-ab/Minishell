@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 02:04:44 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/22 13:08:48 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/22 15:47:02 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,6 +115,14 @@ typedef enum e_node_type
 	NODE_GROUP
 }	t_node_type;
 
+typedef enum e_exec_error
+{
+	EXEC_SUCCESS = 1,
+	EXEC_NO_FILE = 2,
+	EXEC_NOT_REGULAR = 3,
+	EXEC_NO_PERMISSION = 4
+}	t_exec_error;
+
 /* -------------------------------------------------------------------------- */
 /*                                 STRUCTURES                                 */
 /* -------------------------------------------------------------------------- */
@@ -168,6 +176,7 @@ typedef struct s_minishell
 	int					here_doc[2];
 	bool				is_child_process;
 	bool				child_end_with_signal;
+	t_exec_error		last_exec_error;
 }	t_minishell;
 
 

@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 03:42:11 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/22 14:19:32 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/22 14:57:19 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,11 +81,8 @@ static void	redirect_fd(t_node *redir, t_minishell *data)
 	}
 }
 
-void	execute_redirections(t_node *cmd, t_minishell *data)
+void	execute_redirections(t_node *redir, t_minishell *data)
 {
-	t_node	*redir;
-
-	redir = cmd->redirections;
 	while (redir)
 	{
 		if (redir->type == NODE_REDIR)
