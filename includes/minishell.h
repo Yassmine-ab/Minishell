@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: petitcoeur <petitcoeur@student.42.fr>      +#+  +:+       +#+        */
+/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 02:04:44 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/23 04:58:14 by petitcoeur       ###   ########.fr       */
+/*   Updated: 2024/12/23 11:12:17 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -181,8 +181,9 @@ typedef struct s_minishell
 	int					heredoc_status;
 	int					last_exit_status;
 	int					open_parentheses;
-	t_pids				*pids;
 	int					here_doc[2];
+	int					pipe_fd[2];
+	int					pids[2];
 	bool				is_child_process;
 	bool				child_end_with_signal;
 	bool				in_command;
@@ -256,7 +257,7 @@ void	ft_exit(t_node *args, t_minishell *data);
 void	error(const char *error_msg, int status, t_minishell *data);
 void	strncat_realloc(char **result, char *append, size_t *size, t_gc *gc);
 bool	is_operator(t_token_type type);
-bool	is_redir(int current_index, t_minishell *data);
+bool	is_redir(t_token_type type);
 void	safe_close(int *fd);
 // void	free_split(char **strs, t_gc *gc);
 // void	free_args(char **args, t_minishell *data);

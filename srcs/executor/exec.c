@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: petitcoeur <petitcoeur@student.42.fr>      +#+  +:+       +#+        */
+/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 14:04:05 by petitcoeur        #+#    #+#             */
-/*   Updated: 2024/12/23 04:08:55 by petitcoeur       ###   ########.fr       */
+/*   Updated: 2024/12/23 12:15:24 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,14 +49,14 @@ void	execute_ast(t_node *ast, t_minishell *data, bool in_pipeline)
 	while (ast)
 	{
 		if (ast->type == NODE_COMMAND)
-			execute_command(ast, data, in_pipeline);
-		else if (ast->type == NODE_PIPE)
 		{
-			execute_pipeline(ast, data);
-			return ;
+			if (ast->value && ft_strlen(ast->value) > 0)
+				execute_command(ast, data, in_pipeline);
+			else
+				execute_redirections(ast->redirections, data);
 		}
-		else if (ast->type == NODE_REDIR || ast->type == NODE_HEREDOC)
-			execute_redirections(ast, data);
+		else if (ast->type == NODE_PIPE)
+			execute_pipeline(ast, data);
 		else if (ast->type == NODE_AND)
 			execute_and(ast, data);
 		else if (ast->type == NODE_OR)

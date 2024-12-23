@@ -3,14 +3,35 @@
 /*                                                        :::      ::::::::   */
 /*   exec_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: petitcoeur <petitcoeur@student.42.fr>      +#+  +:+       +#+        */
+/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 04:15:58 by petitcoeur        #+#    #+#             */
-/*   Updated: 2024/12/23 04:50:10 by petitcoeur       ###   ########.fr       */
+/*   Updated: 2024/12/23 11:14:51 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+void	safe_close(int *fd)
+{
+	if (fd && *fd != -1)
+	{
+		if (close(*fd) == -1)
+			ft_putendl_fd("Error closing file descriptor", 2);
+		*fd = -1;
+	}
+}
+
+void	handle_child_exit(int status, t_minishell *data)
+{
+	if (WIFEXITED(status))
+		data->last_exit_status = WEXITSTATUS(status);
+	else if (WIFSIGNALED(status))
+	{
+		data->last_exit_status = 128 + WTERMSIG(status);
+		data->child_end_with_signal = true;
+	}
+}
 
 void	signal_heredoc(void)
 {
@@ -26,17 +47,6 @@ void	signal_child_process(void)
 	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_DFL);
 	signal(SIGTSTP, SIG_IGN);
-}
-
-void	handle_child_exit(int status, t_minishell *data)
-{
-	if (WIFEXITED(status))
-		data->last_exit_status = WEXITSTATUS(status);
-	else if (WIFSIGNALED(status))
-	{
-		data->last_exit_status = 128 + WTERMSIG(status);
-		data->child_end_with_signal = true;
-	}
 }
 
 void	signal_to_action(t_minishell *data)

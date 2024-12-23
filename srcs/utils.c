@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: petitcoeur <petitcoeur@student.42.fr>      +#+  +:+       +#+        */
+/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 05:22:40 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/23 04:45:34 by petitcoeur       ###   ########.fr       */
+/*   Updated: 2024/12/23 11:12:33 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,7 @@
 
 void	error(const char *error_msg, int status, t_minishell *data)
 {
-	dprintf(2, "%s\n", error_msg);
-	data->last_exit_status = status;
+	ft_putendl_fd(error_msg, 2);
 	if (data->is_child_process)
 	{
 		gc_cleanup(&data->gc);
@@ -23,17 +22,15 @@ void	error(const char *error_msg, int status, t_minishell *data)
 	}
 }
 
-bool	is_redir(int current_index, t_minishell *data)
+bool	is_redir(t_token_type type)
 {
-	return (data->tokens[current_index].type == STDOUT
-		|| data->tokens[current_index].type == STDIN
-		|| data->tokens[current_index].type == STDOUT_APPEND);
+	return (type == STDIN || type == STDOUT || type == STDOUT_APPEND
+		|| type == HEREDOC);
 }
 
 bool	is_operator(t_token_type type)
 {
-	return (type == PIPE || type == AND || type == OR
-		|| type == STDOUT || type == STDOUT_APPEND);
+	return (type == PIPE || type == AND || type == OR);
 }
 
 void	strncat_realloc(char **result, char *append, size_t *size, t_gc *gc)
@@ -47,14 +44,4 @@ void	strncat_realloc(char **result, char *append, size_t *size, t_gc *gc)
 		*result = gc_realloc(*result, *size, gc);
 	}
 	ft_strlcat(*result, append, *size);
-}
-
-void	safe_close(int *fd)
-{
-	if (fd && *fd != -1)
-	{
-		if (close(*fd) == -1)
-			dprintf(2, "Error closing file descriptor\n");
-		*fd = -1;
-	}
 }

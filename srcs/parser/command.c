@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 16:44:17 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/22 19:42:47 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/23 13:21:32 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ static void	parse_arguments(int *i, t_node *cmd_node, t_minishell *data)
 
 static t_node	*parse_simple_command(int *i, t_minishell *data)
 {
+	t_token	dummy;
 	t_node	*cmd_node;
 	t_node	*new_cmd;
 	t_node	*last_cmd;
@@ -70,6 +71,15 @@ static t_node	*parse_simple_command(int *i, t_minishell *data)
 		redir = parse_redirections(i, data);
 		if (redir)
 		{
+			if (cmd_node == NULL)
+			{
+				ft_bzero(&dummy, sizeof(t_token));
+				dummy.type = COMMAND;
+				dummy.value = ft_strdup("");
+				dummy.quoted = false;
+				dummy.space_after = true;
+				cmd_node = create_node(NODE_COMMAND, dummy, &data->gc);
+			}
 			if (cmd_node->redirections == NULL)
 				cmd_node->redirections = redir;
 			else

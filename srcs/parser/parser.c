@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jcantin <jcantin@student.42.fr>            +#+  +:+       +#+        */
+/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 01:49:39 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/21 15:25:41 by jcantin          ###   ########.fr       */
+/*   Updated: 2024/12/23 13:18:04 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ t_node	*parse_redirections(int *i, t_minishell *data)
 	t_node	*last_redir;
 
 	redir_list = NULL;
-	while (data->tokens[*i].type == HEREDOC || is_redir(*i, data))
+	while (is_redir(data->tokens[*i].type))
 	{
 		if (data->tokens[*i].type == HEREDOC)
 			redir_node = parse_heredoc(i, data);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: petitcoeur <petitcoeur@student.42.fr>      +#+  +:+       +#+        */
+/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 21:42:36 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/23 04:45:20 by petitcoeur       ###   ########.fr       */
+/*   Updated: 2024/12/23 12:36:13 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,12 @@ t_token	create_token(t_token_type type, char *value)
 	t_token	token;
 
 	token.type = type;
-	token.value = value;
-	token.quoted = 0;
-	token.space_after = 1;
+	if (value)
+		token.value = value;
+	else
+		token.value = "";
+	token.quoted = false;
+	token.space_after = true;
 	return (token);
 }
 
@@ -38,22 +41,19 @@ static bool	validate_tokens(t_minishell *data)
 	{
 		if (i == 0 && is_operator(data->tokens[i].type))
 			return (error("Unexpected operator at start", 2, data), false);
-		if (is_operator(data->tokens[i].type)
-			|| data->tokens[i].type == HEREDOC
-			|| data->tokens[i].type == STDIN)
+		if (is_operator(data->tokens[i].type) || is_redir(data->tokens[i].type))
 		{
 			if (data->tokens[i + 1].type == END)
-				return (error("Unexpected end of command after operator", \
-				2, data), false);
+				return (error("Unexpected end of command after operator",
+						2, data), false);
 			if (is_operator(data->tokens[i + 1].type)
-				|| data->tokens[i + 1].type == HEREDOC
-				|| data->tokens[i + 1].type == STDIN)
+				|| is_redir(data->tokens[i + 1].type))
 				return (error("Consecutive operators", 2, data), false);
 		}
 		else if (data->tokens[i].type == COMMAND
 			&& data->tokens[i + 1].type == PARENTHESIS_OPEN)
-			return (error("Unexpected opening parenthesis after command", \
-			2, data), false);
+			return (error("Unexpected open parenthesis after command", 2, data),
+				false);
 	}
 	return (true);
 }

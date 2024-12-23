@@ -6,18 +6,18 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/10 03:27:24 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/22 16:27:30 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/23 10:23:59 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static void	pids_init(t_pids *pids, t_minishell *data)
-{
-	pids->count = 0;
-	pids->capacity = 10;
-	pids->pids = gc_malloc(sizeof(pid_t) * pids->capacity, &data->gc);
-}
+// static void	pids_init(t_pids *pids, t_minishell *data)
+// {
+// 	pids->count = 0;
+// 	pids->capacity = 10;
+// 	pids->pids = gc_malloc(sizeof(pid_t) * pids->capacity, &data->gc);
+// }
 
 static char	**envp_is_null(t_minishell *data)
 {
@@ -56,8 +56,8 @@ void	data_init(int argc, char **argv, char **envp, t_minishell *data)
 
 	ft_memset(data, 0, sizeof(t_minishell));
 	gc_init(&data->gc);
-	data->pids = gc_malloc(sizeof(t_pids), &data->gc);
-	pids_init(data->pids, data);
+	// data->pids = gc_malloc(sizeof(t_pids), &data->gc);
+	// pids_init(data->pids, data);
 	data->argc = argc;
 	data->argv = argv;
 	if (envp[0] == NULL)
