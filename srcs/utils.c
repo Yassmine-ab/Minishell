@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
+/*   By: petitcoeur <petitcoeur@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 05:22:40 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/22 19:02:08 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/23 04:45:34 by petitcoeur       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 void	error(const char *error_msg, int status, t_minishell *data)
 {
 	dprintf(2, "%s\n", error_msg);
+	data->last_exit_status = status;
 	if (data->is_child_process)
 	{
 		gc_cleanup(&data->gc);

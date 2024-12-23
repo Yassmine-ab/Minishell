@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
+/*   By: petitcoeur <petitcoeur@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 21:42:36 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/22 19:40:18 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/23 04:45:20 by petitcoeur       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,23 +37,23 @@ static bool	validate_tokens(t_minishell *data)
 	while (data->tokens[++i].type != END)
 	{
 		if (i == 0 && is_operator(data->tokens[i].type))
-			return (error("Unexpected operator at start", 1, data), false);
+			return (error("Unexpected operator at start", 2, data), false);
 		if (is_operator(data->tokens[i].type)
 			|| data->tokens[i].type == HEREDOC
 			|| data->tokens[i].type == STDIN)
 		{
 			if (data->tokens[i + 1].type == END)
 				return (error("Unexpected end of command after operator", \
-				1, data), false);
+				2, data), false);
 			if (is_operator(data->tokens[i + 1].type)
 				|| data->tokens[i + 1].type == HEREDOC
 				|| data->tokens[i + 1].type == STDIN)
-				return (error("Consecutive operators", 1, data), false);
+				return (error("Consecutive operators", 2, data), false);
 		}
 		else if (data->tokens[i].type == COMMAND
 			&& data->tokens[i + 1].type == PARENTHESIS_OPEN)
 			return (error("Unexpected opening parenthesis after command", \
-			1, data), false);
+			2, data), false);
 	}
 	return (true);
 }

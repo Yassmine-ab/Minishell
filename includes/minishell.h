@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
+/*   By: petitcoeur <petitcoeur@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 02:04:44 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/22 19:39:07 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/23 04:58:14 by petitcoeur       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,15 +41,24 @@
 // COLORS
 # define COLOR_ENABLED 1
 # if COLOR_ENABLED
-#  define DEFAULT "\033[0m"
-#  define RED "\033[1;31m"
-#  define GREEN "\033[1;32m"
-#  define YELLOW "\033[1;33m"
-#  define BLUE "\033[1;34m"
-#  define MAGENTA "\033[1;35m"
-#  define ROSE "\033[1;95m"
-#  define CYAN "\033[1;36m"
-#  define WHITE "\033[1;37m"
+#  define DEFAULT "\001\033[0m"
+#  define RED "\001\033[1;31m"
+#  define GREEN "\033[1;32m\002"
+#  define YELLOW "\001\033[1;33m"
+#  define BLUE "\001\033[1;34m"
+#  define MAGENTA "\001\033[1;35m"
+#  define ROSE "\001\033[1;95m"
+#  define CYAN "\033[1;36m\002"
+#  define WHITE "\001\033[1;37m"
+// #  define DEFAULT "\001\033[0m"
+// #  define RED "\001\033[1;31m"
+// #  define GREEN "\033[1;32m\002"
+// #  define YELLOW "\001\033[1;33m"
+// #  define BLUE "\001\033[1;34m"
+// #  define MAGENTA "\001\033[1;35m"
+// #  define ROSE "\001\033[1;95m"
+// #  define CYAN "\033[1;36m\002"
+// #  define WHITE "\001\033[1;37m"
 # else
 #  define DEFAULT ""
 #  define RED ""
@@ -217,6 +226,7 @@ void	execute_redirections(t_node *redir_node, t_minishell *data);
 char	*expand_variables(char *value, t_minishell *data);
 int		expand_env_variable(char **result, size_t *size, int i, char *str, t_minishell *data);
 int		expand_wildcard(char **result, size_t *size, int i, char *str, t_minishell *data);
+void	handle_child_exit(int status, t_minishell *data);
 
 /* ------------------------------ Environment ------------------------------- */
 void	free_envp(t_minishell *data);
@@ -228,8 +238,10 @@ void	add_env(char *key, char *value, t_minishell *data);
 /* -------------------------------- Signal ---------------------------------- */
 void	init_signal_interactive_mode(void);
 void	init_signal_exec(void);
+int		sig_exit(void);
+void	signal_heredoc(void);
 void	signal_child_process(void);
-void	child_signal_to_action(t_minishell *data);
+void	signal_to_action(t_minishell *data);
 
 /* ------------------------------- Builtins --------------------------------- */
 void	ft_echo(t_node *args, t_minishell *data);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   command_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
+/*   By: petitcoeur <petitcoeur@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 10:49:41 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/22 16:26:32 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/23 04:56:42 by petitcoeur       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,10 +90,9 @@ char	*get_command_path(char *command, t_minishell *data)
 	initial_error = data->last_exec_error;
 	path_env = getenv("PATH");
 	if (path_env == NULL)
-		return (NULL);
+		path_env = "/usr/local/sbin:/usr/local/bin:\
+		/usr/sbin:/usr/bin:/sbin:/bin";
 	paths = ft_split_gc(path_env, ':', &data->gc);
-	if (paths == NULL)
-		return (NULL);
 	i = -1;
 	while (paths[++i])
 	{

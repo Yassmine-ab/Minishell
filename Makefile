@@ -90,6 +90,7 @@ SRCS =			$(INIT)initialization.c \
 				$(PARSER)parser.c \
 				$(PARSER)command.c \
 				$(EXEC)exec.c \
+				$(EXEC)exec_utils.c \
 				$(EXEC)expander.c \
 				$(EXEC)command.c \
 				$(EXEC)command_utils.c \

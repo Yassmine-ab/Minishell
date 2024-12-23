@@ -3,53 +3,70 @@
 /*                                                        :::      ::::::::   */
 /*   redirections.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
+/*   By: petitcoeur <petitcoeur@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 03:42:11 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/22 19:47:01 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/23 05:29:03 by petitcoeur       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static void	execute_heredoc(t_node *redir, t_minishell *data)
+static void	empty_heredoc(char *limiter, int count_line)
+{
+	ft_putstr_fd("warning: here-document at line ", STDERR_FILENO);
+	ft_putnbr_fd(count_line, STDERR_FILENO);
+	ft_putstr_fd(" delimited by end-of-file (wanted `", STDERR_FILENO);
+	ft_putstr_fd(limiter, STDERR_FILENO);
+	ft_putstr_fd("')\n", STDERR_FILENO);
+}
+
+// leaks quand Ctrl+C
+
+static void execute_heredoc(t_node *redir, t_minishell *data)
 {
 	char	*limiter;
 	char	*line;
 	pid_t	hd_pid;
 	int		status;
+	int		count_line;
 
 	pipe(data->here_doc);
 	hd_pid = fork();
 	if (hd_pid == 0)
 	{
-		data->is_child_process = 1;
+		signal_heredoc();
 		safe_close(&data->here_doc[READ_END]);
 		limiter = redir->right->value;
+		count_line = 1;
 		while (1)
 		{
 			if (isatty(STDIN_FILENO))
-				ft_putstr_fd("heredoc > ", STDOUT_FILENO);
-			line = get_next_line(STDIN_FILENO);
-			if (line == NULL
-				|| (ft_strncmp(line, limiter, ft_strlen(limiter)) == 0
-					&& line[ft_strlen(limiter)] == '\n'))
+				line = readline("heredoc > ");
+			if (line == NULL)
+			{
+				empty_heredoc(limiter, count_line);
 				break ;
+			}
+			if (ft_strncmp(line, limiter, ft_strlen(limiter)) == 0
+				&& line[ft_strlen(limiter)] == '\0')
+			{
+				gc_free(line, &data->gc);
+				break ;
+			}
 			ft_putstr_fd(line, data->here_doc[WRITE_END]);
+			ft_putchar_fd('\n', data->here_doc[WRITE_END]);
+			count_line++;
 			gc_free(line, &data->gc);
 		}
 		safe_close(&data->here_doc[WRITE_END]);
+		if (data->gc.head)
+			gc_cleanup(&data->gc);
 		exit(EXIT_SUCCESS);
 	}
 	safe_close(&data->here_doc[WRITE_END]);
 	waitpid(hd_pid, &status, 0);
-	if (WIFEXITED(status))
-		data->last_exit_status = WEXITSTATUS(status);
-	else if (WIFSIGNALED(status))
-	{
-		data->last_exit_status = 128 + WTERMSIG(status);
-		data->child_end_with_signal = true;
-	}
+	handle_child_exit(status, data);
 }
 
 static void	redirect_fd(t_node *redir, t_minishell *data)
