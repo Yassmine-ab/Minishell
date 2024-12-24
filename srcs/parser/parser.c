@@ -69,15 +69,15 @@ static t_node	*parse_pipeline(int *i, t_minishell *data)
 {
 	t_node	*left;
 	t_node	*pipe_node;
+	t_node	*redir_list;
 
-	left = parse_command(i, data);
-	if (left == NULL)
-		left = parse_redirections(i, data);
+	redir_list = parse_redirections(i, data);
+	left = parse_command(i, data, redir_list);
 	while (data->tokens[*i].type == PIPE)
 	{
 		pipe_node = create_node(NODE_PIPE, data->tokens[*i], &data->gc);
 		(*i)++;
-		pipe_node->right = parse_command(i, data);
+		pipe_node->right = parse_command(i, data, redir_list);
 		pipe_node->left = left;
 		left = pipe_node;
 	}

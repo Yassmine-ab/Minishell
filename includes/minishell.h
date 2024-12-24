@@ -50,15 +50,6 @@
 #  define ROSE "\001\033[1;95m"
 #  define CYAN "\033[1;36m\002"
 #  define WHITE "\001\033[1;37m"
-// #  define DEFAULT "\001\033[0m"
-// #  define RED "\001\033[1;31m"
-// #  define GREEN "\033[1;32m\002"
-// #  define YELLOW "\001\033[1;33m"
-// #  define BLUE "\001\033[1;34m"
-// #  define MAGENTA "\001\033[1;35m"
-// #  define ROSE "\001\033[1;95m"
-// #  define CYAN "\033[1;36m\002"
-// #  define WHITE "\001\033[1;37m"
 # else
 #  define DEFAULT ""
 #  define RED ""
@@ -213,7 +204,7 @@ void	process_word(char *input, int *i, int *count, t_minishell *data);
 /* -------------------------------- Parser ---------------------------------- */
 t_node	*create_node(t_node_type type, t_token token, t_gc *gc);
 t_node	*parse_expression(int *i, t_minishell *data);
-t_node	*parse_command(int *i, t_minishell *data);
+t_node	*parse_command(int *i, t_minishell *data, t_node *redir_before);
 t_node	*parse_redirections(int *i, t_minishell *data);
 
 /* ------------------------------- Executor --------------------------------- */

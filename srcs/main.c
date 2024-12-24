@@ -135,3 +135,6 @@ int	main(int argc, char **argv, char **envp)
 }
 
 // c'est normal qu'il y ait 2 fois if (g_signal_received)
+
+// associer redir avant comande a commande
+// rajouter un boolen pour executer les redir non associees a une commande

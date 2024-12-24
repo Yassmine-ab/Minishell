@@ -43,19 +43,19 @@ static void	parse_arguments(int *i, t_node *cmd_node, t_minishell *data)
 	}
 }
 
-static t_node	*parse_simple_command(int *i, t_minishell *data)
+static t_node	*parse_simple_command(int *i, t_minishell *data, t_node *redir_before)
 {
-	t_token	dummy;
 	t_node	*cmd_node;
 	t_node	*new_cmd;
 	t_node	*last_cmd;
-	t_node	*redir;
+	t_node	*redir_after;
 	t_node	*last;
 
 	cmd_node = NULL;
 	while (data->tokens[*i].type == COMMAND)
 	{
 		new_cmd = create_node(NODE_COMMAND, data->tokens[*i], &data->gc);
+		new_cmd->redirections = redir_before;
 		if (cmd_node == NULL)
 		{
 			cmd_node = new_cmd;
@@ -68,33 +68,24 @@ static t_node	*parse_simple_command(int *i, t_minishell *data)
 		}
 		(*i)++;
 		parse_arguments(i, cmd_node, data);
-		redir = parse_redirections(i, data);
-		if (redir)
+		redir_after = parse_redirections(i, data);
+		if (redir_after)
 		{
-			if (cmd_node == NULL)
-			{
-				ft_bzero(&dummy, sizeof(t_token));
-				dummy.type = COMMAND;
-				dummy.value = ft_strdup("");
-				dummy.quoted = false;
-				dummy.space_after = true;
-				cmd_node = create_node(NODE_COMMAND, dummy, &data->gc);
-			}
 			if (cmd_node->redirections == NULL)
-				cmd_node->redirections = redir;
+				cmd_node->redirections = redir_after;
 			else
 			{
 				last = cmd_node->redirections;
 				while (last->next)
 					last = last->next;
-				last->next = redir;
+				last->next = redir_after;
 			}
 		}
 	}
 	return (cmd_node);
 }
 
-t_node	*parse_command(int *i, t_minishell *data)
+t_node	*parse_command(int *i, t_minishell *data, t_node *redir_before)
 {
 	t_node	*cmd_node;
 
@@ -102,6 +93,6 @@ t_node	*parse_command(int *i, t_minishell *data)
 	if (data->tokens[*i].type == PARENTHESIS_OPEN)
 		cmd_node = parse_group(i, data);
 	else if (data->tokens[*i].type == COMMAND)
-		cmd_node = parse_simple_command(i, data);
+		cmd_node = parse_simple_command(i, data, redir_before);
 	return (cmd_node);
 }

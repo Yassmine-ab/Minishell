@@ -55,6 +55,8 @@ void	execute_ast(t_node *ast, t_minishell *data, bool in_pipeline)
 			else
 				execute_redirections(ast->redirections, data);
 		}
+		else if (ast->type == NODE_REDIR || ast->type == NODE_HEREDOC)
+			execute_redirections(ast, data);
 		else if (ast->type == NODE_PIPE)
 			execute_pipeline(ast, data);
 		else if (ast->type == NODE_AND)

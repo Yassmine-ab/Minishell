@@ -88,10 +88,11 @@ char	*get_command_path(char *command, t_minishell *data)
 	if (is_executable(command, data) == true)
 		return (command);
 	initial_error = data->last_exec_error;
-	path_env = getenv("PATH");
+	path_env = get_env_value("PATH", data);
 	if (path_env == NULL)
-		path_env = "/usr/local/sbin:/usr/local/bin:\
-		/usr/sbin:/usr/bin:/sbin:/bin";
+	// 	path_env = "/usr/local/sbin:/usr/local/bin:
+	// 	/usr/sbin:/usr/bin:/sbin:/bin";
+		return (NULL);
 	paths = ft_split_gc(path_env, ':', &data->gc);
 	i = -1;
 	while (paths[++i])
