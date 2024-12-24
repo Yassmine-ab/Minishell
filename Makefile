@@ -172,6 +172,8 @@ debug:			$(OBJS)
 				$(PROGRESS_BAR)
 				@echo "$$HEADER"
 
+				#-fsanitize=address
+
 help:
 				@echo "\n$(CYAN)all$(DEFAULT)		- Build the executable $(NAME)"
 				@echo "$(CYAN)bonus$(DEFAULT)		- Build the executable $(NAME_BONUS)"

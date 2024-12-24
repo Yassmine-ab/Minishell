@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 01:49:39 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/23 13:18:04 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/24 12:56:43 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,13 +27,11 @@ t_node	*create_node(t_node_type type, t_token token, t_gc *gc)
 static t_node	*parse_heredoc(int *i, t_minishell *data)
 {
 	t_node	*hd_node;
-	t_node	*lim_node;
 
 	hd_node = create_node(NODE_HEREDOC, data->tokens[*i], &data->gc);
 	(*i)++;
-	lim_node = create_node(NODE_LIMITER, data->tokens[*i], &data->gc);
+	hd_node->right = create_node(NODE_LIMITER, data->tokens[*i], &data->gc);
 	(*i)++;
-	hd_node->right = lim_node;
 	return (hd_node);
 }
 
@@ -73,6 +71,8 @@ static t_node	*parse_pipeline(int *i, t_minishell *data)
 
 	redir_list = parse_redirections(i, data);
 	left = parse_command(i, data, redir_list);
+	if (left == NULL)
+		left = redir_list;
 	while (data->tokens[*i].type == PIPE)
 	{
 		pipe_node = create_node(NODE_PIPE, data->tokens[*i], &data->gc);
