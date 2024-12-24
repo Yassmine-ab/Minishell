@@ -6,14 +6,14 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 21:54:13 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/23 10:45:51 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/24 22:42:13 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	expand_env_variable(char **result, size_t *size, \
-	int i, char *str, t_minishell *data)
+static int
+	expand_env_variable(size_t *size, int i, char *str, t_minishell *data)
 {
 	char	*var_name;
 	char	*value;
@@ -37,30 +37,9 @@ int	expand_env_variable(char **result, size_t *size, \
 		i--;
 	}
 	else
-		return (strncat_realloc(result, "$", size, &data->gc), i);
-	return (strncat_realloc(result, value, size, &data->gc), i + 1);
+		return (strncat_realloc(&data->result, "$", size, &data->gc), i);
+	return (strncat_realloc(&data->result, value, size, &data->gc), i + 1);
 }
-
-// static int	match_pattern(const char *name, const char *pattern)
-// {
-// 	if (*pattern == '*')
-// 	{
-// 		while (*pattern == '*')
-// 			pattern++;
-// 		if (!*pattern)
-// 			return (1);
-// 		while (*name)
-// 		{
-// 			if (match_pattern(name, pattern))
-// 				return (1);
-// 			name++;
-// 		}
-// 		return (0);
-// 	}
-// 	else if (*pattern == *name)
-// 		return (match_pattern(name + 1, pattern + 1));
-// 	return (0);
-// }
 
 static char	**find_wildcard_matches(char *pattern, t_minishell *data)
 {
@@ -81,7 +60,6 @@ static char	**find_wildcard_matches(char *pattern, t_minishell *data)
 		if (entry == NULL)
 			break ;
 		if ((entry->d_name[0] != '.' && pattern[0] != '.')
-			// && match_pattern(entry->d_name, pattern))
 			&& fnmatch(pattern, entry->d_name, 0) == 0)
 			matches[count++] = ft_strdup_gc(entry->d_name, &data->gc);
 	}
@@ -92,10 +70,10 @@ static char	**find_wildcard_matches(char *pattern, t_minishell *data)
 	return (matches);
 }
 
-int	expand_wildcard(char **result, size_t *size, int i, char *str, t_minishell *data)
+static int	expand_wildcard(size_t *size, int i, char *str, t_minishell *data)
 {
 	char	**matches;
-	int		match_index;
+	int		match_idx;
 	char	*pattern;
 	int		start;
 
@@ -110,45 +88,43 @@ int	expand_wildcard(char **result, size_t *size, int i, char *str, t_minishell *
 	matches = find_wildcard_matches(pattern, data);
 	if (matches)
 	{
-		match_index = -1;
-		while (matches[++match_index])
+		match_idx = -1;
+		while (matches[++match_idx])
 		{
-			if (match_index > 0)
-				strncat_realloc(result, " ", size, &data->gc);
-			strncat_realloc(result, matches[match_index], size, &data->gc);
+			if (match_idx > 0)
+				strncat_realloc(&data->result, " ", size, &data->gc);
+			strncat_realloc(&data->result, matches[match_idx], size, &data->gc);
 		}
 	}
 	return (i);
 }
 
 static char	*process_expansion(char *value, t_minishell *data, \
-int (*expander)(char **, size_t *, int, char *, t_minishell *), \
-char expansion_char)
+int (*expander)(size_t *, int, char *, t_minishell *), char expansion_char)
 {
-	char	*result;
 	size_t	size;
 	char	append[2];
 	int		i;
 
 	ft_memset(append, 0, 2);
 	size = ft_strlen(value) + 1;
-	result = gc_malloc((sizeof(char) * size), &data->gc);
-	result[0] = '\0';
+	data->result = gc_malloc((sizeof(char) * size), &data->gc);
+	data->result[0] = '\0';
 	i = 0;
 	while (value[i])
 	{
 		if (value[i] == expansion_char)
-			i = expander(&result, &size, i, value, data);
+			i = expander(&size, i, value, data);
 		else
 		{
 			while (value[i] && value[i] != expansion_char)
 			{
 				append[0] = value[i++];
-				strncat_realloc(&result, append, &size, &data->gc);
+				strncat_realloc(&data->result, append, &size, &data->gc);
 			}
 		}
 	}
-	return (result);
+	return (data->result);
 }
 
 char	*expand_variables(char *value, t_minishell *data)

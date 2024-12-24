@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 02:04:44 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/24 22:02:33 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/24 23:17:51 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,6 +133,7 @@ typedef struct s_token
 	t_token_type		type;
 	char				*value;
 	bool				is_single_quoted;
+	bool				is_double_quoted;
 	bool				space_after;
 }	t_token;
 
@@ -142,6 +143,7 @@ typedef struct s_node
 	t_node_type			type;
 	char				*value;
 	bool				is_single_quoted;
+	bool				is_double_quoted;
 	bool				space_after;
 	struct s_node		*left;
 	struct s_node		*right;
@@ -150,13 +152,6 @@ typedef struct s_node
 	struct s_node		*next;
 }	t_node;
 
-// PIDS STRUCTURE
-typedef struct s_pids
-{
-	pid_t				*pids;
-	int					count;
-	int					capacity;
-}	t_pids;
 
 // DATA STRUCTURE
 typedef struct s_minishell
@@ -165,6 +160,7 @@ typedef struct s_minishell
 	char				**envp;
 	char				**argv;
 	char				*line;
+	char				*result;
 	t_token				*tokens;
 	t_token_type		current_type;
 	t_node				*node;
@@ -178,6 +174,8 @@ typedef struct s_minishell
 	bool				is_child_process;
 	bool				child_end_with_signal;
 	bool				in_command;
+	bool				in_single_quotes;
+	bool				in_double_quotes;
 	t_exec_error		last_exec_error;
 }	t_minishell;
 
@@ -215,10 +213,10 @@ char	**get_command_args(t_node *cmd_node, t_minishell *data);
 void	concatenate_adjacent_nodes(t_node *node, t_minishell *data);
 void	execute_pipeline(t_node *ast, t_minishell *data);
 void	execute_redirections(t_node *redir_node, t_minishell *data);
-char	*expand_variables(char *value, t_minishell *data);
-int		expand_env_variable(char **result, size_t *size, int i, char *str, t_minishell *data);
-int		expand_wildcard(char **result, size_t *size, int i, char *str, t_minishell *data);
 void	handle_child_exit(int status, t_minishell *data);
+
+/* ------------------------------- Expander --------------------------------- */
+char	*expand_variables(char *value, t_minishell *data);
 
 /* ------------------------------ Environment ------------------------------- */
 void	free_envp(t_minishell *data);
@@ -250,8 +248,6 @@ void	strncat_realloc(char **result, char *append, size_t *size, t_gc *gc);
 bool	is_operator(t_token_type type);
 bool	is_redir(t_token_type type);
 void	safe_close(int *fd);
-// void	free_split(char **strs, t_gc *gc);
-// void	free_args(char **args, t_minishell *data);
 void	print_export(t_minishell *data);
 
 #endif

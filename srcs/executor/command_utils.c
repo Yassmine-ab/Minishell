@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 10:49:41 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/23 12:36:35 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/24 22:45:14 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,8 +90,6 @@ char	*get_command_path(char *command, t_minishell *data)
 	initial_error = data->last_exec_error;
 	path_env = get_env_value("PATH", data);
 	if (path_env == NULL)
-	// 	path_env = "/usr/local/sbin:/usr/local/bin:
-	// 	/usr/sbin:/usr/bin:/sbin:/bin";
 		return (NULL);
 	paths = ft_split_gc(path_env, ':', &data->gc);
 	i = -1;

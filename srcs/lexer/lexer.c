@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 21:42:36 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/24 14:02:42 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/24 22:53:31 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ t_token	create_token(t_token_type type, char *value)
 	else
 		token.value = "";
 	token.is_single_quoted = false;
+	token.is_double_quoted = false;
 	token.space_after = true;
 	return (token);
 }

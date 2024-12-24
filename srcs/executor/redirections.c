@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 03:42:11 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/24 22:10:37 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/24 23:11:46 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,12 @@ static void	execute_heredoc(t_node *redir, t_minishell *data)
 			gc_free(line, &data->gc);
 			break ;
 		}
+		printf("%s\n", redir->right->value);
+		printf("[%d]\n", redir->right->is_single_quoted);
+		printf("[%d]\n", redir->right->is_double_quoted);
+		if (redir->right->is_single_quoted == false
+			&& redir->right->is_double_quoted == false)
+			line = expand_variables(line, data);
 		ft_putendl_fd(line, data->tmp_fd);
 		count_line++;
 		gc_free(line, &data->gc);
