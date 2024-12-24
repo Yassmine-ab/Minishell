@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 02:04:44 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/24 14:02:42 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/24 22:02:33 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -169,10 +169,10 @@ typedef struct s_minishell
 	t_token_type		current_type;
 	t_node				*node;
 	t_gc				gc;
-	int					heredoc_status;
+	int					tmp_fd;
+	char				*tmp_file;
 	int					last_exit_status;
 	int					open_parentheses;
-	int					here_doc[2];
 	int					pipe_fd[2];
 	int					pids[2];
 	bool				is_child_process;

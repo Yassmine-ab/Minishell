@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 03:42:20 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/24 14:29:55 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/24 22:04:24 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,8 @@ static int	execute_builtins(t_node *current, t_minishell *data)
 	return (0);
 }
 
-static void	execute_command_in_child(t_node *ast, char **args, \
-t_minishell *data)
+static void
+	execute_command_in_child(t_node *ast, char **args, t_minishell *data)
 {
 	char	*path;
 
@@ -46,7 +46,18 @@ t_minishell *data)
 		error("Command not found", 127, data);
 	}
 	if (ast->redirections)
-		execute_redirections(ast->redirections, data);
+	{
+		while (ast->redirections)
+		{
+			execute_redirections(ast->redirections, data);
+			ast->redirections = ast->redirections->next;
+		}
+		data->tmp_fd = open(data->tmp_file, O_RDONLY, 0644);
+		if (dup2(data->tmp_fd, STDIN_FILENO) == -1)
+			error("Failed to redirect heredoc to stdin", 1, data);
+		safe_close(&data->tmp_fd);
+		unlink(data->tmp_file);
+	}
 	execve(path, args, data->envp);
 	error("Command execution failed", 127, data);
 }

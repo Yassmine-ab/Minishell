@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 03:42:11 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/24 14:36:04 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/24 22:10:37 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,55 +18,40 @@ static void	empty_heredoc(char *limiter, int count_line)
 	ft_putnbr_fd(count_line, STDERR_FILENO);
 	ft_putstr_fd(" delimited by end-of-file (wanted `", STDERR_FILENO);
 	ft_putstr_fd(limiter, STDERR_FILENO);
-	ft_putstr_fd("')\n", STDERR_FILENO);
+	ft_putendl_fd("')", STDERR_FILENO);
 }
 
-// leaks quand Ctrl+C
-
-static void execute_heredoc(t_node *redir, t_minishell *data)
+static void	execute_heredoc(t_node *redir, t_minishell *data)
 {
 	char	*limiter;
 	char	*line;
-	pid_t	hd_pid;
-	int		status;
 	int		count_line;
 
-	pipe(data->here_doc);
-	hd_pid = fork();
-	if (hd_pid == 0)
+	signal_heredoc();
+	data->tmp_file = "/tmp/.heredoc";
+	data->tmp_fd = open(data->tmp_file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	limiter = redir->right->value;
+	count_line = 1;
+	while (1)
 	{
-		signal_heredoc();
-		safe_close(&data->here_doc[READ_END]);
-		limiter = redir->right->value;
-		count_line = 1;
-		while (1)
+		if (isatty(STDIN_FILENO))
+			line = readline("heredoc > ");
+		if (line == NULL)
 		{
-			if (isatty(STDIN_FILENO))
-				line = readline("heredoc > ");
-			if (line == NULL)
-			{
-				empty_heredoc(limiter, count_line);
-				break ;
-			}
-			if (ft_strncmp(line, limiter, ft_strlen(limiter)) == 0
-				&& line[ft_strlen(limiter)] == '\0')
-			{
-				gc_free(line, &data->gc);
-				break ;
-			}
-			ft_putstr_fd(line, data->here_doc[WRITE_END]);
-			ft_putchar_fd('\n', data->here_doc[WRITE_END]);
-			count_line++;
-			gc_free(line, &data->gc);
+			empty_heredoc(limiter, count_line);
+			break ;
 		}
-		safe_close(&data->here_doc[WRITE_END]);
-		if (data->gc.head)
-			gc_cleanup(&data->gc);
-		exit(EXIT_SUCCESS);
+		if (ft_strncmp(line, limiter, ft_strlen(limiter)) == 0
+			&& line[ft_strlen(limiter)] == '\0')
+		{
+			gc_free(line, &data->gc);
+			break ;
+		}
+		ft_putendl_fd(line, data->tmp_fd);
+		count_line++;
+		gc_free(line, &data->gc);
 	}
-	safe_close(&data->here_doc[WRITE_END]);
-	waitpid(hd_pid, &status, 0);
-	handle_child_exit(status, data);
+	safe_close(&data->tmp_fd);
 }
 
 static void	redirect_fd(t_node *redir, t_minishell *data)
@@ -89,7 +74,7 @@ static void	redirect_fd(t_node *redir, t_minishell *data)
 			error("Failed to redirect output to file", 1, data);
 		safe_close(&fd);
 	}
-	else if (ft_strncmp(redir->value, "<", 2) == 0)
+	else if (ft_strncmp(redir->value, "<", 2) == 0 && data->in_command == true)
 	{
 		fd = open(redir->right->value, O_RDONLY, 0644);
 		if (dup2(fd, STDIN_FILENO) == -1)
@@ -100,20 +85,8 @@ static void	redirect_fd(t_node *redir, t_minishell *data)
 
 void	execute_redirections(t_node *redir, t_minishell *data)
 {
-	while (redir)
-	{
-		if (redir->type == NODE_REDIR)
-			redirect_fd(redir, data);
-		else if (redir->type == NODE_HEREDOC)
-		{
-			execute_heredoc(redir, data);
-			if (data->in_command)
-			{
-				if (dup2(data->here_doc[READ_END], STDIN_FILENO) == -1)
-					error("Failed to redirect heredoc to stdin", 1, data);
-				safe_close(&data->here_doc[READ_END]);
-			}
-		}
-		redir = redir->next;
-	}
+	if (redir->type == NODE_REDIR)
+		redirect_fd(redir, data);
+	else if (redir->type == NODE_HEREDOC)
+		execute_heredoc(redir, data);
 }

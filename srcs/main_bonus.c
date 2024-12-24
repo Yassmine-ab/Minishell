@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   main_bonus.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: petitcoeur <petitcoeur@student.42.fr>      +#+  +:+       +#+        */
+/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 11:06:43 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/23 05:07:28 by petitcoeur       ###   ########.fr       */
+/*   Updated: 2024/12/24 17:22:19 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,7 @@ int	main(int argc, char **argv, char **envp)
 			signal_to_action(&data);
 		if (data.line == 0)
 		{
-			ft_putstr_fd("exit\n", STDERR_FILENO);
+			ft_putendl_fd("exit", STDERR_FILENO);
 			break ;
 		}
 		if (data.line[0] != '\0')
