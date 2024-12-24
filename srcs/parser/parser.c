@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 01:49:39 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/24 12:56:43 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/24 14:02:42 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ t_node	*create_node(t_node_type type, t_token token, t_gc *gc)
 	node = gc_calloc(1, sizeof(t_node), gc);
 	node->type = type;
 	node->value = token.value;
-	node->quoted = token.quoted;
+	node->is_single_quoted = token.is_single_quoted;
 	node->space_after = token.space_after;
 	return (node);
 }

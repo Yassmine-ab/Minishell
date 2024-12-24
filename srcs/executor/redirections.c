@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirections.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: petitcoeur <petitcoeur@student.42.fr>      +#+  +:+       +#+        */
+/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 03:42:11 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/23 05:29:03 by petitcoeur       ###   ########.fr       */
+/*   Updated: 2024/12/24 14:36:04 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,8 @@ static void	redirect_fd(t_node *redir, t_minishell *data)
 {
 	int	fd;
 
+	if (redir->right->is_single_quoted == false)
+		redir->right->value = expand_variables(redir->right->value, data);
 	if (ft_strncmp(redir->value, ">", 2) == 0)
 	{
 		fd = open(redir->right->value, O_WRONLY | O_CREAT | O_TRUNC, 0644);

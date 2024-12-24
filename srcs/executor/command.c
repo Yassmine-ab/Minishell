@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   command.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: petitcoeur <petitcoeur@student.42.fr>      +#+  +:+       +#+        */
+/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 03:42:20 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/23 04:08:39 by petitcoeur       ###   ########.fr       */
+/*   Updated: 2024/12/24 14:29:55 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,11 +80,13 @@ void	execute_command(t_node *ast, t_minishell *data, bool in_pipeline)
 		tmp = ast->args;
 		while (tmp)
 		{
-			tmp->value = expand_variables(tmp->value, data);
+			if (tmp->is_single_quoted == false)
+				tmp->value = expand_variables(tmp->value, data);
 			tmp = tmp->next;
 		}
 	}
-	ast->value = expand_variables(ast->value, data);
+	if (ast->is_single_quoted == false)
+		ast->value = expand_variables(ast->value, data);
 	concatenate_adjacent_nodes(ast, data);
 	concatenate_adjacent_nodes(ast->args, data);
 	args = get_command_args(ast, data);

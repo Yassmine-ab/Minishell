@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 16:44:17 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/24 13:00:37 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/24 13:26:39 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,18 +57,13 @@ static t_node
 {
 	t_node	*cmd_node;
 	t_node	*new_cmd;
-	t_node	*last_cmd;
 	t_node	*redir_after;
 
 	cmd_node = NULL;
 	while (data->tokens[*i].type == COMMAND)
 	{
 		new_cmd = create_node(NODE_COMMAND, data->tokens[*i], &data->gc);
-		if (cmd_node == NULL)
-			cmd_node = new_cmd;
-		else
-			last_cmd->next = new_cmd;
-		last_cmd = new_cmd;
+		append_nodes(&cmd_node, new_cmd);
 		(*i)++;
 	}
 	parse_arguments(i, cmd_node, data);

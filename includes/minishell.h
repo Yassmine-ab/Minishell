@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 02:04:44 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/24 12:39:59 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/24 14:02:42 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,7 +132,7 @@ typedef struct s_token
 {
 	t_token_type		type;
 	char				*value;
-	bool				quoted;
+	bool				is_single_quoted;
 	bool				space_after;
 }	t_token;
 
@@ -141,7 +141,7 @@ typedef struct s_node
 {
 	t_node_type			type;
 	char				*value;
-	bool				quoted;
+	bool				is_single_quoted;
 	bool				space_after;
 	struct s_node		*left;
 	struct s_node		*right;

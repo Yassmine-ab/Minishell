@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 14:04:05 by petitcoeur        #+#    #+#             */
-/*   Updated: 2024/12/23 12:15:24 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/24 13:20:29 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,12 +49,7 @@ void	execute_ast(t_node *ast, t_minishell *data, bool in_pipeline)
 	while (ast)
 	{
 		if (ast->type == NODE_COMMAND)
-		{
-			if (ast->value && ft_strlen(ast->value) > 0)
-				execute_command(ast, data, in_pipeline);
-			else
-				execute_redirections(ast->redirections, data);
-		}
+			execute_command(ast, data, in_pipeline);
 		else if (ast->type == NODE_REDIR || ast->type == NODE_HEREDOC)
 			execute_redirections(ast, data);
 		else if (ast->type == NODE_PIPE)
