@@ -24,11 +24,13 @@ int	main(int argc, char **argv, char **envp)
 	if (argc > 1)
 		return (printf("Minishell does" RED " not " DEFAULT "accept arguments. "
 				"Running in interactive mode only.\n"), 1);
+	data_init(argc, argv, envp, &data);
+	// env_init(envp, &data);
 	rl_outstream = stderr;
 	while (1)
 	{
 		init_signal_interactive_mode();
-		data_init(argc, argv, envp, &data);
+		// data_init(argc, argv, &data);
 		if (isatty(STDIN_FILENO))
 			prompt = create_prompt(&data);
 		else

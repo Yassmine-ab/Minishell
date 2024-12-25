@@ -172,7 +172,7 @@ debug:			$(OBJS)
 				@$(CC) $(CFLAGS) $(OBJS) $(MYLIB) $(READLINE) -o $(NAME) -g3 -fsanitize=address
 				$(PROGRESS_BAR)
 				@echo "$$HEADER"
-				
+
 # Rule to display help
 help:
 				@echo "\n$(CYAN)all$(DEFAULT)		- Build the executable $(NAME)"

@@ -183,6 +183,7 @@ typedef struct s_minishell
 
 /* ----------------------------- Initialization ----------------------------- */
 void	data_init(int argc, char **argv, char **envp, t_minishell *data);
+void	env_init(char **envp, t_minishell *data);
 
 /* --------------------------------- Prompt --------------------------------- */
 char	*create_prompt(t_minishell *data);

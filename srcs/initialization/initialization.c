@@ -51,18 +51,20 @@ void	data_init(int argc, char **argv, char **envp, t_minishell *data)
 	gc_init(&data->gc);
 	data->argc = argc;
 	data->argv = argv;
+	printf("data->envp[0]: %s\n", data->envp[0]);
 	if (envp[0] == NULL)
 		data->envp = envp_is_null(data);
 	else
 	{
-		data->envp = gc_malloc
-			(sizeof(char *) * (ft_tabstrlen(envp) + 1), &data->gc);
+		data->envp = malloc
+			(sizeof(char *) * (ft_tabstrlen(envp) + 1));
 		i = -1;
 		while (envp[++i])
 			data->envp[i] = ft_strdup_gc(envp[i], &data->gc);
 		data->envp[i] = NULL;
 		update_shlvl(data);
 	}
+	printf("data->envp[0]: %s\n", data->envp[0]);
 	data->tokens = gc_malloc(sizeof(t_token) * (MAX_TOKENS + 1), &data->gc);
 	data->current_type = COMMAND;
 	data->last_exec_error = EXEC_NO_FILE;
@@ -71,3 +73,44 @@ void	data_init(int argc, char **argv, char **envp, t_minishell *data)
 	data->fd = -1;
 	data->tmp_fd = -1;
 }
+
+// void	env_init(char **envp, t_minishell *data)
+// {
+// 	int	i;
+
+// 	if (envp[0] == NULL)
+// 		data->envp = envp_is_null(data);
+// 	else
+// 	{
+// 		data->envp = gc_malloc
+// 			(sizeof(char *) * (ft_tabstrlen(envp) + 1), &data->gc);
+// 		i = -1;
+// 		while (envp[++i])
+// 			data->envp[i] = ft_strdup_gc(envp[i], &data->gc);
+// 		data->envp[i] = NULL;
+// 		update_shlvl(data);
+// 	}
+// }
+
+// void	data_init(int argc, char **argv, t_minishell *data)
+// {
+// 	gc_init(&data->gc);
+// 	data->argc = argc;
+// 	data->argv = argv;
+// 	data->tokens = gc_malloc(sizeof(t_token) * (MAX_TOKENS + 1), &data->gc);
+// 	data->current_type = COMMAND;
+// 	data->last_exec_error = EXEC_NO_FILE;
+// 	data->in_single_quotes = false;
+// 	data->in_double_quotes = false;
+// 	data->fd = -1;
+// 	data->tmp_fd = -1;
+// 	data->line = NULL;
+// 	data->result = NULL;
+// 	data->node = NULL;
+// 	data->tmp_file = NULL;
+// 	data->last_exit_status = 0;
+// 	data->open_parentheses = 0;
+// 	data->is_child_process = false;
+// 	data->child_end_with_signal = false;
+// 	data->in_command = false;
+// }

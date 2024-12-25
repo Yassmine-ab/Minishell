@@ -12,53 +12,36 @@
 
 #include "minishell.h"
 
-static int	is_valid_number(char *nb)
+static bool	is_number_valid(char *nb)
 {
-	long long int	result;
+	const long long	MAX_DIV_10 = 922337203685477580LL;
+	long long		result;
 	int				sign;
 	int				i;
 
-	i = 0;
-	sign = 1;
 	result = 0;
-	if (ft_strlen(nb) > 20)
-		return (1);
+	sign = 1;
+	i = 0;
+	if (!nb || ft_strlen(nb) > 20)
+		return (false);
 	if (nb[i] == '+' || nb[i] == '-')
 		if (nb[i++] == '-')
 			sign = -1;
-	while (nb[i] >= '0' && nb[i] <= '9')
-	{
-		if (result > 922337203685477580
-			|| (sign == 1 && result == 922337203685477580 && nb[i] > '7')
-			|| (sign == -1 && result == 922337203685477580 && nb[i] > '8'))
-			return (1);
-		result *= 10;
-		result += (nb[i++] - '0');
-	}
-	return (0);
-}
-
-static int	is_numeric(char *nb)
-{
-	int	i;
-
-	i = 0;
-	if (!nb)
-		return (0);
-	if (nb[i] == '+' || nb[i] == '-')
-		i++;
+	if (nb[i] == '\0')
+		return (false);
 	while (nb[i])
 	{
-		if (!ft_isdigit(nb[i]))
-			return (1);
-		i++;
+		if (!ft_isdigit(nb[i]) || result > MAX_DIV_10 || (result == MAX_DIV_10
+				&& ((sign == 1 && nb[i] > '7') || (sign == -1 && nb[i] > '8'))))
+			return (false);
+		result = result * 10 + (nb[i++] - '0');
 	}
-	return (0);
+	return (true);
 }
 
 static void	check_arg_value(char *arg, t_minishell *data)
 {
-	if (is_numeric(arg) || is_valid_number(arg))
+	if (is_number_valid(arg) == false)
 	{
 		ft_putstr_fd("exit\n", STDERR_FILENO);
 		ft_putstr_fd("minishell: exit: ", STDERR_FILENO);
