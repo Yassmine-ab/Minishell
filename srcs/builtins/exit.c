@@ -49,7 +49,6 @@ static void	check_arg_value(char *arg, t_minishell *data)
 		ft_putstr_fd(": numeric argument required\n", STDERR_FILENO);
 		data->last_exit_status = 2;
 		gc_cleanup(&data->gc);
-		gc_cleanup(&data->gc_env);
 		exit(data->last_exit_status);
 	}
 	data->last_exit_status = ft_atoi(arg);
@@ -72,6 +71,5 @@ void	ft_exit(t_node *cmd_args, t_minishell *data)
 	}
 	ft_putstr_fd("exit\n", STDERR_FILENO);
 	gc_cleanup(&data->gc);
-	gc_cleanup(&data->gc_env);
 	exit(data->last_exit_status);
 }

@@ -12,6 +12,22 @@
 
 #include "minishell.h"
 
+void	set_gc_node_locked(t_gc *gc, void *ptr, bool lock)
+{
+	t_gc_node	*current;
+
+	current = gc->head;
+	while (current)
+	{
+		if (current->ptr == ptr)
+		{
+			current->locked = lock;
+			break ;
+		}
+		current = current->next;
+	}
+}
+
 void	error(char *context, char *error_msg, int status, t_minishell *data)
 {
 	if (context)
@@ -19,7 +35,7 @@ void	error(char *context, char *error_msg, int status, t_minishell *data)
 	ft_putendl_fd(error_msg, STDERR_FILENO);
 	if (data->is_child_process)
 	{
-		gc_cleanup(&data->gc);
+		gc_cleanup_lock(&data->gc);
 		exit(status);
 	}
 }

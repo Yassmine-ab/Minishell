@@ -152,13 +152,6 @@ typedef struct s_node
 	struct s_node		*next;
 }	t_node;
 
-/* // DATA ENVIRONMENT
-typedef struct s_env
-{
-	char				**envp;
-	t_gc				gc_env;
-} */
-
 // DATA STRUCTURE
 typedef struct s_minishell
 {
@@ -171,7 +164,6 @@ typedef struct s_minishell
 	t_token_type		current_type;
 	t_node				*node;
 	t_gc				gc;
-	t_gc				gc_env;
 	int					tmp_fd;
 	char				*tmp_file;
 	int					fd;
@@ -180,6 +172,7 @@ typedef struct s_minishell
 	bool				is_child_process;
 	bool				child_end_with_signal;
 	bool				in_command;
+	bool				locked;
 	bool				in_single_quotes;
 	bool				in_double_quotes;
 	t_exec_error		last_exec_error;
@@ -190,8 +183,7 @@ typedef struct s_minishell
 /* -------------------------------------------------------------------------- */
 
 /* ----------------------------- Initialization ----------------------------- */
-void	data_init(int argc, char **argv, t_minishell *data);
-void	env_init(char **envp, t_minishell *data);
+void	data_init(int argc, char **argv, char **envp, t_minishell *data);
 
 /* --------------------------------- Prompt --------------------------------- */
 char	*create_prompt(t_minishell *data);
@@ -251,6 +243,7 @@ void	ft_export(t_node *args, t_minishell *data);
 void	ft_exit(t_node *args, t_minishell *data);
 
 /* ------------------------------- Utilities -------------------------------- */
+void	set_gc_node_locked(t_gc *gc, void *ptr, bool lock);
 void	error(char *context, char *error_msg, int status, t_minishell *data);
 void	strncat_realloc(char **result, char *append, size_t *size, t_gc *gc);
 bool	is_operator(t_token_type type);

@@ -15,12 +15,14 @@
 
 # include <stdio.h>
 # include "libft.h"
+# include <stdbool.h>
 
 typedef struct s_gc_node
 {
 	void				*ptr;
 	size_t				size;
 	struct s_gc_node	*next;
+	bool				locked;
 }	t_gc_node;
 
 typedef struct s_gc
@@ -33,6 +35,7 @@ void	gc_add(t_gc *gc, void *ptr, size_t size);
 void	gc_remove(t_gc *gc, void *ptr);
 void	gc_free(void *ptr, t_gc *gc);
 void	gc_cleanup(t_gc *gc);
+void	gc_cleanup_lock(t_gc *gc);
 void	*gc_malloc(size_t size, t_gc *gc);
 void	*gc_calloc(size_t nmemb, size_t size, t_gc *gc);
 size_t	gc_malloc_size(void *ptr, t_gc *gc);
