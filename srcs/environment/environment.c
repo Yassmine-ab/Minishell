@@ -19,10 +19,10 @@ void	free_envp(t_minishell *data)
 	i = 0;
 	while (data->envp[i])
 	{
-		gc_free(data->envp[i], &data->gc);
+		gc_free(data->envp[i], &data->gc_env);
 		i++;
 	}
-	gc_free(data->envp, &data->gc);
+	gc_free(data->envp, &data->gc_env);
 }
 
 char	*get_env_value(char *env_key, t_minishell *data)
@@ -40,7 +40,7 @@ char	*get_env_value(char *env_key, t_minishell *data)
 		{
 			equal_sign = ft_strchr(env_var, '=');
 			if (equal_sign)
-				return (ft_strdup_gc(equal_sign + 1, &data->gc));
+				return (ft_strdup_gc(equal_sign + 1, &data->gc_env));
 		}
 		i++;
 	}
@@ -66,9 +66,9 @@ void	update_env(char *key, char *new_value, t_minishell *data)
 	int		i;
 
 	i = get_env_index(key, data);
-	gc_free(data->envp[i], &data->gc);
-	data->envp[i] = ft_strjoin_gc(key, "=", &data->gc);
-	data->envp[i] = ft_strjoin_gc(data->envp[i], new_value, &data->gc);
+	gc_free(data->envp[i], &data->gc_env);
+	data->envp[i] = ft_strjoin_gc(key, "=", &data->gc_env);
+	data->envp[i] = ft_strjoin_gc(data->envp[i], new_value, &data->gc_env);
 }
 
 void	add_env(char *key, char *value, t_minishell *data)
@@ -78,17 +78,17 @@ void	add_env(char *key, char *value, t_minishell *data)
 	int		i;
 
 	i = ft_tabstrlen(data->envp);
-	new_envp = gc_malloc(sizeof(char *) * (i + 2), &data->gc);
+	new_envp = gc_malloc(sizeof(char *) * (i + 2), &data->gc_env);
 	i = -1;
 	while (data->envp[++i])
-		new_envp[i] = ft_strdup_gc(data->envp[i], &data->gc);
+		new_envp[i] = ft_strdup_gc(data->envp[i], &data->gc_env);
 	if (value == NULL)
-		new_key_value = ft_strdup_gc(key, &data->gc);
+		new_key_value = ft_strdup_gc(key, &data->gc_env);
 	else
 	{
-		new_key_value = ft_strjoin_gc(key, "=", &data->gc);
+		new_key_value = ft_strjoin_gc(key, "=", &data->gc_env);
 		if (value)
-			new_key_value = ft_strjoin_gc(new_key_value, value, &data->gc);
+			new_key_value = ft_strjoin_gc(new_key_value, value, &data->gc_env);
 	}
 	new_envp[i] = new_key_value;
 	new_envp[i + 1] = NULL;

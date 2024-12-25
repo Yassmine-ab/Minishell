@@ -20,15 +20,16 @@ static void	update_pwd_vars(char *old_path, char *new_path, t_minishell *data)
 	var_pwd_idx = get_env_index("PWD", data);
 	if (var_pwd_idx != -1)
 	{
-		gc_free(data->envp[var_pwd_idx], &data->gc);
-		data->envp[var_pwd_idx] = ft_strjoin_gc("PWD=", new_path, &data->gc);
+		gc_free(data->envp[var_pwd_idx], &data->gc_env);
+		data->envp[var_pwd_idx] = \
+		ft_strjoin_gc("PWD=", new_path, &data->gc_env);
 	}
 	var_old_pwd_idx = get_env_index("OLDPWD", data);
 	if (var_old_pwd_idx != -1)
 	{
-		gc_free(data->envp[var_old_pwd_idx], &data->gc);
+		gc_free(data->envp[var_old_pwd_idx], &data->gc_env);
 		data->envp[var_old_pwd_idx] = \
-			ft_strjoin_gc("OLDPWD=", old_path, &data->gc);
+			ft_strjoin_gc("OLDPWD=", old_path, &data->gc_env);
 	}
 	free(old_path);
 }

@@ -152,6 +152,13 @@ typedef struct s_node
 	struct s_node		*next;
 }	t_node;
 
+/* // DATA ENVIRONMENT
+typedef struct s_env
+{
+	char				**envp;
+	t_gc				gc_env;
+} */
+
 // DATA STRUCTURE
 typedef struct s_minishell
 {
@@ -164,6 +171,7 @@ typedef struct s_minishell
 	t_token_type		current_type;
 	t_node				*node;
 	t_gc				gc;
+	t_gc				gc_env;
 	int					tmp_fd;
 	char				*tmp_file;
 	int					fd;
@@ -182,7 +190,7 @@ typedef struct s_minishell
 /* -------------------------------------------------------------------------- */
 
 /* ----------------------------- Initialization ----------------------------- */
-void	data_init(int argc, char **argv, char **envp, t_minishell *data);
+void	data_init(int argc, char **argv, t_minishell *data);
 void	env_init(char **envp, t_minishell *data);
 
 /* --------------------------------- Prompt --------------------------------- */

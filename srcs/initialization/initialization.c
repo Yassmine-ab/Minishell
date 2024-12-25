@@ -17,12 +17,12 @@ static char	**envp_is_null(t_minishell *data)
 	char	**envp;
 	char	*path;
 
-	envp = gc_malloc(sizeof(char *) * 5, &data->gc);
+	envp = gc_malloc(sizeof(char *) * 5, &data->gc_env);
 	path = getcwd(NULL, 0);
 	envp[0] = ft_strjoin_gc("PWD=", path, &data->gc);
-	envp[1] = ft_strdup_gc("SHLVL=1", &data->gc);
-	envp[2] = ft_strdup_gc("OLDPWD", &data->gc);
-	envp[3] = ft_strdup_gc("_=/usr/bin/env", &data->gc);
+	envp[1] = ft_strdup_gc("SHLVL=1", &data->gc_env);
+	envp[2] = ft_strdup_gc("OLDPWD", &data->gc_env);
+	envp[3] = ft_strdup_gc("_=/usr/bin/env", &data->gc_env);
 	envp[4] = NULL;
 	return (envp);
 }
@@ -39,64 +39,32 @@ static void	update_shlvl(t_minishell *data)
 		if (shlvl_value < 0)
 			shlvl_value = -1;
 		update_env
-			("SHLVL", ft_itoa_gc(shlvl_value + 1, &data->gc), data);
+			("SHLVL", ft_itoa_gc(shlvl_value + 1, &data->gc_env), data);
 	}
 }
 
-void	data_init(int argc, char **argv, char **envp, t_minishell *data)
-{
-	int	i;
-
-	ft_memset(data, 0, sizeof(t_minishell));
-	gc_init(&data->gc);
-	data->argc = argc;
-	data->argv = argv;
-	printf("data->envp[0]: %s\n", data->envp[0]);
-	if (envp[0] == NULL)
-		data->envp = envp_is_null(data);
-	else
-	{
-		data->envp = malloc
-			(sizeof(char *) * (ft_tabstrlen(envp) + 1));
-		i = -1;
-		while (envp[++i])
-			data->envp[i] = ft_strdup_gc(envp[i], &data->gc);
-		data->envp[i] = NULL;
-		update_shlvl(data);
-	}
-	printf("data->envp[0]: %s\n", data->envp[0]);
-	data->tokens = gc_malloc(sizeof(t_token) * (MAX_TOKENS + 1), &data->gc);
-	data->current_type = COMMAND;
-	data->last_exec_error = EXEC_NO_FILE;
-	data->in_single_quotes = false;
-	data->in_double_quotes = false;
-	data->fd = -1;
-	data->tmp_fd = -1;
-}
-
-// void	env_init(char **envp, t_minishell *data)
+// void	data_init(int argc, char **argv, char **envp, t_minishell *data)
 // {
 // 	int	i;
 
+// 	ft_memset(data, 0, sizeof(t_minishell));
+// 	gc_init(&data->gc);
+// 	data->argc = argc;
+// 	data->argv = argv;
+// 	printf("data->envp[0]: %s\n", data->envp[0]);
 // 	if (envp[0] == NULL)
 // 		data->envp = envp_is_null(data);
 // 	else
 // 	{
-// 		data->envp = gc_malloc
-// 			(sizeof(char *) * (ft_tabstrlen(envp) + 1), &data->gc);
+// 		data->envp = malloc
+// 			(sizeof(char *) * (ft_tabstrlen(envp) + 1));
 // 		i = -1;
 // 		while (envp[++i])
 // 			data->envp[i] = ft_strdup_gc(envp[i], &data->gc);
 // 		data->envp[i] = NULL;
 // 		update_shlvl(data);
 // 	}
-// }
-
-// void	data_init(int argc, char **argv, t_minishell *data)
-// {
-// 	gc_init(&data->gc);
-// 	data->argc = argc;
-// 	data->argv = argv;
+// 	printf("data->envp[0]: %s\n", data->envp[0]);
 // 	data->tokens = gc_malloc(sizeof(t_token) * (MAX_TOKENS + 1), &data->gc);
 // 	data->current_type = COMMAND;
 // 	data->last_exec_error = EXEC_NO_FILE;
@@ -104,13 +72,47 @@ void	data_init(int argc, char **argv, char **envp, t_minishell *data)
 // 	data->in_double_quotes = false;
 // 	data->fd = -1;
 // 	data->tmp_fd = -1;
-// 	data->line = NULL;
-// 	data->result = NULL;
-// 	data->node = NULL;
-// 	data->tmp_file = NULL;
-// 	data->last_exit_status = 0;
-// 	data->open_parentheses = 0;
-// 	data->is_child_process = false;
-// 	data->child_end_with_signal = false;
-// 	data->in_command = false;
 // }
+
+void	env_init(char **envp, t_minishell *data)
+{
+	int	i;
+
+	if (envp[0] == NULL)
+		data->envp = envp_is_null(data);
+	else
+	{
+		data->envp = gc_malloc
+			(sizeof(char *) * (ft_tabstrlen(envp) + 1), &data->gc_env);
+		i = -1;
+		while (envp[++i])
+			data->envp[i] = ft_strdup_gc(envp[i], &data->gc_env);
+		data->envp[i] = NULL;
+		update_shlvl(data);
+	}
+}
+
+void	data_init(int argc, char **argv, t_minishell *data)
+{
+	gc_init(&data->gc);
+	if (data->gc_env.head == NULL)
+		gc_init(&data->gc_env);
+	data->argc = argc;
+	data->argv = argv;
+	data->tokens = gc_malloc(sizeof(t_token) * (MAX_TOKENS + 1), &data->gc);
+	data->current_type = COMMAND;
+	data->last_exec_error = EXEC_NO_FILE;
+	data->in_single_quotes = false;
+	data->in_double_quotes = false;
+	data->fd = -1;
+	data->tmp_fd = -1;
+	data->line = NULL;
+	data->result = NULL;
+	data->node = NULL;
+	data->tmp_file = NULL;
+	data->last_exit_status = 0;
+	data->open_parentheses = 0;
+	data->is_child_process = false;
+	data->child_end_with_signal = false;
+	data->in_command = false;
+}

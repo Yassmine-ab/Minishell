@@ -14,7 +14,7 @@
 
 static bool	is_number_valid(char *nb)
 {
-	const long long	MAX_DIV_10 = 922337203685477580LL;
+	const long long	max_div_10 = 922337203685477580LL;
 	long long		result;
 	int				sign;
 	int				i;
@@ -31,7 +31,7 @@ static bool	is_number_valid(char *nb)
 		return (false);
 	while (nb[i])
 	{
-		if (!ft_isdigit(nb[i]) || result > MAX_DIV_10 || (result == MAX_DIV_10
+		if (!ft_isdigit(nb[i]) || result > max_div_10 || (result == max_div_10
 				&& ((sign == 1 && nb[i] > '7') || (sign == -1 && nb[i] > '8'))))
 			return (false);
 		result = result * 10 + (nb[i++] - '0');
@@ -49,6 +49,7 @@ static void	check_arg_value(char *arg, t_minishell *data)
 		ft_putstr_fd(": numeric argument required\n", STDERR_FILENO);
 		data->last_exit_status = 2;
 		gc_cleanup(&data->gc);
+		gc_cleanup(&data->gc_env);
 		exit(data->last_exit_status);
 	}
 	data->last_exit_status = ft_atoi(arg);
@@ -71,5 +72,6 @@ void	ft_exit(t_node *cmd_args, t_minishell *data)
 	}
 	ft_putstr_fd("exit\n", STDERR_FILENO);
 	gc_cleanup(&data->gc);
+	gc_cleanup(&data->gc_env);
 	exit(data->last_exit_status);
 }

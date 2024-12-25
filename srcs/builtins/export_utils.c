@@ -69,17 +69,17 @@ void	print_export(t_minishell *data)
 	int		i;
 
 	env_count = ft_tabstrlen(data->envp);
-	sorted_envp = gc_malloc(sizeof(char *) * (env_count + 1), &data->gc);
+	sorted_envp = gc_malloc(sizeof(char *) * (env_count + 1), &data->gc_env);
 	i = -1;
 	while (++i < env_count)
-		sorted_envp[i] = ft_strdup_gc(data->envp[i], &data->gc);
+		sorted_envp[i] = ft_strdup_gc(data->envp[i], &data->gc_env);
 	sorted_envp[i] = NULL;
 	bubble_sort(sorted_envp, env_count);
 	display_export_vars(sorted_envp, data);
 	i = -1;
 	while (sorted_envp[++i])
-		gc_free(sorted_envp[i], &data->gc);
-	gc_free(sorted_envp, &data->gc);
+		gc_free(sorted_envp[i], &data->gc_env);
+	gc_free(sorted_envp, &data->gc_env);
 }
 
 static void	update_env_plus(char *key, char *value_to_add, t_minishell *data)
@@ -88,11 +88,13 @@ static void	update_env_plus(char *key, char *value_to_add, t_minishell *data)
 
 	i = get_env_index(key, data);
 	if (get_env_value(key, data))
-		data->envp[i] = ft_strjoin_gc(data->envp[i], value_to_add, &data->gc);
+		data->envp[i] = \
+		ft_strjoin_gc(data->envp[i], value_to_add, &data->gc_env);
 	else
 	{
-		data->envp[i] = ft_strjoin_gc(data->envp[i], "=", &data->gc);
-		data->envp[i] = ft_strjoin_gc(data->envp[i], value_to_add, &data->gc);
+		data->envp[i] = ft_strjoin_gc(data->envp[i], "=", &data->gc_env);
+		data->envp[i] = \
+		ft_strjoin_gc(data->envp[i], value_to_add, &data->gc_env);
 	}
 }
 
@@ -104,10 +106,10 @@ char *arg, char *equal_sign, t_minishell *data)
 
 	if (var_key_checks_return == 0)
 	{
-		key = ft_substr_gc(arg, 0, equal_sign - arg, &data->gc);
-		value = ft_strdup_gc(equal_sign + 1, &data->gc);
+		key = ft_substr_gc(arg, 0, equal_sign - arg, &data->gc_env);
+		value = ft_strdup_gc(equal_sign + 1, &data->gc_env);
 		if (!value)
-			value = ft_strdup_gc("", &data->gc);
+			value = ft_strdup_gc("", &data->gc_env);
 		if (get_env_index(key, data) == -1)
 			add_env(key, value, data);
 		else
@@ -115,10 +117,10 @@ char *arg, char *equal_sign, t_minishell *data)
 	}
 	else if (var_key_checks_return == 2)
 	{
-		key = ft_substr_gc(arg, 0, equal_sign - 1 - arg, &data->gc);
-		value = ft_strdup_gc(equal_sign + 1, &data->gc);
+		key = ft_substr_gc(arg, 0, equal_sign - 1 - arg, &data->gc_env);
+		value = ft_strdup_gc(equal_sign + 1, &data->gc_env);
 		if (!value)
-			value = ft_strdup_gc("", &data->gc);
+			value = ft_strdup_gc("", &data->gc_env);
 		if (get_env_index(key, data) == -1)
 			add_env(key, value, data);
 		else
