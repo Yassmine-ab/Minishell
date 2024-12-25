@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
+/*   By: petitcoeur <petitcoeur@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 02:04:44 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/24 23:17:51 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/25 06:42:49 by petitcoeur       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -169,8 +169,6 @@ typedef struct s_minishell
 	char				*tmp_file;
 	int					last_exit_status;
 	int					open_parentheses;
-	int					pipe_fd[2];
-	int					pids[2];
 	bool				is_child_process;
 	bool				child_end_with_signal;
 	bool				in_command;
@@ -206,11 +204,12 @@ t_node	*parse_command(int *i, t_minishell *data, t_node *redir_before);
 t_node	*parse_redirections(int *i, t_minishell *data);
 
 /* ------------------------------- Executor --------------------------------- */
-void	execute_ast(t_node *ast, t_minishell *data, bool in_pipeline);
-void	execute_command(t_node *cmd_node, t_minishell *data, bool in_pipeline);
+void	execute_ast(t_node *ast, t_minishell *data, bool in_child_process);
+void	execute_command(t_node *cmd_node, t_minishell *data, bool in_child_process);
 char	*get_command_path(char *command, t_minishell *data);
 char	**get_command_args(t_node *cmd_node, t_minishell *data);
 void	concatenate_adjacent_nodes(t_node *node, t_minishell *data);
+pid_t	safe_fork(t_minishell *data);
 void	execute_pipeline(t_node *ast, t_minishell *data);
 void	execute_redirections(t_node *redir_node, t_minishell *data);
 void	handle_child_exit(int status, t_minishell *data);
@@ -244,10 +243,14 @@ void	ft_exit(t_node *args, t_minishell *data);
 
 /* ------------------------------- Utilities -------------------------------- */
 void	error(const char *error_msg, int status, t_minishell *data);
+void	error_cmd(char *cmd, char *error_msg, int status, t_minishell *data);
 void	strncat_realloc(char **result, char *append, size_t *size, t_gc *gc);
 bool	is_operator(t_token_type type);
 bool	is_redir(t_token_type type);
 void	safe_close(int *fd);
 void	print_export(t_minishell *data);
+void	process_var_key_return(int var_key_checks_return, \
+char *arg, char *equal_sign, t_minishell *data);
+
 
 #endif

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
+/*   By: petitcoeur <petitcoeur@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 11:06:43 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/24 23:23:38 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/25 06:36:14 by petitcoeur       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,8 @@ int	main(int argc, char **argv, char **envp)
 			signal_to_action(&data);
 		if (data.line == 0)
 		{
-			ft_putendl_fd("exit", STDERR_FILENO);
-			break ;
+			data.last_exit_status = 0;
+			ft_exit(NULL, &data);
 		}
 		if (data.line[0])
 		{

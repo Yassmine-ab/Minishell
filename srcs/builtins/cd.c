@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
+/*   By: petitcoeur <petitcoeur@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 15:56:51 by besch             #+#    #+#             */
-/*   Updated: 2024/12/19 09:23:22 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/25 06:23:51 by petitcoeur       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ void	ft_cd(t_node *cmd_args, t_minishell *data)
 
 	if (!cmd_args)
 	{
-		new_path = getenv("HOME");
+		new_path = get_env_value("HOME", data);
 		if (!new_path)
 		{
 			ft_putstr_fd("cd: HOME not set\n", STDERR_FILENO);

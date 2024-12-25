@@ -6,7 +6,7 @@
 /*   By: petitcoeur <petitcoeur@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 02:48:46 by petitcoeur        #+#    #+#             */
-/*   Updated: 2024/12/22 00:43:26 by petitcoeur       ###   ########.fr       */
+/*   Updated: 2024/12/25 06:24:35 by petitcoeur       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,4 +80,48 @@ void	print_export(t_minishell *data)
 	while (sorted_envp[++i])
 		gc_free(sorted_envp[i], &data->gc);
 	gc_free(sorted_envp, &data->gc);
+}
+
+static void	update_env_plus(char *key, char *value_to_add, t_minishell *data)
+{
+	int		i;
+
+	i = get_env_index(key, data);
+	if (get_env_value(key, data))
+		data->envp[i] = ft_strjoin_gc(data->envp[i], value_to_add, &data->gc);
+	else
+	{
+		data->envp[i] = ft_strjoin_gc(data->envp[i], "=", &data->gc);
+		data->envp[i] = ft_strjoin_gc(data->envp[i], value_to_add, &data->gc);
+	}
+}
+
+void	process_var_key_return(int var_key_checks_return, \
+char *arg, char *equal_sign, t_minishell *data)
+{
+	char	*value;
+	char	*key;
+
+	if (var_key_checks_return == 0)
+	{
+		key = ft_substr_gc(arg, 0, equal_sign - arg, &data->gc);
+		value = ft_strdup_gc(equal_sign + 1, &data->gc);
+		if (!value)
+			value = ft_strdup_gc("", &data->gc);
+		if (get_env_index(key, data) == -1)
+			add_env(key, value, data);
+		else
+			update_env(key, value, data);
+	}
+	else if (var_key_checks_return == 2)
+	{
+		key = ft_substr_gc(arg, 0, equal_sign - 1 - arg, &data->gc);
+		value = ft_strdup_gc(equal_sign + 1, &data->gc);
+		if (!value)
+			value = ft_strdup_gc("", &data->gc);
+		if (get_env_index(key, data) == -1)
+			add_env(key, value, data);
+		else
+			update_env_plus(key, value, data);
+	}
 }

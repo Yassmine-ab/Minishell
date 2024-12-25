@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   command.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
+/*   By: petitcoeur <petitcoeur@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 03:42:20 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/24 22:04:24 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/25 06:31:30 by petitcoeur       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,10 +40,10 @@ static void
 	if (path == NULL)
 	{
 		if (data->last_exec_error == EXEC_NOT_REGULAR)
-			error("Not a regular file", 126, data);
+			error_cmd(ast->value, ": Not a regular file", 126, data);
 		if (data->last_exec_error == EXEC_NO_PERMISSION)
-			error("Permission denied", 126, data);
-		error("Command not found", 127, data);
+			error_cmd(ast->value, ": Permission denied", 126, data);
+		error_cmd(ast->value, ": Command not found", 127, data);
 	}
 	if (ast->redirections)
 	{
@@ -59,7 +59,7 @@ static void
 		unlink(data->tmp_file);
 	}
 	execve(path, args, data->envp);
-	error("Command execution failed", 127, data);
+	error_cmd(ast->value, ": Command execution failed", 127, data);
 }
 
 static void	execute_extern_command(t_node *ast, char **args, t_minishell *data)
@@ -81,10 +81,9 @@ static void	execute_extern_command(t_node *ast, char **args, t_minishell *data)
 	}
 }
 
-void	execute_command(t_node *ast, t_minishell *data, bool in_pipeline)
+static void	expand_ast(t_node *ast, t_minishell *data)
 {
 	t_node	*tmp;
-	char	**args;
 
 	if (ast->args)
 	{
@@ -98,13 +97,20 @@ void	execute_command(t_node *ast, t_minishell *data, bool in_pipeline)
 	}
 	if (ast->is_single_quoted == false)
 		ast->value = expand_variables(ast->value, data);
+}
+
+void	execute_command(t_node *ast, t_minishell *data, bool in_child_process)
+{
+	char	**args;
+
+	expand_ast(ast, data);
 	concatenate_adjacent_nodes(ast, data);
 	concatenate_adjacent_nodes(ast->args, data);
 	args = get_command_args(ast, data);
 	data->in_command = true;
 	if (execute_builtins(ast, data) == 0)
 	{
-		if (in_pipeline)
+		if (in_child_process)
 			execute_command_in_child(ast, args, data);
 		else
 			execute_extern_command(ast, args, data);

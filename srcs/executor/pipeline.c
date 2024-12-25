@@ -3,31 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   pipeline.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
+/*   By: petitcoeur <petitcoeur@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 11:22:57 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/23 10:42:04 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/25 06:33:31 by petitcoeur       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static void	wait_all_pids(t_minishell *data)
+pid_t	safe_fork(t_minishell *data)
 {
-	int		status;
-	int		i;
-
-	i = -1;
-	while (++i < 2)
-	{
-		waitpid(data->pids[i], &status, 0);
-		handle_child_exit(status, data);
-	}
-}
-
-static int	safe_fork(t_minishell *data)
-{
-	int	pid;
+	pid_t	pid;
 
 	pid = fork();
 	if (pid == -1)
@@ -40,29 +27,50 @@ static int	safe_fork(t_minishell *data)
 	return (pid);
 }
 
-void	execute_pipeline(t_node *ast, t_minishell *data)
+static void	exec_left_child(t_node *ast, int pipe_fd[2], t_minishell *data)
 {
-	if (pipe(data->pipe_fd) == -1)
-		gc_cleanup(&data->gc);
-	data->pids[0] = safe_fork(data);
-	if (data->pids[0] == 0)
+	pid_t	left_child;
+
+	left_child = safe_fork(data);
+	if (left_child == 0)
 	{
-		dup2(data->pipe_fd[WRITE_END], STDOUT_FILENO);
-		close(data->pipe_fd[READ_END]);
-		close(data->pipe_fd[WRITE_END]);
+		dup2(pipe_fd[WRITE_END], STDOUT_FILENO);
+		close(pipe_fd[READ_END]);
+		close(pipe_fd[WRITE_END]);
 		execute_ast(ast->left, data, true);
 		gc_cleanup(&data->gc);
+		exit(data->last_exit_status);
 	}
-	data->pids[1] = safe_fork(data);
-	if (data->pids[1] == 0)
+}
+
+static void	exec_right_child(t_node *ast, int pipe_fd[2], t_minishell *data)
+{
+	pid_t	right_child;
+
+	right_child = safe_fork(data);
+	if (right_child == 0)
 	{
-		dup2(data->pipe_fd[READ_END], STDIN_FILENO);
-		close(data->pipe_fd[READ_END]);
-		close(data->pipe_fd[WRITE_END]);
+		dup2(pipe_fd[READ_END], STDIN_FILENO);
+		close(pipe_fd[READ_END]);
+		close(pipe_fd[WRITE_END]);
 		execute_ast(ast->right, data, true);
 		gc_cleanup(&data->gc);
+		exit(data->last_exit_status);
 	}
-	close(data->pipe_fd[READ_END]);
-	close(data->pipe_fd[WRITE_END]);
-	wait_all_pids(data);
+}
+
+void	execute_pipeline(t_node *ast, t_minishell *data)
+{
+	int	pipe_fd[2];
+	int	status;
+
+	if (pipe(pipe_fd) == -1)
+		(gc_cleanup(&data->gc), exit(EXIT_FAILURE));
+	exec_left_child(ast, pipe_fd, data);
+	exec_right_child(ast, pipe_fd, data);
+	close(pipe_fd[READ_END]);
+	close(pipe_fd[WRITE_END]);
+	waitpid(-1, &status, 0);
+	waitpid(-1, &status, 0);
+	handle_child_exit(status, data);
 }

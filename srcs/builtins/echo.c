@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
+/*   By: petitcoeur <petitcoeur@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 15:56:38 by besch             #+#    #+#             */
-/*   Updated: 2024/12/19 09:23:27 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/25 06:24:17 by petitcoeur       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,14 +27,14 @@ static int	is_valid_n_flag(const char *arg)
 
 void	ft_echo(t_node *cmd_args, t_minishell *data)
 {
-	int		newline;
+	bool	newline;
 
 	(void)data;
-	newline = 1;
+	newline = true;
 	while (cmd_args && cmd_args->value
 		&& is_valid_n_flag(cmd_args->value))
 	{
-		newline = 0;
+		newline = false;
 		cmd_args = cmd_args->next;
 	}
 	while (cmd_args)
