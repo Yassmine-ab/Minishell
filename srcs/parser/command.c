@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   command.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: petitcoeur <petitcoeur@student.42.fr>      +#+  +:+       +#+        */
+/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/24 16:44:17 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/25 06:34:43 by petitcoeur       ###   ########.fr       */
+/*   Updated: 2024/12/25 11:07:10 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ static t_node	*parse_group(int *i, t_minishell *data)
 	(*i)++;
 	group_node->left = parse_expression(i, data);
 	if (group_node->left == NULL)
-		return (error("Empty parentheses", STDERR_FILENO, data), NULL);
+		return (error(NULL, "Empty parentheses", 2, data), NULL);
 	(*i)++;
 	return (group_node);
 }

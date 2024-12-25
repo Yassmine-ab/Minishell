@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   command.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: petitcoeur <petitcoeur@student.42.fr>      +#+  +:+       +#+        */
+/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 03:42:20 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/25 06:31:30 by petitcoeur       ###   ########.fr       */
+/*   Updated: 2024/12/25 12:35:54 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,10 +40,10 @@ static void
 	if (path == NULL)
 	{
 		if (data->last_exec_error == EXEC_NOT_REGULAR)
-			error_cmd(ast->value, ": Not a regular file", 126, data);
+			error(ast->value, ": Not a regular file", 126, data);
 		if (data->last_exec_error == EXEC_NO_PERMISSION)
-			error_cmd(ast->value, ": Permission denied", 126, data);
-		error_cmd(ast->value, ": Command not found", 127, data);
+			error(ast->value, ": Permission denied", 126, data);
+		error(ast->value, ": Command not found", 127, data);
 	}
 	if (ast->redirections)
 	{
@@ -53,13 +53,12 @@ static void
 			ast->redirections = ast->redirections->next;
 		}
 		data->tmp_fd = open(data->tmp_file, O_RDONLY, 0644);
-		if (dup2(data->tmp_fd, STDIN_FILENO) == -1)
-			error("Failed to redirect heredoc to stdin", 1, data);
+		dup2(data->tmp_fd, STDIN_FILENO);
 		safe_close(&data->tmp_fd);
 		unlink(data->tmp_file);
 	}
 	execve(path, args, data->envp);
-	error_cmd(ast->value, ": Command execution failed", 127, data);
+	error(ast->value, ": Command execution failed", 127, data);
 }
 
 static void	execute_extern_command(t_node *ast, char **args, t_minishell *data)
@@ -67,7 +66,7 @@ static void	execute_extern_command(t_node *ast, char **args, t_minishell *data)
 	pid_t	pid;
 	int		status;
 
-	pid = fork();
+	pid = safe_fork(data);
 	if (pid == 0)
 	{
 		data->is_child_process = true;
@@ -81,29 +80,12 @@ static void	execute_extern_command(t_node *ast, char **args, t_minishell *data)
 	}
 }
 
-static void	expand_ast(t_node *ast, t_minishell *data)
-{
-	t_node	*tmp;
-
-	if (ast->args)
-	{
-		tmp = ast->args;
-		while (tmp)
-		{
-			if (tmp->is_single_quoted == false)
-				tmp->value = expand_variables(tmp->value, data);
-			tmp = tmp->next;
-		}
-	}
-	if (ast->is_single_quoted == false)
-		ast->value = expand_variables(ast->value, data);
-}
-
 void	execute_command(t_node *ast, t_minishell *data, bool in_child_process)
 {
 	char	**args;
 
-	expand_ast(ast, data);
+	if (ast->is_single_quoted == false)
+		ast->value = expand_variables(ast->value, data);
 	concatenate_adjacent_nodes(ast, data);
 	concatenate_adjacent_nodes(ast->args, data);
 	args = get_command_args(ast, data);

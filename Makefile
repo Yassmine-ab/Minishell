@@ -165,15 +165,15 @@ fclean:
 # Rebuild rule
 re:				fclean all
 
+# Rule to compile the program with debugging flags
 debug:			$(OBJS)
 				@make all --no-print-directory -C $(MYLIB_DIR)
 				@echo -n "\n🔗 $(CYAN)Compiling in debug mode $(DEFAULT)\t\t\t"
-				@$(CC) $(CFLAGS) $(OBJS) $(MYLIB) $(READLINE) -o $(NAME) -g3
+				@$(CC) $(CFLAGS) $(OBJS) $(MYLIB) $(READLINE) -o $(NAME) -g3 -fsanitize=address
 				$(PROGRESS_BAR)
 				@echo "$$HEADER"
-
-				#-fsanitize=address
-
+				
+# Rule to display help
 help:
 				@echo "\n$(CYAN)all$(DEFAULT)		- Build the executable $(NAME)"
 				@echo "$(CYAN)bonus$(DEFAULT)		- Build the executable $(NAME_BONUS)"

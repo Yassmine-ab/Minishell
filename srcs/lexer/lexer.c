@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 21:42:36 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/24 22:53:31 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/25 11:06:40 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,19 +41,22 @@ static bool	validate_tokens(t_minishell *data)
 	while (data->tokens[++i].type != END)
 	{
 		if (i == 0 && is_operator(data->tokens[i].type))
-			return (error("Unexpected operator at start", 2, data), false);
+			return (error(data->tokens[i].value,
+					": Unexpected operator at start", 2, data), false);
 		if (is_operator(data->tokens[i].type) || is_redir(data->tokens[i].type))
 		{
 			if (data->tokens[i + 1].type == END)
-				return (error("Unexpected end of command after operator",
-						2, data), false);
+				return (error(data->tokens[i].value,
+						": Unexpected end of command after operator", 2, data),
+					false);
 			if (is_operator(data->tokens[i + 1].type)
 				|| is_redir(data->tokens[i + 1].type))
-				return (error("Consecutive operators", 2, data), false);
+				return (error(NULL, "Consecutive operators", 2, data), false);
 		}
 		else if (data->tokens[i].type == COMMAND
 			&& data->tokens[i + 1].type == PARENTHESIS_OPEN)
-			return (error("Unexpected open parenthesis after command", 2, data),
+			return (error(data->tokens[i + 1].value,
+					": Unexpected opening parenthesis after command", 2, data),
 				false);
 	}
 	return (true);

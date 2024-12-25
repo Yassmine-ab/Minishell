@@ -3,18 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: petitcoeur <petitcoeur@student.42.fr>      +#+  +:+       +#+        */
+/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 05:22:40 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/25 06:35:19 by petitcoeur       ###   ########.fr       */
+/*   Updated: 2024/12/25 12:37:53 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	error(const char *error_msg, int status, t_minishell *data)
+void	error(char *context, char *error_msg, int status, t_minishell *data)
 {
-	data->last_exit_status = status;
+	if (context)
+		ft_putstr_fd(context, 2);
 	ft_putendl_fd(error_msg, STDERR_FILENO);
 	if (data->is_child_process)
 	{

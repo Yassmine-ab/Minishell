@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 03:42:11 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/24 23:11:46 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/25 12:50:52 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,24 +21,19 @@ static void	empty_heredoc(char *limiter, int count_line)
 	ft_putendl_fd("')", STDERR_FILENO);
 }
 
-static void	execute_heredoc(t_node *redir, t_minishell *data)
+static void	process_heredoc_lines(t_node *redir, t_minishell *data)
 {
-	char	*limiter;
 	char	*line;
-	int		count_line;
+	char	*limiter;
 
-	signal_heredoc();
-	data->tmp_file = "/tmp/.heredoc";
-	data->tmp_fd = open(data->tmp_file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	int (count) = 0;
 	limiter = redir->right->value;
-	count_line = 1;
-	while (1)
+	while (++count > 0)
 	{
-		if (isatty(STDIN_FILENO))
-			line = readline("heredoc > ");
+		line = readline("heredoc > ");
 		if (line == NULL)
 		{
-			empty_heredoc(limiter, count_line);
+			empty_heredoc(limiter, count);
 			break ;
 		}
 		if (ft_strncmp(line, limiter, ft_strlen(limiter)) == 0
@@ -47,45 +42,52 @@ static void	execute_heredoc(t_node *redir, t_minishell *data)
 			gc_free(line, &data->gc);
 			break ;
 		}
-		printf("%s\n", redir->right->value);
-		printf("[%d]\n", redir->right->is_single_quoted);
-		printf("[%d]\n", redir->right->is_double_quoted);
 		if (redir->right->is_single_quoted == false
 			&& redir->right->is_double_quoted == false)
 			line = expand_variables(line, data);
 		ft_putendl_fd(line, data->tmp_fd);
-		count_line++;
 		gc_free(line, &data->gc);
 	}
+}
+
+static void	execute_heredoc(t_node *redir, t_minishell *data)
+{
+	signal_heredoc();
+	data->tmp_file = "/tmp/.heredoc";
+	data->tmp_fd = open(data->tmp_file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	if (data->tmp_fd == -1)
+		error(data->tmp_file, ": Failed to create temporary file for heredoc",
+			STDERR_FILENO, data);
+	process_heredoc_lines(redir, data);
 	safe_close(&data->tmp_fd);
 }
 
-static void	redirect_fd(t_node *redir, t_minishell *data)
+static void	redirect_fd(t_node *red, t_minishell *data)
 {
-	int	fd;
-
-	if (redir->right->is_single_quoted == false)
-		redir->right->value = expand_variables(redir->right->value, data);
-	if (ft_strncmp(redir->value, ">", 2) == 0)
+	if (red->right->is_single_quoted == false)
+		red->right->value = expand_variables(red->right->value, data);
+	if (ft_strncmp(red->value, ">", 2) == 0)
 	{
-		fd = open(redir->right->value, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-		if (dup2(fd, STDOUT_FILENO) == -1)
-			error("Failed to redirect output to file", 1, data);
-		safe_close(&fd);
+		data->fd = open(red->right->value, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+		if (data->fd == -1)
+			error(red->right->value, ": Failed to open file for writing",
+				STDERR_FILENO, data);
+		(dup2(data->fd, STDOUT_FILENO), safe_close(&data->fd));
 	}
-	else if (ft_strncmp(redir->value, ">>", 3) == 0)
+	else if (ft_strncmp(red->value, ">>", 3) == 0)
 	{
-		fd = open(redir->right->value, O_WRONLY | O_CREAT | O_APPEND, 0644);
-		if (dup2(fd, STDOUT_FILENO) == -1)
-			error("Failed to redirect output to file", 1, data);
-		safe_close(&fd);
+		data->fd = open(red->right->value, O_WRONLY | O_CREAT | O_APPEND, 0644);
+		if (data->fd == -1)
+			error(red->right->value, ": Failed to open file for appending",
+				STDERR_FILENO, data);
+		(dup2(data->fd, STDOUT_FILENO), safe_close(&data->fd));
 	}
-	else if (ft_strncmp(redir->value, "<", 2) == 0 && data->in_command == true)
+	else if (ft_strncmp(red->value, "<", 2) == 0 && data->in_command == true)
 	{
-		fd = open(redir->right->value, O_RDONLY, 0644);
-		if (dup2(fd, STDIN_FILENO) == -1)
-			error("Failed to redirect input from file", 1, data);
-		safe_close(&fd);
+		data->fd = open(red->right->value, O_RDONLY, 0644);
+		if (data->fd == -1)
+			error(red->right->value, ": No such file or directory", 1, data);
+		(dup2(data->fd, STDIN_FILENO), safe_close(&data->fd));
 	}
 }
 

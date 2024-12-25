@@ -3,26 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   command_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: petitcoeur <petitcoeur@student.42.fr>      +#+  +:+       +#+        */
+/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 10:49:41 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/25 06:25:59 by petitcoeur       ###   ########.fr       */
+/*   Updated: 2024/12/25 12:31:04 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-void	error_cmd(char *cmd, char *error_msg, int status, t_minishell *data)
-{
-	data->last_exit_status = status;
-	ft_putstr_fd(cmd, 2);
-	ft_putendl_fd(error_msg, 2);
-	if (data->is_child_process)
-	{
-		gc_cleanup(&data->gc);
-		exit(status);
-	}
-}
 
 void	concatenate_adjacent_nodes(t_node *node, t_minishell *data)
 {
@@ -60,6 +48,8 @@ char	**get_command_args(t_node *cmd_node, t_minishell *data)
 	arg = cmd_node->args;
 	while (arg)
 	{
+		if (arg->is_single_quoted == false)
+			arg->value = expand_variables(arg->value, data);
 		arg_count++;
 		arg = arg->next;
 	}
