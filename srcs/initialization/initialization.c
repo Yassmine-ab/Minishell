@@ -52,21 +52,21 @@ void	data_init(int argc, char **argv, char **envp, t_minishell *data)
 {
 	int	i;
 
-	ft_memset(data, 0, sizeof(t_minishell));
-	gc_init(&data->gc);
-	data->gc.head->locked = true;
 	data->argc = argc;
 	data->argv = argv;
-	printf("data->envp[0]: %s\n", data->envp[0]);
 	if (envp[0] == NULL)
 		data->envp = envp_is_null(data);
 	else
 	{
 		data->envp = gc_malloc
 			(sizeof(char *) * (ft_tabstrlen(envp) + 1), &data->gc);
+		set_gc_node_locked(&data->gc, data->envp, true);
 		i = -1;
 		while (envp[++i])
+		{
 			data->envp[i] = ft_strdup_gc(envp[i], &data->gc);
+			set_gc_node_locked(&data->gc, data->envp[i], true);
+		}
 		data->envp[i] = NULL;
 		update_shlvl(data);
 	}
@@ -75,17 +75,17 @@ void	data_init(int argc, char **argv, char **envp, t_minishell *data)
 	data->tokens = gc_malloc(sizeof(t_token) * (MAX_TOKENS + 1), &data->gc);
 	data->current_type = COMMAND;
 	data->last_exec_error = EXEC_NO_FILE;
-	// data->in_single_quotes = false;
-	// data->in_double_quotes = false;
+	data->in_single_quotes = false;
+	data->in_double_quotes = false;
 	data->fd = -1;
 	data->tmp_fd = -1;
-	// data->line = NULL;
-	// data->result = NULL;
-	// data->node = NULL;
-	// data->tmp_file = NULL;
-	// data->last_exit_status = 0;
-	// data->open_parentheses = 0;
-	// data->is_child_process = false;
-	// data->child_end_with_signal = false;
-	// data->in_command = false;
+	data->line = NULL;
+	data->result = NULL;
+	data->node = NULL;
+	data->tmp_file = NULL;
+	data->last_exit_status = 0;
+	data->open_parentheses = 0;
+	data->is_child_process = false;
+	data->child_end_with_signal = false;
+	data->in_command = false;
 }

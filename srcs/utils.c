@@ -35,7 +35,7 @@ void	error(char *context, char *error_msg, int status, t_minishell *data)
 	ft_putendl_fd(error_msg, STDERR_FILENO);
 	if (data->is_child_process)
 	{
-		gc_cleanup_lock(&data->gc);
+		gc_cleanup(&data->gc);
 		exit(status);
 	}
 }

@@ -87,6 +87,7 @@ static void	update_env_plus(char *key, char *value_to_add, t_minishell *data)
 	int		i;
 
 	i = get_env_index(key, data);
+	set_gc_node_locked(&data->gc, data->envp[i], false);
 	if (get_env_value(key, data))
 		data->envp[i] = \
 		ft_strjoin_gc(data->envp[i], value_to_add, &data->gc);
@@ -96,6 +97,7 @@ static void	update_env_plus(char *key, char *value_to_add, t_minishell *data)
 		data->envp[i] = \
 		ft_strjoin_gc(data->envp[i], value_to_add, &data->gc);
 	}
+	set_gc_node_locked(&data->gc, data->envp[i], true);
 }
 
 void	process_var_key_return(int var_key_checks_return, \

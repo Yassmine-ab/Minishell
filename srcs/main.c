@@ -14,6 +14,45 @@
 
 volatile sig_atomic_t	g_signal_received = 0;
 
+static void	print_ast(t_node *node, int depth)
+{
+	const char	*colors[] = {
+		RED,
+		GREEN,
+		YELLOW,
+		BLUE,
+		MAGENTA,
+		CYAN,
+		DEFAULT
+	};
+	const char	*color;
+	int			num_colors;
+	int			i;
+
+	num_colors = sizeof(colors) / sizeof(colors[0]);
+	color = colors[depth % num_colors];
+	if (!node)
+		return ;
+	i = -1;
+	while (++i < depth)
+		printf("  ");
+	printf("%s", color);
+	if (node->value)
+		printf("%s\n", node->value);
+	else
+		printf("(group)\n");
+	printf(DEFAULT);
+	print_ast(node->left, depth + 1);
+	print_ast(node->right, depth + 1);
+	if (node->next)
+		print_ast(node->next, depth);
+	if (node->args)
+		print_ast(node->args, depth + 1);
+	if (node->redirections)
+		print_ast(node->redirections, depth + 1);
+	printf(DEFAULT);
+}
+
 int	main(int argc, char **argv, char **envp)
 {
 	t_minishell	data;
@@ -21,10 +60,16 @@ int	main(int argc, char **argv, char **envp)
 	t_node		*ast_root;
 	int			i;
 
+	if (isatty(STDIN_FILENO) == false || argc > 1)
+		return (printf("Minishell does" RED " not " DEFAULT "accept input from "
+				"non-interactive mode.\n"), 1);
 	if (argc > 1)
 		return (printf("Minishell does" RED " not " DEFAULT "accept arguments. "
 				"Running in interactive mode only.\n"), 1);
-	data_init(argc, argv, envp, &data);
+	// data_init(argc, argv, envp, &data);
+	ft_memset(&data, 0, sizeof(t_minishell));
+	gc_init(&data.gc);
+	data.envp = envp;
 	rl_outstream = stderr;
 	while (1)
 	{
@@ -50,6 +95,7 @@ int	main(int argc, char **argv, char **envp)
 			{
 				i = 0;
 				ast_root = parse_expression(&i, &data);
+				print_ast(ast_root, 0);
 				execute_ast(ast_root, &data, false);
 				gc_cleanup_lock(&data.gc);
 				ast_root = NULL;

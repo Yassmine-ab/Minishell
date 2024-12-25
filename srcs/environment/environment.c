@@ -66,7 +66,8 @@ void	update_env(char *key, char *new_value, t_minishell *data)
 	int		i;
 
 	i = get_env_index(key, data);
-	gc_free(data->envp[i], &data->gc);
+	set_gc_node_locked(&data->gc, data->envp[i], false);
+	// gc_free(data->envp[i], &data->gc);
 	data->envp[i] = ft_strjoin_gc(key, "=", &data->gc);
 	data->envp[i] = ft_strjoin_gc(data->envp[i], new_value, &data->gc);
 	set_gc_node_locked(&data->gc, data->envp[i], true);
@@ -78,11 +79,19 @@ void	add_env(char *key, char *value, t_minishell *data)
 	char	*new_key_value;
 	int		i;
 
-	i = ft_tabstrlen(data->envp);
-	new_envp = gc_malloc(sizeof(char *) * (i + 2), &data->gc);
 	i = -1;
 	while (data->envp[++i])
+		set_gc_node_locked(&data->gc, data->envp[i], false);
+	set_gc_node_locked(&data->gc, data->envp, false);
+	i = ft_tabstrlen(data->envp);
+	new_envp = gc_malloc(sizeof(char *) * (i + 2), &data->gc);
+	set_gc_node_locked(&data->gc, new_envp, true);
+	i = -1;
+	while (data->envp[++i])
+	{
 		new_envp[i] = ft_strdup_gc(data->envp[i], &data->gc);
+		set_gc_node_locked(&data->gc, new_envp[i], true);
+	}
 	if (value == NULL)
 		new_key_value = ft_strdup_gc(key, &data->gc);
 	else
@@ -91,6 +100,7 @@ void	add_env(char *key, char *value, t_minishell *data)
 		if (value)
 			new_key_value = ft_strjoin_gc(new_key_value, value, &data->gc);
 	}
+	set_gc_node_locked(&data->gc, new_key_value, true);
 	new_envp[i] = new_key_value;
 	new_envp[i + 1] = NULL;
 	free_envp(data);

@@ -26,5 +26,6 @@ void	gc_add(t_gc *gc, void *ptr, size_t size)
 	new_node->ptr = ptr;
 	new_node->size = size;
 	new_node->next = gc->head;
+	new_node->locked = false;
 	gc->head = new_node;
 }
