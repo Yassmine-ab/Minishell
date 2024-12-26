@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: petitcoeur <petitcoeur@student.42.fr>      +#+  +:+       +#+        */
+/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/23 14:04:05 by petitcoeur        #+#    #+#             */
-/*   Updated: 2024/12/26 02:35:57 by petitcoeur       ###   ########.fr       */
+/*   Updated: 2024/12/26 13:09:57 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,22 +43,19 @@ void	execute_ast(t_node *ast, t_minishell *data, bool in_child_process)
 		init_signal_exec();
 	ft_memset(&term, 0, sizeof(term));
 	tcgetattr(STDIN_FILENO, &term);
-	while (ast)
-	{
-		if (ast->type == NODE_COMMAND)
-			execute_command(ast, data, in_child_process);
-		else if (ast->type == NODE_REDIR || ast->type == NODE_HEREDOC)
-			execute_redirections(ast, data);
-		else if (ast->type == NODE_PIPE)
-			execute_pipeline(ast, data);
-		else if (ast->type == NODE_AND)
-			execute_and(ast, data);
-		else if (ast->type == NODE_OR)
-			execute_or(ast, data);
-		else if (ast->type == NODE_GROUP)
-			execute_group(ast, data);
-		ast = ast->next;
-	}
+	if (ast->type == NODE_COMMAND)
+		execute_command(ast, data, in_child_process);
+	else if (ast->type == NODE_REDIR)
+		execute_redirections(ast, data);
+	else if (ast->type == NODE_PIPE)
+		execute_pipeline(ast, data);
+	else if (ast->type == NODE_AND)
+		execute_and(ast, data);
+	else if (ast->type == NODE_OR)
+		execute_or(ast, data);
+	else if (ast->type == NODE_GROUP)
+		execute_group(ast, data);
+	ast = ast->next;
 	tcsetattr(STDIN_FILENO, TCSANOW, &term);
 	signal_to_action(data);
 }

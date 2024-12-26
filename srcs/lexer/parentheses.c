@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/10 02:55:32 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/25 12:53:31 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/26 13:42:23 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ bool	process_parentheses(char *input, int *i, int *count, t_minishell *data)
 	{
 		data->open_parentheses++;
 		if (find_matching_parenthesis(input, *i) == -1)
-			return (error("(", "Unmatched opening parenthesis", 2, data),
+			return (error("(", ": Unmatched opening parenthesis", 2, data),
 				false);
 		data->tokens[*count] = create_token(PARENTHESIS_OPEN, "(");
 	}

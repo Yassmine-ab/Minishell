@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 03:42:11 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/25 12:50:52 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/26 14:08:20 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ static void	process_heredoc_lines(t_node *redir, t_minishell *data)
 	}
 }
 
-static void	execute_heredoc(t_node *redir, t_minishell *data)
+void	execute_heredoc(t_node *redir, t_minishell *data)
 {
 	signal_heredoc();
 	data->tmp_file = "/tmp/.heredoc";
@@ -93,8 +93,10 @@ static void	redirect_fd(t_node *red, t_minishell *data)
 
 void	execute_redirections(t_node *redir, t_minishell *data)
 {
-	if (redir->type == NODE_REDIR)
-		redirect_fd(redir, data);
-	else if (redir->type == NODE_HEREDOC)
-		execute_heredoc(redir, data);
+	while (redir)
+	{
+		if (redir->type == NODE_REDIR)
+			redirect_fd(redir, data);
+		redir = redir->next;
+	}
 }

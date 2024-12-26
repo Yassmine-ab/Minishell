@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: petitcoeur <petitcoeur@student.42.fr>      +#+  +:+       +#+        */
+/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 04:15:58 by petitcoeur        #+#    #+#             */
-/*   Updated: 2024/12/26 02:34:04 by petitcoeur       ###   ########.fr       */
+/*   Updated: 2024/12/26 14:39:24 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,24 @@ void	safe_close(int *fd)
 	}
 }
 
+void	restore_fds(int saved_stdin, int saved_stdout)
+{
+	dup2(saved_stdin, STDIN_FILENO);
+	dup2(saved_stdout, STDOUT_FILENO);
+	close(saved_stdin);
+	close(saved_stdout);
+}
+
+void	redirect_heredoc(t_minishell *data)
+{
+	if (data->tmp_fd != -1)
+	{
+		dup2(data->tmp_fd, STDIN_FILENO);
+		safe_close(&data->tmp_fd);
+		unlink(data->tmp_file);
+	}
+}
+
 void	handle_child_exit(int status, t_minishell *data)
 {
 	if (WIFEXITED(status))
@@ -31,32 +49,4 @@ void	handle_child_exit(int status, t_minishell *data)
 		data->last_exit_status = 128 + WTERMSIG(status);
 		data->child_end_with_signal = true;
 	}
-}
-
-void	signal_heredoc(void)
-{
-	rl_event_hook = sig_exit;
-	signal(SIGINT, SIG_DFL);
-	signal(SIGQUIT, SIG_IGN);
-	signal(SIGTSTP, SIG_IGN);
-}
-
-void	signal_child_process(void)
-{
-	rl_event_hook = sig_exit;
-	signal(SIGINT, SIG_DFL);
-	signal(SIGQUIT, SIG_DFL);
-	signal(SIGTSTP, SIG_IGN);
-}
-
-void	signal_to_action(t_minishell *data)
-{
-	if (g_signal_received == 128 + SIGINT && data->child_end_with_signal)
-		ft_putchar_fd('\n', STDERR_FILENO);
-	else if (g_signal_received == 128 + SIGQUIT && data->child_end_with_signal)
-		ft_putstr_fd("Quit (core dumped)\n", STDERR_FILENO);
-	data->child_end_with_signal = false;
-	if (g_signal_received)
-		data->last_exit_status = g_signal_received;
-	g_signal_received = 0;
 }

@@ -54,7 +54,7 @@ endef
 NAME =			minishell
 NAME_BONUS =	minishell_bonus
 CC =			gcc
-CFLAGS =		-Wall -Wextra -Werror -g3
+CFLAGS =		-Wall -Wextra -Werror
 AR =			ar rcs
 RM =			rm -f
 
@@ -98,6 +98,7 @@ SRCS =			$(INIT)initialization.c \
 				$(EXEC)redirections.c \
 				$(ENV)environment.c \
 				$(SIGNAL)signal.c \
+				$(SIGNAL)signal_utils.c \
 				$(BUILTINS)echo.c \
 				$(BUILTINS)cd.c \
 				$(BUILTINS)pwd.c \

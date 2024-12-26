@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   command.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: petitcoeur <petitcoeur@student.42.fr>      +#+  +:+       +#+        */
+/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 03:42:20 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/26 02:49:13 by petitcoeur       ###   ########.fr       */
+/*   Updated: 2024/12/26 14:42:27 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,15 +47,8 @@ static void
 	}
 	if (ast->redirections)
 	{
-		while (ast->redirections)
-		{
-			execute_redirections(ast->redirections, data);
-			ast->redirections = ast->redirections->next;
-		}
-		data->tmp_fd = open(data->tmp_file, O_RDONLY, 0644);
-		dup2(data->tmp_fd, STDIN_FILENO);
-		safe_close(&data->tmp_fd);
-		unlink(data->tmp_file);
+		execute_redirections(ast->redirections, data);
+		redirect_heredoc(data);
 	}
 	execve(path, args, data->envp);
 	error(ast->value, ": Command execution failed", 127, data);
@@ -68,7 +61,10 @@ static void	execute_extern_command(t_node *ast, char **args, t_minishell *data)
 
 	pid = safe_fork(data);
 	if (pid == 0)
+	{
+		data->is_child_process = true;
 		execute_command_in_child(ast, args, data);
+	}
 	else
 	{
 		waitpid(pid, &status, 0);
@@ -76,7 +72,7 @@ static void	execute_extern_command(t_node *ast, char **args, t_minishell *data)
 	}
 }
 
-void	execute_command(t_node *ast, t_minishell *data, bool in_child_process)
+void	execute_command(t_node *ast, t_minishell *data, bool in_child)
 {
 	char	**args;
 
@@ -86,12 +82,20 @@ void	execute_command(t_node *ast, t_minishell *data, bool in_child_process)
 	concatenate_adjacent_nodes(ast->args, data);
 	args = get_command_args(ast, data);
 	data->in_command = true;
+	int (saved_stdin) = dup(STDIN_FILENO);
+	int (saved_stdout) = dup(STDOUT_FILENO);
+	if (ast->redirections && in_child == false)
+	{
+		execute_redirections(ast->redirections, data);
+		redirect_heredoc(data);
+	}
 	if (execute_builtins(ast, data) == 0)
 	{
-		if (in_child_process)
+		if (in_child)
 			execute_command_in_child(ast, args, data);
 		else
 			execute_extern_command(ast, args, data);
 	}
+	restore_fds(saved_stdin, saved_stdout);
 	data->in_command = false;
 }

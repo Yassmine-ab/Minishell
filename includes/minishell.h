@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 02:04:44 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/25 11:14:50 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/26 14:38:45 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -213,6 +213,7 @@ void	handle_child_exit(int status, t_minishell *data);
 void	concatenate_adjacent_nodes(t_node *node, t_minishell *data);
 char	*get_command_path(char *command, t_minishell *data);
 char	**get_command_args(t_node *cmd_node, t_minishell *data);
+void	execute_heredoc(t_node *redir, t_minishell *data);
 pid_t	safe_fork(t_minishell *data);
 
 /* ------------------------------- Expander --------------------------------- */
@@ -249,6 +250,8 @@ void	strncat_realloc(char **result, char *append, size_t *size, t_gc *gc);
 bool	is_operator(t_token_type type);
 bool	is_redir(t_token_type type);
 void	safe_close(int *fd);
+void	restore_fds(int saved_stdin, int saved_stdout);
+void	redirect_heredoc(t_minishell *data);
 void	print_export(t_minishell *data);
 void	process_var_key_return(int var_key_checks_return, \
 char *arg, char *equal_sign, t_minishell *data);
