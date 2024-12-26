@@ -6,7 +6,7 @@
 /*   By: petitcoeur <petitcoeur@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 11:06:43 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/26 11:44:07 by petitcoeur       ###   ########.fr       */
+/*   Updated: 2024/12/26 12:51:20 by petitcoeur       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,11 +52,22 @@ volatile sig_atomic_t	g_signal_received = 0;
 // 		(printf(DEFAULT), fflush(stdout));
 // }
 
+void	parse_and_execute(t_minishell *data)
+{
+	t_node	*ast_root;
+	int		i;
+
+	i = 0;
+	ast_root = parse_expression(&i, data);
+	// print_ast(ast_root, 0);
+	execute_ast(ast_root, data, false);
+	gc_cleanup_except_locked(&data->gc);
+	ast_root = NULL;
+}
+
 void	start_minishell(int argc, char **argv, t_minishell *data)
 {
 	char		*prompt;
-	t_node		*ast_root;
-	int			i;
 
 	while (1)
 	{
@@ -74,16 +85,8 @@ void	start_minishell(int argc, char **argv, t_minishell *data)
 		if (data->line[0])
 		{
 			add_history(data->line);
-			data->current_type = COMMAND;
 			if (tokenize_input(data->line, data))
-			{
-				i = 0;
-				ast_root = parse_expression(&i, data);
-				// print_ast(ast_root, 0);
-				execute_ast(ast_root, data, false);
-				gc_cleanup_except_locked(&data->gc);
-				ast_root = NULL;
-			}
+				parse_and_execute(data);
 		}
 		free(data->line);
 	}
