@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   signal_utils.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: besch <besch@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/12/26 18:00:40 by besch             #+#    #+#             */
+/*   Updated: 2024/12/26 18:00:41 by besch            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 void	signal_heredoc(void)
@@ -14,6 +26,26 @@ void	signal_child_process(void)
 	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_DFL);
 	signal(SIGTSTP, SIG_IGN);
+}
+
+static void	sigint_heredoc(int sig)
+{
+	g_signal_received = 128 + sig;
+	rl_done = 1;
+}
+
+void	init_signal_heredoc(void)
+{
+	struct sigaction	sa;
+
+	rl_event_hook = sig_exit;
+	sigemptyset(&sa.sa_mask);
+	sa.sa_flags = SA_RESTART;
+	sa.sa_handler = &sigint_heredoc;
+	sigaction(SIGINT, &sa, NULL);
+	sa.sa_handler = SIG_IGN;
+	sigaction(SIGQUIT, &sa, NULL);
+	sigaction(SIGTSTP, &sa, NULL);
 }
 
 void	signal_to_action(t_minishell *data)

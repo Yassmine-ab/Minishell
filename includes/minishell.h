@@ -228,6 +228,7 @@ void	add_env(char *key, char *value, t_minishell *data);
 
 /* -------------------------------- Signal ---------------------------------- */
 void	init_signal_interactive_mode(void);
+void	init_signal_heredoc(void);
 void	init_signal_exec(void);
 int		sig_exit(void);
 void	signal_heredoc(void);
