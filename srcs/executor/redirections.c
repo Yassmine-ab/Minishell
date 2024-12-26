@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 03:42:11 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/26 14:08:20 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/26 14:50:34 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,10 @@ void	execute_heredoc(t_node *redir, t_minishell *data)
 			STDERR_FILENO, data);
 	process_heredoc_lines(redir, data);
 	safe_close(&data->tmp_fd);
+	data->tmp_fd = open(data->tmp_file, O_RDONLY, 0644);
+	if (data->tmp_fd == -1)
+		error(data->tmp_file, ": Failed to open temporary file for heredoc",
+			STDERR_FILENO, data);
 }
 
 static void	redirect_fd(t_node *red, t_minishell *data)

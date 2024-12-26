@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 01:49:39 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/26 14:34:37 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/26 14:50:11 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,10 +34,6 @@ static t_node	*parse_heredoc(int *i, t_minishell *data)
 	hd_node->right = create_node(NODE_LIMITER, data->tokens[*i], &data->gc);
 	(*i)++;
 	execute_heredoc(hd_node, data);
-	data->tmp_fd = open(data->tmp_file, O_RDONLY, 0644);
-	if (data->tmp_fd == -1)
-		error(data->tmp_file, ": Failed to open temporary file for heredoc",
-			STDERR_FILENO, data);
 	return (hd_node);
 }
 
