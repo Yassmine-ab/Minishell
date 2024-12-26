@@ -6,7 +6,7 @@
 /*   By: petitcoeur <petitcoeur@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 15:56:51 by besch             #+#    #+#             */
-/*   Updated: 2024/12/25 06:23:51 by petitcoeur       ###   ########.fr       */
+/*   Updated: 2024/12/26 11:28:21 by petitcoeur       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,16 +20,18 @@ static void	update_pwd_vars(char *old_path, char *new_path, t_minishell *data)
 	var_pwd_idx = get_env_index("PWD", data);
 	if (var_pwd_idx != -1)
 	{
-		gc_free(data->envp[var_pwd_idx], &data->gc);
+		set_gc_node_locked(&data->gc, data->envp[var_pwd_idx], false);
 		data->envp[var_pwd_idx] = \
 		ft_strjoin_gc("PWD=", new_path, &data->gc);
+		set_gc_node_locked(&data->gc, data->envp[var_pwd_idx], true);
 	}
 	var_old_pwd_idx = get_env_index("OLDPWD", data);
 	if (var_old_pwd_idx != -1)
 	{
-		gc_free(data->envp[var_old_pwd_idx], &data->gc);
+		set_gc_node_locked(&data->gc, data->envp[var_old_pwd_idx], false);
 		data->envp[var_old_pwd_idx] = \
 			ft_strjoin_gc("OLDPWD=", old_path, &data->gc);
+		set_gc_node_locked(&data->gc, data->envp[var_old_pwd_idx], true);
 	}
 	free(old_path);
 }
@@ -50,7 +52,8 @@ static void	update_pwd(char *old_path, t_minishell *data)
 	data->last_exit_status = 1;
 }
 
-static int	change_directory(char *old_path, char *new_path, t_minishell *data)
+static bool	\
+	is_change_directory_ok(char *old_path, char *new_path, t_minishell *data)
 {
 	if (access(new_path, F_OK) != 0)
 	{
@@ -60,7 +63,7 @@ static int	change_directory(char *old_path, char *new_path, t_minishell *data)
 		if (old_path)
 			free(old_path);
 		data->last_exit_status = 1;
-		return (1);
+		return (false);
 	}
 	if (chdir(new_path) != 0)
 	{
@@ -68,9 +71,9 @@ static int	change_directory(char *old_path, char *new_path, t_minishell *data)
 		if (old_path)
 			free(old_path);
 		data->last_exit_status = 1;
-		return (1);
+		return (false);
 	}
-	return (0);
+	return (true);
 }
 
 void	ft_cd(t_node *cmd_args, t_minishell *data)
@@ -97,6 +100,6 @@ void	ft_cd(t_node *cmd_args, t_minishell *data)
 	else
 		new_path = cmd_args->value;
 	old_path = getcwd(NULL, 0);
-	if (!change_directory(old_path, new_path, data))
+	if (is_change_directory_ok(old_path, new_path, data) == true)
 		update_pwd(old_path, data);
 }

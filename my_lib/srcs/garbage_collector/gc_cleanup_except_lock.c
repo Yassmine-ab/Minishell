@@ -1,6 +1,6 @@
 #include "gc.h"
 
-void	gc_cleanup_lock(t_gc *gc)
+void	gc_cleanup_except_locked(t_gc *gc)
 {
 	t_gc_node	*current;
 	t_gc_node	*prev;

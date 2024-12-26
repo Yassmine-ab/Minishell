@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   command.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
+/*   By: petitcoeur <petitcoeur@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 03:42:20 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/25 12:35:54 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/26 02:49:13 by petitcoeur       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,11 +68,7 @@ static void	execute_extern_command(t_node *ast, char **args, t_minishell *data)
 
 	pid = safe_fork(data);
 	if (pid == 0)
-	{
-		data->is_child_process = true;
-		signal_child_process();
 		execute_command_in_child(ast, args, data);
-	}
 	else
 	{
 		waitpid(pid, &status, 0);

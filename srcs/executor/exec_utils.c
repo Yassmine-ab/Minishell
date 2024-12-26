@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
+/*   By: petitcoeur <petitcoeur@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 04:15:58 by petitcoeur        #+#    #+#             */
-/*   Updated: 2024/12/23 11:14:51 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/26 02:34:04 by petitcoeur       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,7 @@ void	signal_to_action(t_minishell *data)
 	else if (g_signal_received == 128 + SIGQUIT && data->child_end_with_signal)
 		ft_putstr_fd("Quit (core dumped)\n", STDERR_FILENO);
 	data->child_end_with_signal = false;
-	data->last_exit_status = g_signal_received;
+	if (g_signal_received)
+		data->last_exit_status = g_signal_received;
 	g_signal_received = 0;
 }

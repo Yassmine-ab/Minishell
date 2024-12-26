@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
+/*   By: petitcoeur <petitcoeur@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 15:58:18 by besch             #+#    #+#             */
-/*   Updated: 2024/12/19 09:23:35 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/26 11:24:24 by petitcoeur       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,8 @@ static void	check_arg_value(char *arg, t_minishell *data)
 
 void	ft_exit(t_node *cmd_args, t_minishell *data)
 {
+	if (data->line == 0)
+		data->last_exit_status = 0;
 	if (cmd_args)
 	{
 		if (cmd_args->next)
