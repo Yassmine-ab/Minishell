@@ -58,7 +58,6 @@ static void	process_heredoc_lines(t_node *redir, t_minishell *data)
 
 void	execute_heredoc(t_node *redir, t_minishell *data)
 {
-	signal_heredoc();
 	data->tmp_file = "/tmp/.heredoc";
 	data->tmp_fd = open(data->tmp_file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (data->tmp_fd == -1)

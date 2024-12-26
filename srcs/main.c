@@ -22,6 +22,8 @@ static void	parse_and_execute(t_minishell *data)
 	i = 0;
 	ast_root = parse_expression(&i, data);
 	execute_ast(ast_root, data, false);
+	// safe_close(&data->tmp_fd);
+	// close (data->tmp_fd);
 	gc_cleanup_except_locked(&data->gc);
 	ast_root = NULL;
 }

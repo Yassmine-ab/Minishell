@@ -35,6 +35,8 @@ static void
 	execute_command_in_child(t_node *ast, char **args, t_minishell *data)
 {
 	char	*path;
+	int		saved_stdin;
+	int		saved_stdout;
 
 	path = get_command_path(args[0], data);
 	if (path == NULL)
@@ -45,14 +47,13 @@ static void
 			error(ast->value, ": Permission denied", 126, data);
 		error(ast->value, ": Command not found", 127, data);
 	}
-	// int (saved_stdin) = dup(STDIN_FILENO);
-	// int (saved_stdout) = dup(STDOUT_FILENO);
+	save_fds(&saved_stdin, &saved_stdout);
 	if (ast->redirections)
 	{
 		execute_redirections(ast->redirections, data);
 		redirect_heredoc(data);
 	}
-	// restore_fds(&saved_stdin, &saved_stdout);
+	restore_fds(&saved_stdin, &saved_stdout);
 	execve(path, args, data->envp);
 	error(ast->value, ": Command execution failed", 127, data);
 }
