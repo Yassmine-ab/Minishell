@@ -47,9 +47,8 @@ static void	check_arg_value(char *arg, t_minishell *data)
 		ft_putstr_fd("minishell: exit: ", STDERR_FILENO);
 		ft_putstr_fd(arg, STDERR_FILENO);
 		ft_putstr_fd(": numeric argument required\n", STDERR_FILENO);
-		data->last_exit_status = 2;
 		gc_cleanup(&data->gc);
-		exit(data->last_exit_status);
+		exit(2);
 	}
 	data->last_exit_status = ft_atoi(arg);
 	return ;
@@ -57,8 +56,6 @@ static void	check_arg_value(char *arg, t_minishell *data)
 
 void	ft_exit(t_node *cmd_args, t_minishell *data)
 {
-	if (data->line == 0)
-		data->last_exit_status = 0;
 	if (cmd_args)
 	{
 		if (cmd_args->next)
@@ -71,6 +68,8 @@ void	ft_exit(t_node *cmd_args, t_minishell *data)
 		}
 		check_arg_value(cmd_args->value, data);
 	}
+	if (data->line == 0)
+		data->last_exit_status = 0;
 	ft_putstr_fd("exit\n", STDERR_FILENO);
 	gc_cleanup(&data->gc);
 	exit(data->last_exit_status);

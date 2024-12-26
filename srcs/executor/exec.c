@@ -55,7 +55,6 @@ void	execute_ast(t_node *ast, t_minishell *data, bool in_child_process)
 		execute_or(ast, data);
 	else if (ast->type == NODE_GROUP)
 		execute_group(ast, data);
-	ast = ast->next;
 	tcsetattr(STDIN_FILENO, TCSANOW, &term);
 	signal_to_action(data);
 }

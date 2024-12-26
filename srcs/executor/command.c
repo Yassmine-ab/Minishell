@@ -96,6 +96,6 @@ void	execute_command(t_node *ast, t_minishell *data, bool in_child)
 		else
 			execute_extern_command(ast, args, data);
 	}
-	restore_fds(saved_stdin, saved_stdout);
 	data->in_command = false;
+	restore_fds(&saved_stdin, &saved_stdout);
 }

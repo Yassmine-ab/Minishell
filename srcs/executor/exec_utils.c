@@ -22,12 +22,12 @@ void	safe_close(int *fd)
 	}
 }
 
-void	restore_fds(int saved_stdin, int saved_stdout)
+void	restore_fds(int *saved_stdin, int *saved_stdout)
 {
-	dup2(saved_stdin, STDIN_FILENO);
-	dup2(saved_stdout, STDOUT_FILENO);
-	close(saved_stdin);
-	close(saved_stdout);
+	dup2(*saved_stdin, STDIN_FILENO);
+	dup2(*saved_stdout, STDOUT_FILENO);
+	safe_close(saved_stdin);
+	safe_close(saved_stdout);
 }
 
 void	redirect_heredoc(t_minishell *data)

@@ -14,58 +14,19 @@
 
 volatile sig_atomic_t	g_signal_received = 0;
 
-// static void	print_ast(t_node *node, int depth)
-// {
-// 	const char	*colors[] = {
-// 		RED,
-// 		GREEN,
-// 		YELLOW,
-// 		BLUE,
-// 		MAGENTA,
-// 		CYAN,
-// 		DEFAULT
-// 	};
-// 	const char	*color;
-// 	int			num_colors;
-// 	int			i;
-
-// 	num_colors = sizeof(colors) / sizeof(colors[0]);
-// 	color = colors[depth % num_colors];
-// 	if (!node)
-// 		return ;
-// 	i = -1;
-// 	while (++i < depth)
-// 		printf("  ");
-// 	printf("%s", color);
-// 	if (node->value)
-// 		printf("%s\n", node->value);
-// 	else
-// 		printf("(group)\n");
-// 	(print_ast(node->left, depth + 1), print_ast(node->right, depth + 1));
-// 	if (node->next)
-// 		print_ast(node->next, depth);
-// 	if (node->args)
-// 		print_ast(node->args, depth + 1);
-// 	if (node->redirections)
-// 		print_ast(node->redirections, depth + 1);
-// 	if (depth == 0)
-// 		(printf(DEFAULT), fflush(stdout));
-// }
-
-void	parse_and_execute(t_minishell *data)
+static void	parse_and_execute(t_minishell *data)
 {
 	t_node	*ast_root;
 	int		i;
 
 	i = 0;
 	ast_root = parse_expression(&i, data);
-	// print_ast(ast_root, 0);
 	execute_ast(ast_root, data, false);
 	gc_cleanup_except_locked(&data->gc);
 	ast_root = NULL;
 }
 
-void	start_minishell(int argc, char **argv, t_minishell *data)
+static void	start_minishell(int argc, char **argv, t_minishell *data)
 {
 	char		*prompt;
 
@@ -73,10 +34,7 @@ void	start_minishell(int argc, char **argv, t_minishell *data)
 	{
 		init_signal_interactive_mode();
 		data_init(argc, argv, data->envp, data);
-		if (isatty(STDIN_FILENO))
-			prompt = create_prompt(data);
-		else
-			prompt = "";
+		prompt = create_prompt(data);
 		data->line = readline(prompt);
 		if (g_signal_received)
 			signal_to_action(data);
