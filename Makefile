@@ -80,7 +80,7 @@ MYLIB =			-L $(MYLIB_DIR) -l:my_lib.a
 READLINE =		-lreadline
 
 # Source files
-SRCS =			$(INIT)initialization.c \
+SRCX =			$(INIT)initialization.c \
 				$(INIT)prompt.c \
 				$(LEXER)lexer.c \
 				$(LEXER)quotes.c \
@@ -108,9 +108,12 @@ SRCS =			$(INIT)initialization.c \
 				$(BUILTINS)export_utils.c \
 				$(BUILTINS)exit.c \
 				$(SRC)utils.c \
+
+SRCS =			$(SRCX) \
 				$(SRC)main.c
 
-SRCS_BONUS =	$(SRC)main_bonus.c
+SRCS_BONUS =	$(SRCX) \
+				$(SRC)main_bonus.c
 
 # Converts source file paths to object file paths
 OBJS =			$(patsubst $(SRC)%, $(OBJ)%, $(SRCS:.c=.o))
@@ -137,10 +140,10 @@ $(NAME):		$(OBJS)
 all:			$(NAME)
 
 # Bonus rule
-bonus:			$(OBJS) $(OBJS_BONUS)
+bonus:			$(OBJS_BONUS)
 				@make all --no-print-directory -C $(MYLIB_DIR)
 				@echo -n "\n🔗 $(WHITE)Linking $(CYAN)$(NAME_BONUS)$(DEFAULT) executable\t\t"
-				@$(CC) $(CFLAGS) $(OBJS) $(OBJS_BONUS) $(MYLIB) $(READLINE) -o $(NAME_BONUS)
+				@$(CC) $(CFLAGS) $(OBJS_BONUS) $(MYLIB) $(READLINE) -o $(NAME_BONUS)
 				$(PROGRESS_BAR)
 				@echo "\n$$HEADER"
 
@@ -159,7 +162,7 @@ fclean:
 				@$(RM) -r $(OBJ)
 				$(PROGRESS_BAR)
 				@echo -n "\n🗑️  $(RED)Deleting $(CYAN)$(NAME)$(DEFAULT) executable\t\t"
-				@$(RM) $(NAME)
+				@$(RM) $(NAME) $(NAME_BONUS)
 				$(PROGRESS_BAR)
 				@echo ""
 
