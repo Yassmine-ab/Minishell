@@ -251,6 +251,7 @@ void	strncat_realloc(char **result, char *append, size_t *size, t_gc *gc);
 bool	is_operator(t_token_type type);
 bool	is_redir(t_token_type type);
 void	safe_close(int *fd);
+void	save_fds(int *saved_stdin, int *saved_stdout);
 void	restore_fds(int *saved_stdin, int *saved_stdout);
 void	redirect_heredoc(t_minishell *data);
 void	print_export(t_minishell *data);

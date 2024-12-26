@@ -185,7 +185,7 @@ help:
 				@echo "$(CYAN)clean$(DEFAULT)		- Clean up object files"
 				@echo "$(CYAN)fclean$(DEFAULT)		- Clean up all object files and executables"
 				@echo "$(CYAN)re$(DEFAULT)		- Rebuild the entire project"
-				@echo "$(CYAN)debug$(DEFAULT)		- Run the program with debugging flags -g3 -fsanitize=address\n"
+				@echo "$(CYAN)debug$(DEFAULT)		- Run the program with debugging flags -g3\n"
 
 # Rule to ensure that these targets are always executed as intended, even if there are files with the same name
 .PHONY:			all bonus clean fclean re debug help

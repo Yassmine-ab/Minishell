@@ -45,11 +45,14 @@ static void
 			error(ast->value, ": Permission denied", 126, data);
 		error(ast->value, ": Command not found", 127, data);
 	}
+	// int (saved_stdin) = dup(STDIN_FILENO);
+	// int (saved_stdout) = dup(STDOUT_FILENO);
 	if (ast->redirections)
 	{
 		execute_redirections(ast->redirections, data);
 		redirect_heredoc(data);
 	}
+	// restore_fds(&saved_stdin, &saved_stdout);
 	execve(path, args, data->envp);
 	error(ast->value, ": Command execution failed", 127, data);
 }
@@ -75,6 +78,8 @@ static void	execute_extern_command(t_node *ast, char **args, t_minishell *data)
 void	execute_command(t_node *ast, t_minishell *data, bool in_child)
 {
 	char	**args;
+	int		saved_stdin;
+	int		saved_stdout;
 
 	if (ast->is_single_quoted == false)
 		ast->value = expand_variables(ast->value, data);
@@ -82,13 +87,11 @@ void	execute_command(t_node *ast, t_minishell *data, bool in_child)
 	concatenate_adjacent_nodes(ast->args, data);
 	args = get_command_args(ast, data);
 	data->in_command = true;
-	int (saved_stdin) = dup(STDIN_FILENO);
-	int (saved_stdout) = dup(STDOUT_FILENO);
+	if (in_child == false)
+		save_fds(&saved_stdin, &saved_stdout);
 	if (ast->redirections && in_child == false)
-	{
-		execute_redirections(ast->redirections, data);
-		redirect_heredoc(data);
-	}
+		(execute_redirections(ast->redirections, data),
+			redirect_heredoc(data));
 	if (execute_builtins(ast, data) == 0)
 	{
 		if (in_child)
@@ -97,5 +100,6 @@ void	execute_command(t_node *ast, t_minishell *data, bool in_child)
 			execute_extern_command(ast, args, data);
 	}
 	data->in_command = false;
-	restore_fds(&saved_stdin, &saved_stdout);
+	if (in_child == false)
+		restore_fds(&saved_stdin, &saved_stdout);
 }

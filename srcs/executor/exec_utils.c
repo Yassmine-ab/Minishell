@@ -22,6 +22,12 @@ void	safe_close(int *fd)
 	}
 }
 
+void	save_fds(int *saved_stdin, int *saved_stdout)
+{
+	*saved_stdin = dup(STDIN_FILENO);
+	*saved_stdout = dup(STDOUT_FILENO);
+}
+
 void	restore_fds(int *saved_stdin, int *saved_stdout)
 {
 	dup2(*saved_stdin, STDIN_FILENO);
