@@ -97,6 +97,7 @@ SRCX =			$(INIT)initialization.c \
 				$(EXEC)pipeline.c \
 				$(EXEC)redirections.c \
 				$(ENV)environment.c \
+				$(ENV)environment_utils.c \
 				$(SIGNAL)signal.c \
 				$(SIGNAL)signal_utils.c \
 				$(BUILTINS)echo.c \

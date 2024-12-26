@@ -3,63 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   environment.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
+/*   By: besch <besch@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 14:08:19 by petitcoeur        #+#    #+#             */
-/*   Updated: 2024/12/18 11:45:35 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/26 18:04:44 by besch            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-void	free_envp(t_minishell *data)
-{
-	int	i;
-
-	i = 0;
-	while (data->envp[i])
-	{
-		gc_free(data->envp[i], &data->gc);
-		i++;
-	}
-	gc_free(data->envp, &data->gc);
-}
-
-char	*get_env_value(char *env_key, t_minishell *data)
-{
-	int		i;
-	char	*env_var;
-	char	*equal_sign;
-
-	i = 0;
-	while (data->envp[i])
-	{
-		env_var = data->envp[i];
-		if (ft_strncmp(env_var, env_key, ft_strlen(env_key)) == 0
-			&& (env_var[ft_strlen(env_key)] == '='))
-		{
-			equal_sign = ft_strchr(env_var, '=');
-			if (equal_sign)
-				return (ft_strdup_gc(equal_sign + 1, &data->gc));
-		}
-		i++;
-	}
-	return (NULL);
-}
-
-int	get_env_index(char *env_key, t_minishell *data)
-{
-	int		i;
-
-	i = 0;
-	while (data->envp[i])
-	{
-		if (ft_strncmp(data->envp[i], env_key, ft_strlen(env_key)) == 0)
-			return (i);
-		i++;
-	}
-	return (-1);
-}
 
 void	update_env(char *key, char *new_value, t_minishell *data)
 {
@@ -67,10 +18,25 @@ void	update_env(char *key, char *new_value, t_minishell *data)
 
 	i = get_env_index(key, data);
 	set_gc_node_locked(&data->gc, data->envp[i], false);
-	// gc_free(data->envp[i], &data->gc);
 	data->envp[i] = ft_strjoin_gc(key, "=", &data->gc);
 	data->envp[i] = ft_strjoin_gc(data->envp[i], new_value, &data->gc);
 	set_gc_node_locked(&data->gc, data->envp[i], true);
+}
+
+static char	*create_new_key_value(char *key, char *value, t_minishell *data)
+{
+	char	*new_key_value;
+
+	if (value == NULL)
+		new_key_value = ft_strdup_gc(key, &data->gc);
+	else
+	{
+		new_key_value = ft_strjoin_gc(key, "=", &data->gc);
+		if (value)
+			new_key_value = ft_strjoin_gc(new_key_value, value, &data->gc);
+	}
+	set_gc_node_locked(&data->gc, new_key_value, true);
+	return (new_key_value);
 }
 
 void	add_env(char *key, char *value, t_minishell *data)
@@ -92,15 +58,7 @@ void	add_env(char *key, char *value, t_minishell *data)
 		new_envp[i] = ft_strdup_gc(data->envp[i], &data->gc);
 		set_gc_node_locked(&data->gc, new_envp[i], true);
 	}
-	if (value == NULL)
-		new_key_value = ft_strdup_gc(key, &data->gc);
-	else
-	{
-		new_key_value = ft_strjoin_gc(key, "=", &data->gc);
-		if (value)
-			new_key_value = ft_strjoin_gc(new_key_value, value, &data->gc);
-	}
-	set_gc_node_locked(&data->gc, new_key_value, true);
+	new_key_value = create_new_key_value(key, value, data);
 	new_envp[i] = new_key_value;
 	new_envp[i + 1] = NULL;
 	free_envp(data);
