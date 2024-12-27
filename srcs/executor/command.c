@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   command.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
+/*   By: besch <besch@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 03:42:20 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/27 17:37:53 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/27 18:18:17 by besch            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,9 +40,12 @@ static void
 	if (path == NULL)
 	{
 		if (data->last_exec_error == EXEC_NOT_REGULAR)
-			error(ast->value, ": Not a regular file", 126, data);
+			(safe_close(&data->saved_stdin), safe_close(&data->saved_stdout), \
+				error(ast->value, ": Not a regular file", 126, data));
 		if (data->last_exec_error == EXEC_NO_PERMISSION)
-			error(ast->value, ": Permission denied", 126, data);
+			(safe_close(&data->saved_stdin), safe_close(&data->saved_stdout), \
+				error(ast->value, ": Permission denied", 126, data));
+		(safe_close(&data->saved_stdin), safe_close(&data->saved_stdout));
 		error(ast->value, ": Command not found", 127, data);
 	}
 	if (ast->redirections)
