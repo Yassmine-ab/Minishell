@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: petitcoeur <petitcoeur@student.42.fr>      +#+  +:+       +#+        */
+/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 02:04:44 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/27 12:46:46 by petitcoeur       ###   ########.fr       */
+/*   Updated: 2024/12/27 15:56:46 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,29 +155,29 @@ typedef struct s_node
 // DATA STRUCTURE
 typedef struct s_minishell
 {
-	int					argc;
-	char				**envp;
 	char				**argv;
+	char				**envp;
 	char				*line;
 	char				*result;
-	t_token				*tokens;
-	t_token_type		current_type;
-	t_node				*node;
-	t_gc				gc;
-	int					tmp_fd;
 	char				*tmp_file;
+	int					argc;
 	int					fd;
-	int					last_exit_status;
+	int					tmp_fd;
+	int					saved_stdin;
+	int					saved_stdout;
 	int					open_parentheses;
+	int					last_exit_status;
 	bool				is_child_process;
 	bool				child_end_with_signal;
 	bool				in_command;
 	bool				locked;
 	bool				in_single_quotes;
 	bool				in_double_quotes;
+	t_gc				gc;
+	t_token				*tokens;
+	t_token_type		current_type;
+	t_node				*node;
 	t_exec_error		last_exec_error;
-	int					saved_stdin;
-	int					saved_stdout;
 }	t_minishell;
 
 /* -------------------------------------------------------------------------- */

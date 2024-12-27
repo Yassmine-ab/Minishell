@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 03:42:20 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/26 14:42:27 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/27 15:57:05 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,10 +35,7 @@ static void
 	execute_command_in_child(t_node *ast, char **args, t_minishell *data)
 {
 	char	*path;
-	char	*redir;
 
-	if (ast->redirections)
-		redir = ast->redirections->value;
 	path = get_command_path(args[0], data);
 	if (path == NULL)
 	{
@@ -53,20 +50,8 @@ static void
 		execute_redirections(ast->redirections, data);
 		redirect_heredoc(data);
 	}
-	if (redir == NULL)
-		restore_fds(&data->saved_stdin, &data->saved_stdout);
-	else if (ft_strncmp(redir, "<", 2) == 0)
-	{
-		dup2(data->saved_stdout, STDOUT_FILENO);
-		safe_close(&data->saved_stdout);
-		safe_close(&data->saved_stdin);
-	}
-	else if (ft_strncmp(redir, ">", 2) == 0)
-	{
-		dup2(data->saved_stdin, STDIN_FILENO);
-		safe_close(&data->saved_stdout);
-		safe_close(&data->saved_stdin);
-	}
+	safe_close(&data->saved_stdout);
+	safe_close(&data->saved_stdin);
 	execve(path, args, data->envp);
 	error(ast->value, ": Command execution failed", 127, data);
 }
@@ -111,10 +96,7 @@ bool	is_builtins(char *command)
 void	execute_command(t_node *ast, t_minishell *data, bool in_child)
 {
 	char	**args;
-	char	*redir;
 
-	if (ast->redirections)
-		redir = ast->redirections->value;
 	if (ast->is_single_quoted == false)
 		ast->value = expand_variables(ast->value, data);
 	concatenate_adjacent_nodes(ast, data);
@@ -122,24 +104,20 @@ void	execute_command(t_node *ast, t_minishell *data, bool in_child)
 	args = get_command_args(ast, data);
 	data->in_command = true;
 	save_fds(&data->saved_stdin, &data->saved_stdout);
-	if (ast->redirections && is_builtins(ast->value) == true)
+	if (ast->redirections)
 	{
 		execute_redirections(ast->redirections, data);
 		redirect_heredoc(data);
 	}
-	if (execute_builtins(ast, data) == 0)
+	if (is_builtins(ast->value) == true)
+		execute_builtins(ast, data);
+	else
 	{
 		if (in_child)
 			execute_command_in_child(ast, args, data);
 		else
 			execute_extern_command(ast, args, data);
 	}
+	restore_fds(&data->saved_stdin, &data->saved_stdout);
 	data->in_command = false;
-	if (redir == NULL && in_child == true)
-	{
-		safe_close(&data->saved_stdin);
-		safe_close(&data->saved_stdout);
-	}
-	else if (in_child == false || (in_child == true && redir))
-		restore_fds(&data->saved_stdin, &data->saved_stdout);
 }

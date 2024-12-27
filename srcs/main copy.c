@@ -6,7 +6,7 @@
 /*   By: petitcoeur <petitcoeur@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 11:06:43 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/26 12:51:20 by petitcoeur       ###   ########.fr       */
+/*   Updated: 2024/12/27 13:12:51 by petitcoeur       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,15 @@ static void	parse_and_execute(t_minishell *data)
 	int		i;
 
 	i = 0;
+	init_ignore_signal();
 	ast_root = parse_expression(&i, data);
-	execute_ast(ast_root, data, false);
+	if (g_signal_received == 0)
+		execute_ast(ast_root, data, false);
+	if (data->tmp_fd != -1)
+	{
+		safe_close(&data->tmp_fd);
+		unlink(data->tmp_file);
+	}
 	gc_cleanup_except_locked(&data->gc);
 	ast_root = NULL;
 }
