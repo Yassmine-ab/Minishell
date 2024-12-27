@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 03:42:11 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/27 16:03:23 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/27 17:34:59 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,6 +100,8 @@ void	execute_redirections(t_node *redir, t_minishell *data)
 	{
 		if (redir->type == NODE_REDIR)
 			redirect_fd(redir, data);
+		else if (redir->type == NODE_HEREDOC)
+			redirect_heredoc(data);
 		redir = redir->next;
 	}
 }

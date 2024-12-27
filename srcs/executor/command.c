@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 03:42:20 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/27 15:57:05 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/27 17:37:53 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,10 +46,7 @@ static void
 		error(ast->value, ": Command not found", 127, data);
 	}
 	if (ast->redirections)
-	{
 		execute_redirections(ast->redirections, data);
-		redirect_heredoc(data);
-	}
 	safe_close(&data->saved_stdout);
 	safe_close(&data->saved_stdin);
 	execve(path, args, data->envp);
@@ -105,10 +102,7 @@ void	execute_command(t_node *ast, t_minishell *data, bool in_child)
 	data->in_command = true;
 	save_fds(&data->saved_stdin, &data->saved_stdout);
 	if (ast->redirections)
-	{
 		execute_redirections(ast->redirections, data);
-		redirect_heredoc(data);
-	}
 	if (is_builtins(ast->value) == true)
 		execute_builtins(ast, data);
 	else
