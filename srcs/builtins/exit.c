@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: petitcoeur <petitcoeur@student.42.fr>      +#+  +:+       +#+        */
+/*   By: besch <besch@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 15:58:18 by besch             #+#    #+#             */
-/*   Updated: 2024/12/26 11:24:24 by petitcoeur       ###   ########.fr       */
+/*   Updated: 2024/12/27 18:04:09 by besch            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,8 @@ void	ft_exit(t_node *cmd_args, t_minishell *data)
 	}
 	if (data->line == 0)
 		data->last_exit_status = 0;
+	(safe_close(&data->saved_stdin), safe_close(&data->saved_stdout));
+	(safe_close(&data->fd), safe_close(&data->tmp_fd));
 	ft_putstr_fd("exit\n", STDERR_FILENO);
 	gc_cleanup(&data->gc);
 	exit(data->last_exit_status);
