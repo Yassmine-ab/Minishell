@@ -176,6 +176,8 @@ typedef struct s_minishell
 	bool				in_single_quotes;
 	bool				in_double_quotes;
 	t_exec_error		last_exec_error;
+	int					saved_stdin;
+	int					saved_stdout;
 }	t_minishell;
 
 /* -------------------------------------------------------------------------- */

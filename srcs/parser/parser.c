@@ -33,6 +33,7 @@ static t_node	*parse_heredoc(int *i, t_minishell *data)
 	(*i)++;
 	hd_node->right = create_node(NODE_LIMITER, data->tokens[*i], &data->gc);
 	(*i)++;
+	init_signal_heredoc();
 	execute_heredoc(hd_node, data);
 	return (hd_node);
 }

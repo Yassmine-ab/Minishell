@@ -35,9 +35,10 @@ static void
 	execute_command_in_child(t_node *ast, char **args, t_minishell *data)
 {
 	char	*path;
-	int		saved_stdin;
-	int		saved_stdout;
+	char	*redir;
 
+	if (ast->redirections)
+		redir = ast->redirections->value;
 	path = get_command_path(args[0], data);
 	if (path == NULL)
 	{
@@ -47,13 +48,25 @@ static void
 			error(ast->value, ": Permission denied", 126, data);
 		error(ast->value, ": Command not found", 127, data);
 	}
-	save_fds(&saved_stdin, &saved_stdout);
 	if (ast->redirections)
 	{
 		execute_redirections(ast->redirections, data);
 		redirect_heredoc(data);
 	}
-	restore_fds(&saved_stdin, &saved_stdout);
+	if (redir == NULL)
+		restore_fds(&data->saved_stdin, &data->saved_stdout);
+	else if (ft_strncmp(redir, "<", 2) == 0)
+	{
+		dup2(data->saved_stdout, STDOUT_FILENO);
+		safe_close(&data->saved_stdout);
+		safe_close(&data->saved_stdin);
+	}
+	else if (ft_strncmp(redir, ">", 2) == 0)
+	{
+		dup2(data->saved_stdin, STDIN_FILENO);
+		safe_close(&data->saved_stdout);
+		safe_close(&data->saved_stdin);
+	}
 	execve(path, args, data->envp);
 	error(ast->value, ": Command execution failed", 127, data);
 }
@@ -76,23 +89,44 @@ static void	execute_extern_command(t_node *ast, char **args, t_minishell *data)
 	}
 }
 
+bool	is_builtins(char *command)
+{
+	if (ft_strncmp(command, "cd", 3) == 0)
+		return (true);
+	else if (ft_strncmp(command, "echo", 5) == 0)
+		return (true);
+	else if (ft_strncmp(command, "env", 4) == 0)
+		return (true);
+	else if (ft_strncmp(command, "exit", 5) == 0)
+		return (true);
+	else if (ft_strncmp(command, "export", 7) == 0)
+		return (true);
+	else if (ft_strncmp(command, "pwd", 4) == 0)
+		return (true);
+	else if (ft_strncmp(command, "unset", 6) == 0)
+		return (true);
+	return (false);
+}
+
 void	execute_command(t_node *ast, t_minishell *data, bool in_child)
 {
 	char	**args;
-	int		saved_stdin;
-	int		saved_stdout;
+	char	*redir;
 
+	if (ast->redirections)
+		redir = ast->redirections->value;
 	if (ast->is_single_quoted == false)
 		ast->value = expand_variables(ast->value, data);
 	concatenate_adjacent_nodes(ast, data);
 	concatenate_adjacent_nodes(ast->args, data);
 	args = get_command_args(ast, data);
 	data->in_command = true;
-	if (in_child == false)
-		save_fds(&saved_stdin, &saved_stdout);
-	if (ast->redirections && in_child == false)
-		(execute_redirections(ast->redirections, data),
-			redirect_heredoc(data));
+	save_fds(&data->saved_stdin, &data->saved_stdout);
+	if (ast->redirections && is_builtins(ast->value) == true)
+	{
+		execute_redirections(ast->redirections, data);
+		redirect_heredoc(data);
+	}
 	if (execute_builtins(ast, data) == 0)
 	{
 		if (in_child)
@@ -101,6 +135,11 @@ void	execute_command(t_node *ast, t_minishell *data, bool in_child)
 			execute_extern_command(ast, args, data);
 	}
 	data->in_command = false;
-	if (in_child == false)
-		restore_fds(&saved_stdin, &saved_stdout);
+	if (redir == NULL && in_child == true)
+	{
+		safe_close(&data->saved_stdin);
+		safe_close(&data->saved_stdout);
+	}
+	else if (in_child == false || (in_child == true && redir))
+		restore_fds(&data->saved_stdin, &data->saved_stdout);
 }

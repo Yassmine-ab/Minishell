@@ -63,7 +63,6 @@ void	execute_heredoc(t_node *redir, t_minishell *data)
 	if (data->tmp_fd == -1)
 		error(data->tmp_file, ": Failed to create temporary file for heredoc",
 			STDERR_FILENO, data);
-	init_signal_heredoc();
 	process_heredoc_lines(redir, data);
 	safe_close(&data->tmp_fd);
 	data->tmp_fd = open(data->tmp_file, O_RDONLY, 0644);
