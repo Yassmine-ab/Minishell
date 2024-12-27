@@ -3,22 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   signal_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: petitcoeur <petitcoeur@student.42.fr>      +#+  +:+       +#+        */
+/*   By: besch <besch@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/26 18:00:40 by besch             #+#    #+#             */
-/*   Updated: 2024/12/27 12:46:24 by petitcoeur       ###   ########.fr       */
+/*   Updated: 2024/12/27 19:46:47 by besch            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-void	signal_heredoc(void)
-{
-	rl_event_hook = sig_exit;
-	signal(SIGINT, SIG_DFL);
-	signal(SIGQUIT, SIG_IGN);
-	signal(SIGTSTP, SIG_IGN);
-}
 
 void	signal_child_process(void)
 {

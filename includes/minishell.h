@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
+/*   By: besch <besch@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 02:04:44 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/27 15:56:46 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/27 19:47:09 by besch            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -234,7 +234,6 @@ void	init_ignore_signal(void);
 void	init_signal_heredoc(void);
 void	init_signal_exec(void);
 int		sig_exit(void);
-void	signal_heredoc(void);
 void	signal_child_process(void);
 void	signal_to_action(t_minishell *data);
 

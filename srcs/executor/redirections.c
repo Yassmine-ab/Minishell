@@ -6,7 +6,7 @@
 /*   By: besch <besch@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 03:42:11 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/27 18:55:12 by besch            ###   ########.fr       */
+/*   Updated: 2024/12/27 19:49:52 by besch            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,10 @@ static void	process_heredoc_lines(t_node *redir, t_minishell *data)
 	{
 		line = readline("heredoc > ");
 		if (line == NULL)
+		{
 			empty_heredoc(limiter, count);
+			break ;
+		}
 		if ((ft_strncmp(line, limiter, ft_strlen(limiter)) == 0
 				&& line[ft_strlen(limiter)] == '\0') || g_signal_received)
 		{
