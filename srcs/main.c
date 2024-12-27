@@ -14,44 +14,6 @@
 
 volatile sig_atomic_t	g_signal_received = 0;
 
-static void	print_ast(t_node *node, int depth)
-{
-	const char	*colors[] = {
-		RED,
-		GREEN,
-		YELLOW,
-		BLUE,
-		MAGENTA,
-		CYAN,
-		DEFAULT
-	};
-	const char	*color;
-	int			num_colors;
-	int			i;
-
-	num_colors = sizeof(colors) / sizeof(colors[0]);
-	color = colors[depth % num_colors];
-	if (!node)
-		return ;
-	i = -1;
-	while (++i < depth)
-		printf("  ");
-	printf("%s", color);
-	if (node->value)
-		printf("%s\n", node->value);
-	else
-		printf("(group)\n");
-	(print_ast(node->left, depth + 1), print_ast(node->right, depth + 1));
-	if (node->next)
-		print_ast(node->next, depth);
-	if (node->args)
-		print_ast(node->args, depth + 1);
-	if (node->redirections)
-		print_ast(node->redirections, depth + 1);
-	if (depth == 0)
-		(printf(DEFAULT), fflush(stdout));
-}
-
 static void	parse_and_execute(t_minishell *data)
 {
 	t_node	*ast_root;
@@ -60,14 +22,8 @@ static void	parse_and_execute(t_minishell *data)
 	i = 0;
 	init_ignore_signal();
 	ast_root = parse_expression(&i, data);
-	print_ast(ast_root, 0);
 	if (g_signal_received == 0)
 		execute_ast(ast_root, data, false);
-	if (data->tmp_fd != -1)
-	{
-		safe_close(&data->tmp_fd);
-		unlink(data->tmp_file);
-	}
 	gc_cleanup_except_locked(&data->gc);
 	ast_root = NULL;
 }
@@ -114,3 +70,41 @@ int	main(int argc, char **argv, char **envp)
 	gc_cleanup(&data.gc);
 	return (data.last_exit_status);
 }
+
+// static void	print_ast(t_node *node, int depth)
+// {
+// 	const char	*colors[] = {
+// 		RED,
+// 		GREEN,
+// 		YELLOW,
+// 		BLUE,
+// 		MAGENTA,
+// 		CYAN,
+// 		DEFAULT
+// 	};
+// 	const char	*color;
+// 	int			num_colors;
+// 	int			i;
+
+// 	num_colors = sizeof(colors) / sizeof(colors[0]);
+// 	color = colors[depth % num_colors];
+// 	if (!node)
+// 		return ;
+// 	i = -1;
+// 	while (++i < depth)
+// 		printf("  ");
+// 	printf("%s", color);
+// 	if (node->value)
+// 		printf("%s\n", node->value);
+// 	else
+// 		printf("(group)\n");
+// 	(print_ast(node->left, depth + 1), print_ast(node->right, depth + 1));
+// 	if (node->next)
+// 		print_ast(node->next, depth);
+// 	if (node->args)
+// 		print_ast(node->args, depth + 1);
+// 	if (node->redirections)
+// 		print_ast(node->redirections, depth + 1);
+// 	if (depth == 0)
+// 		(printf(DEFAULT), fflush(stdout));
+// }

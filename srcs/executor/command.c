@@ -74,7 +74,7 @@ static void	execute_extern_command(t_node *ast, char **args, t_minishell *data)
 	}
 }
 
-bool	is_builtins(char *command)
+static bool	is_builtins(char *command)
 {
 	if (ft_strncmp(command, "cd", 3) == 0)
 		return (true);
@@ -104,7 +104,7 @@ void	execute_command(t_node *ast, t_minishell *data, bool in_child)
 	args = get_command_args(ast, data);
 	data->in_command = true;
 	save_fds(&data->saved_stdin, &data->saved_stdout);
-	if (ast->redirections)
+	if (ast->redirections && is_builtins(ast->value) == true)
 		execute_redirections(ast->redirections, data);
 	if (is_builtins(ast->value) == true)
 		execute_builtins(ast, data);

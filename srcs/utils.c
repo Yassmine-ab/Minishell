@@ -17,7 +17,6 @@ void	error(char *context, char *error_msg, int status, t_minishell *data)
 	if (context)
 		ft_putstr_fd(context, 2);
 	ft_putendl_fd(error_msg, STDERR_FILENO);
-	// close_all_fds(data);
 	if (data->is_child_process)
 	{
 		gc_cleanup(&data->gc);
@@ -59,7 +58,7 @@ void	strncat_realloc(char **result, char *append, size_t *size, t_gc *gc)
 	new_len = ft_strlen(*result) + ft_strlen(append) + 1;
 	if (new_len > *size)
 	{
-		*size = new_len + 16;
+		*size = new_len;
 		*result = gc_realloc(*result, *size, gc);
 	}
 	ft_strlcat(*result, append, *size);

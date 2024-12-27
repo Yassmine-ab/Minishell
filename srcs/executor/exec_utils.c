@@ -38,12 +38,9 @@ void	restore_fds(int *saved_stdin, int *saved_stdout)
 
 void	redirect_heredoc(t_minishell *data)
 {
-	if (data->tmp_fd != -1)
-	{
-		dup2(data->tmp_fd, STDIN_FILENO);
-		safe_close(&data->tmp_fd);
-		unlink(data->tmp_file);
-	}
+	dup2(data->heredoc_fd[READ_END], STDIN_FILENO);
+	safe_close(&data->heredoc_fd[WRITE_END]);
+	safe_close(&data->heredoc_fd[READ_END]);
 }
 
 void	handle_child_exit(int status, t_minishell *data)

@@ -21,13 +21,12 @@ static void	empty_heredoc(char *limiter, int count_line)
 	ft_putendl_fd("')", STDERR_FILENO);
 }
 
-static void	process_heredoc_lines(t_node *redir, t_minishell *data)
+static void	process_heredoc_lines(t_node *redir, \
+	size_t hd_size, char *limiter, t_minishell *data)
 {
 	char	*line;
-	char	*limiter;
 
 	int (count) = 0;
-	limiter = redir->right->value;
 	while (++count > 0)
 	{
 		line = readline("heredoc > ");
@@ -45,24 +44,21 @@ static void	process_heredoc_lines(t_node *redir, t_minishell *data)
 		if (redir->right->is_single_quoted == false
 			&& redir->right->is_double_quoted == false)
 			line = expand_variables(line, data);
-		ft_putendl_fd(line, data->tmp_fd);
+		strncat_realloc(&redir->hd, line, &hd_size, &data->gc);
+		strncat_realloc(&redir->hd, "\n", &hd_size, &data->gc);
 		gc_free(line, &data->gc);
 	}
 }
 
 void	execute_heredoc(t_node *redir, t_minishell *data)
 {
-	data->tmp_file = "/tmp/.heredoc";
-	data->tmp_fd = open(data->tmp_file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	if (data->tmp_fd == -1)
-		error(data->tmp_file, ": Failed to create temporary file for heredoc",
-			STDERR_FILENO, data);
-	process_heredoc_lines(redir, data);
-	safe_close(&data->tmp_fd);
-	data->tmp_fd = open(data->tmp_file, O_RDONLY, 0644);
-	if (data->tmp_fd == -1)
-		error(data->tmp_file, ": Failed to open temporary file for heredoc",
-			STDERR_FILENO, data);
+	char	*limiter;
+	size_t	hd_size;
+
+	limiter = redir->right->value;
+	redir->hd = ft_strdup_gc("", &data->gc);
+	hd_size = ft_strlen(redir->hd);
+	process_heredoc_lines(redir, hd_size, limiter, data);
 }
 
 static void	redirect_fd(t_node *red, t_minishell *data)
@@ -101,7 +97,12 @@ void	execute_redirections(t_node *redir, t_minishell *data)
 		if (redir->type == NODE_REDIR)
 			redirect_fd(redir, data);
 		else if (redir->type == NODE_HEREDOC)
+		{
+			if (pipe(data->heredoc_fd) == -1)
+				(gc_cleanup(&data->gc), exit(EXIT_FAILURE));
+			ft_putstr_fd(redir->hd, data->heredoc_fd[1]);
 			redirect_heredoc(data);
+		}
 		redir = redir->next;
 	}
 }

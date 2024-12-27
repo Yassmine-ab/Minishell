@@ -77,23 +77,25 @@ static void	env_init(char **envp, t_minishell *data)
 void	data_init(int argc, char **argv, char **envp, t_minishell *data)
 {
 	env_init(envp, data);
-	data->argc = argc;
 	data->argv = argv;
-	data->tokens = gc_malloc(sizeof(t_token) * (MAX_TOKENS + 1), &data->gc);
-	data->current_type = COMMAND;
-	data->last_exec_error = EXEC_NO_FILE;
-	data->in_single_quotes = false;
-	data->in_double_quotes = false;
-	data->fd = -1;
-	data->saved_stdin = -1;
-	data->saved_stdout = -1;
-	data->tmp_fd = -1;
 	data->line = NULL;
 	data->result = NULL;
-	data->node = NULL;
-	data->tmp_file = NULL;
+	data->argc = argc;
+	data->fd = -1;
+	data->heredoc_fd[0] = -1;
+	data->heredoc_fd[1] = -1;
+	data->saved_stdin = -1;
+	data->saved_stdout = -1;
 	data->open_parentheses = 0;
+	data->last_exit_status = 0;
 	data->is_child_process = false;
 	data->child_end_with_signal = false;
 	data->in_command = false;
+	data->locked = false;
+	data->in_single_quotes = false;
+	data->in_double_quotes = false;
+	data->tokens = gc_malloc(sizeof(t_token) * (MAX_TOKENS + 1), &data->gc);
+	data->current_type = COMMAND;
+	data->node = NULL;
+	data->last_exec_error = EXEC_NO_FILE;
 }

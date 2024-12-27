@@ -54,7 +54,7 @@ endef
 NAME =			minishell
 NAME_BONUS =	minishell_bonus
 CC =			gcc
-CFLAGS =		-Wall -Wextra -Werror -g3
+CFLAGS =		-Wall -Wextra -Werror
 AR =			ar rcs
 RM =			rm -f
 

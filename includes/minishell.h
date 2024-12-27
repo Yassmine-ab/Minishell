@@ -142,6 +142,7 @@ typedef struct s_node
 {
 	t_node_type			type;
 	char				*value;
+	char				*hd;
 	bool				is_single_quoted;
 	bool				is_double_quoted;
 	bool				space_after;
@@ -155,14 +156,13 @@ typedef struct s_node
 // DATA STRUCTURE
 typedef struct s_minishell
 {
-	char				**argv;
 	char				**envp;
+	char				**argv;
 	char				*line;
 	char				*result;
-	char				*tmp_file;
 	int					argc;
 	int					fd;
-	int					tmp_fd;
+	int					heredoc_fd[2];
 	int					saved_stdin;
 	int					saved_stdout;
 	int					open_parentheses;
@@ -207,8 +207,8 @@ t_node	*parse_command(int *i, t_minishell *data, t_node *redir_before);
 t_node	*parse_redirections(int *i, t_minishell *data);
 
 /* ------------------------------- Executor --------------------------------- */
-void	execute_ast(t_node *ast, t_minishell *data, bool in_child_process);
-void	execute_command(t_node *cmd_node, t_minishell *data, bool in_child_process);
+void	execute_ast(t_node *ast, t_minishell *data, bool in_child);
+void	execute_command(t_node *cmd_node, t_minishell *data, bool in_child);
 void	execute_pipeline(t_node *ast, t_minishell *data);
 void	execute_redirections(t_node *redir_node, t_minishell *data);
 void	handle_child_exit(int status, t_minishell *data);
