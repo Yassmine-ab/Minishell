@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
+/*   By: petitcoeur <petitcoeur@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 02:04:44 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/26 14:38:45 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/27 12:46:46 by petitcoeur       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -230,6 +230,7 @@ void	add_env(char *key, char *value, t_minishell *data);
 
 /* -------------------------------- Signal ---------------------------------- */
 void	init_signal_interactive_mode(void);
+void	init_ignore_signal(void);
 void	init_signal_heredoc(void);
 void	init_signal_exec(void);
 int		sig_exit(void);

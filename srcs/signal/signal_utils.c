@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signal_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: besch <besch@student.42.fr>                +#+  +:+       +#+        */
+/*   By: petitcoeur <petitcoeur@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/26 18:00:40 by besch             #+#    #+#             */
-/*   Updated: 2024/12/26 18:00:41 by besch            ###   ########.fr       */
+/*   Updated: 2024/12/27 12:46:24 by petitcoeur       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,19 @@ void	init_signal_heredoc(void)
 	sa.sa_handler = &sigint_heredoc;
 	sigaction(SIGINT, &sa, NULL);
 	sa.sa_handler = SIG_IGN;
+	sigaction(SIGQUIT, &sa, NULL);
+	sigaction(SIGTSTP, &sa, NULL);
+}
+
+void	init_ignore_signal(void)
+{
+	struct sigaction	sa;
+
+	rl_event_hook = sig_exit;
+	sigemptyset(&sa.sa_mask);
+	sa.sa_flags = SA_RESTART;
+	sa.sa_handler = SIG_IGN;
+	sigaction(SIGINT, &sa, NULL);
 	sigaction(SIGQUIT, &sa, NULL);
 	sigaction(SIGTSTP, &sa, NULL);
 }
