@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirections.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
+/*   By: besch <besch@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 03:42:11 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/27 17:34:59 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/27 18:55:12 by besch            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ static void	empty_heredoc(char *limiter, int count_line)
 	ft_putendl_fd("')", STDERR_FILENO);
 }
 
-static int	process_heredoc_lines(t_node *redir, t_minishell *data)
+static void	process_heredoc_lines(t_node *redir, t_minishell *data)
 {
 	char	*line;
 	char	*limiter;
@@ -32,14 +32,12 @@ static int	process_heredoc_lines(t_node *redir, t_minishell *data)
 	{
 		line = readline("heredoc > ");
 		if (line == NULL)
-			return (empty_heredoc(limiter, count), 1);
+			empty_heredoc(limiter, count);
 		if ((ft_strncmp(line, limiter, ft_strlen(limiter)) == 0
 				&& line[ft_strlen(limiter)] == '\0') || g_signal_received)
 		{
-			if (g_signal_received)
-				data->last_exit_status = g_signal_received;
 			gc_free(line, &data->gc);
-			return (1);
+			break ;
 		}
 		if (redir->right->is_single_quoted == false
 			&& redir->right->is_double_quoted == false)
@@ -47,7 +45,6 @@ static int	process_heredoc_lines(t_node *redir, t_minishell *data)
 		ft_putendl_fd(line, data->tmp_fd);
 		gc_free(line, &data->gc);
 	}
-	return (0);
 }
 
 void	execute_heredoc(t_node *redir, t_minishell *data)

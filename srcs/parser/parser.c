@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
+/*   By: besch <besch@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 01:49:39 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/27 16:18:45 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/27 18:58:39 by besch            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,6 @@ static t_node	*parse_heredoc(int *i, t_minishell *data)
 	(*i)++;
 	hd_node->right = create_node(NODE_LIMITER, data->tokens[*i], &data->gc);
 	(*i)++;
-	if (g_signal_received)
-		return (NULL);
 	init_signal_heredoc();
 	execute_heredoc(hd_node, data);
 	return (hd_node);
@@ -43,12 +41,13 @@ static t_node	*parse_heredoc(int *i, t_minishell *data)
 t_node	*parse_redirections(int *i, t_minishell *data)
 {
 	t_node	*redir_node;
-	t_node	*redir_list;
 	t_node	*last_redir;
 
-	redir_list = NULL;
+	t_node *(redir_list) = NULL;
 	while (is_redir(data->tokens[*i].type))
 	{
+		if (g_signal_received)
+			return (NULL);
 		if (data->tokens[*i].type == HEREDOC)
 			redir_node = parse_heredoc(i, data);
 		else
