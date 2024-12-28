@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: besch <besch@student.42.fr>                +#+  +:+       +#+        */
+/*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 02:04:44 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/27 19:47:09 by besch            ###   ########.fr       */
+/*   Updated: 2024/12/28 16:33:46 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -170,7 +170,6 @@ typedef struct s_minishell
 	bool				is_child_process;
 	bool				child_end_with_signal;
 	bool				in_command;
-	bool				locked;
 	bool				in_single_quotes;
 	bool				in_double_quotes;
 	t_gc				gc;

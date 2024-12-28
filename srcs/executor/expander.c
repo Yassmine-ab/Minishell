@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 21:54:13 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/24 22:42:13 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/28 17:27:42 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,19 +72,21 @@ static char	**find_wildcard_matches(char *pattern, t_minishell *data)
 
 static int	expand_wildcard(size_t *size, int i, char *str, t_minishell *data)
 {
-	char	**matches;
-	int		match_idx;
-	char	*pattern;
-	int		start;
+	char		**matches;
+	char		*pattern;
+	const int	start_writing = i;
+	int			start_pattern;
+	int			match_idx;
 
 	while (i > 0 && ft_isspace(str[i - 1]) == 0
 		&& ft_strchr("\"'()|<>&", str[i - 1]) == NULL)
 		i--;
-	start = i;
+	start_pattern = i;
 	while (str[i]
 		&& ft_isspace(str[i]) == 0 && ft_strchr("\"'()|<>&", str[i]) == NULL)
 		i++;
-	pattern = ft_substr_gc(str, start, i - start, &data->gc);
+	pattern = ft_substr_gc(str, start_pattern, i - start_pattern, &data->gc);
+	printf("pattern: %s\n", pattern);
 	matches = find_wildcard_matches(pattern, data);
 	if (matches)
 	{
@@ -93,7 +95,10 @@ static int	expand_wildcard(size_t *size, int i, char *str, t_minishell *data)
 		{
 			if (match_idx > 0)
 				strncat_realloc(&data->result, " ", size, &data->gc);
-			strncat_realloc(&data->result, matches[match_idx], size, &data->gc);
+			if (match_idx == 0)
+				strncat_realloc(&data->result, &matches[match_idx][start_writing], size, &data->gc);
+			else
+				strncat_realloc(&data->result, matches[match_idx], size, &data->gc);
 		}
 	}
 	return (i);

@@ -6,7 +6,7 @@
 /*   By: yaabdall <yaabdall@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/10 03:27:24 by yaabdall          #+#    #+#             */
-/*   Updated: 2024/12/27 17:25:09 by yaabdall         ###   ########.fr       */
+/*   Updated: 2024/12/28 16:33:33 by yaabdall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,11 +87,9 @@ void	data_init(int argc, char **argv, char **envp, t_minishell *data)
 	data->saved_stdin = -1;
 	data->saved_stdout = -1;
 	data->open_parentheses = 0;
-	data->last_exit_status = 0;
 	data->is_child_process = false;
 	data->child_end_with_signal = false;
 	data->in_command = false;
-	data->locked = false;
 	data->in_single_quotes = false;
 	data->in_double_quotes = false;
 	data->tokens = gc_malloc(sizeof(t_token) * (MAX_TOKENS + 1), &data->gc);
